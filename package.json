@@ -6,7 +6,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "npx eslint --ext .mjs,.js ."
+    "lint": "npx eslint --ext .mjs,.js .",
+    "link": "./scripts/link.sh"
   },
   "author": "André Timermann <andre@timermann.com.br>",
   "license": "ISC",

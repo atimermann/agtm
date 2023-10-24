@@ -1,0 +1,56 @@
+{
+  "name": "@agtm/ncli",
+  "version": "5.4.0",
+  "description": "Conjuntos de scripts para auxiliar no desenvolvimento de projetos node.",
+  "type": "module",
+  "bin": {
+    "ncli": "src/ncli.mjs",
+    "ncli-create": "src/create.mjs",
+    "ncli-check-deps": "src/check-deps.mjs",
+    "ncli-create-app": "src/create-app.mjs",
+    "ncli-create-controller": "src/create-controller.mjs",
+    "ncli-install-assets": "src/install-assets.mjs"
+  },
+  "scripts": {
+    "publish-patch": "npm version patch && npm publish --access public && git push",
+    "publish-minor": "npm version minor && npm publish --access public && git push",
+    "publish-major": "npm version major && npm publish --access public && git push",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npx eslint --ext .mjs,.js --fix .",
+    "lint:test": "npx eslint  --ext .mjs,.js ."
+  },
+  "files": [
+    "scripts",
+    "src"
+  ],
+  "keywords": [
+    "cli"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:atimermann/ncli.git"
+  },
+  "author": "André Timermann",
+  "license": "ISC",
+  "dependencies": {
+    "@agtm/node-framework": "^5.1.2",
+    "@agtm/util": "^4.2.4",
+    "change-case": "^3.1.0",
+    "commander": "^2.20.3",
+    "empty-dir": "^1.0.0",
+    "find-package-json": "^1.2.0",
+    "fs-extra": "^8.1.0",
+    "inquirer": "^9.1.4",
+    "moment": "^2.29.4",
+    "semver": "^5.7.1",
+    "simple-git": "^3.20.0",
+    "table": "^6.8.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.51.0",
+    "eslint-config-standard": "^17.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

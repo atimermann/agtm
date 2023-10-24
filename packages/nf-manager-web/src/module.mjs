@@ -21,6 +21,5 @@ export default defineNuxtModule({
       name: 'NfManagerJobPanel', // name of the component to be used in vue templates
       filePath: resolver.resolve('runtime/components/JobPanel.vue')
     })
-
   }
 })

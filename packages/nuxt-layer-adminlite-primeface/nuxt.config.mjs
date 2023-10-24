@@ -42,7 +42,7 @@ export default defineNuxtConfig({
     // ========================
     //  ADMIN LTE CONFIG
     // ========================
-    join(currentDir, './src/assets/adminlte/css/adminlte.css'),
+    join(currentDir, './src/assets/adminlte/css/adminlte.css')
 
     // ========================
     // fortawesome

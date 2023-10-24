@@ -8,10 +8,9 @@ export default {
     menu: {
       items: [
         {
-          "title": "Dashboard v1"
+          title: 'Dashboard v1'
         }
       ]
     }
   }
 }
-

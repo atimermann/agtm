@@ -1,19 +1,15 @@
 #!/usr/bin/env node
 
-import { access, constants, stat, readdir } from 'node:fs/promises'
-import { join } from 'path'
 import { simpleGit } from 'simple-git'
 import { loadJson } from '@agtm/util'
 import { table } from 'table'
 import { spawn } from '@agtm/util/process'
 import chalk from 'chalk'
+import { getAgtmModulesInfo } from './library/tool.mjs'
 
 const NO_TAG = 0
 const PUBLISHABLE = 1
 const NOT_PUBLISHABLE = 2
-
-// Diretório raiz dos módulos Node.js
-const modulesDirectory = '/home/andre/projetos/@agtm'
 
 const projectPackageJson = await loadJson('package.json')
 
@@ -64,70 +60,6 @@ async function checkModuleHasChange (modulePath, moduleInfo) {
 }
 
 // Função para gerar o JSON com informações dos módulos
-async function generateModuleInfo () {
-  const modulesInfo = []
-
-  // Lê o diretório raiz
-  for (const moduleName of await readdir(modulesDirectory)) {
-    const modulePath = join(modulesDirectory, moduleName)
-    if ((await stat(modulePath)).isDirectory()) {
-      let moduleInfo
-
-      let packageJson
-
-      try {
-        const packageJsonPath = join(modulePath, 'package.json')
-        await access(packageJsonPath, constants.R_OK | constants.W_OK)
-        packageJson = await loadJson(packageJsonPath)
-      } catch {
-        continue
-      }
-
-      /// ///////////////////////////////////////
-      // Carrega informações
-      /// ///////////////////////////////////////
-      try {
-        moduleInfo = {
-          name: packageJson.name,
-          directory: moduleName,
-          version: packageJson.version
-        }
-      } catch (error) {
-        console.error(`Diretório inválido ${moduleName}: ${error}`)
-        continue
-      }
-
-      /// ///////////////////////////////////////
-      // Verifica o status do Git
-      /// ///////////////////////////////////////
-      try {
-        moduleInfo.hasChanges = await checkModuleHasChange(modulePath, moduleInfo)
-        modulesInfo.push(moduleInfo)
-
-        // Se você quiser verificar outras coisas, como se tem algo para publicar, pode adicionar aqui
-        // Por exemplo, verificar se há um script de publicação definido no package.json
-        // E então adicionar isso ao objeto moduleInfo
-      } catch (error) {
-        console.error(`Erro ao verificar o status do Git para ${moduleName}: ${error}`)
-      }
-
-      /// ///////////////////////////////////////
-      // Verfica se é publicável
-      /// ///////////////////////////////////////
-      const {
-        publishable,
-        latestReleaseTag
-      } = await isModulePublishable(modulePath)
-
-      moduleInfo.isPublishable = (publishable === PUBLISHABLE)
-      moduleInfo.latestReleaseTag = latestReleaseTag
-      moduleInfo.noTag = (publishable === NO_TAG)
-    }
-  }
-
-  return modulesInfo
-}
-
 function isModuleInstalled (moduleName) {
   try {
     // Verifica se o módulo está listado como uma dependência no package.json
@@ -273,7 +205,7 @@ function printTable (modules) {
 // Carrega modulos analisáveis
 /// //////////////////////////////////////////////////////////////
 try {
-  const moduleInfo = await generateModuleInfo()
+  const moduleInfo = await getAgtmModulesInfo()
 
   /// //////////////////////////////////////////////////////////////
   // Verifica quais desses módulos estão instalados
@@ -296,10 +228,6 @@ try {
 
     installedModule.oldNestedModules = checkNestedModules(installedModule.name, installedModule.nestedModules, installedModule.version)
   }
-
-  /// //////////////////////////////////////////////////////////////
-  // Check Nested Deps
-  /// //////////////////////////////////////////////////////////////
 
   if (!printTable(installedModules)) {
     process.exit(1)

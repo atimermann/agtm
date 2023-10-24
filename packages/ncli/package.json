@@ -6,7 +6,9 @@
   "bin": {
     "ncli": "src/ncli.mjs",
     "ncli-create": "src/create.mjs",
-    "ncli-check-deps": "src/check-deps.mjs",
+    "ncli-agtm-ls": "src/agtm-ls.mjs",
+    "ncli-agtm-update": "src/agtm-update.mjs",
+    "ncli-agtm-link": "src/agtm-link.mjs",
     "ncli-create-app": "src/create-app.mjs",
     "ncli-create-controller": "src/create-controller.mjs",
     "ncli-install-assets": "src/install-assets.mjs"

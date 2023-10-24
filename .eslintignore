@@ -1,3 +1,4 @@
 dist/
 packages/ncli/src/template/
+packages/nf-manager/src/public/**/*
 

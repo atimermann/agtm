@@ -1,0 +1,129 @@
+---
+# Configuração do Servidor HTTP Express
+# body-parser: https://github.com/expressjs/body-parser
+httpServer:
+  enabled: true
+  # Para servidor ficar acessivel em todas as redes incluindo internet use 0.0.0.0
+  hostname: '127.0.0.1'
+  port: 3001
+  urlenconded:
+    limit: '10mb'
+  json:
+    limit: '10mb'
+  log:
+    # Ref: https://github.com/expressjs/morgan
+    format: ':remote-addr - :remote-user ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"'
+
+  # Diretório de onde os arquivos estáticos serão carregados ao acessar rota definida em staticRoute.
+  # Ao executar npm run install-assets os arquivos localizados em:
+  #  src/apps/myApp/myAplication/assets  são copiados para src/public/myApp/myApplication
+  # Por padrão o arquivo estático poderá ser acessado em http://DOMAIN:PORT/static/myApp/myApplication
+  #   Exemplo: http://DOMAIN:PORT/static/myApp/myApplication/image.png
+  #          : http://DOMAIN:PORT/static/myApp/myApplication/index.html
+  # Alterando staticPath, ao acessar http://DOMAIN:PORT/static os arquivos estáticos serão carregados diretamente do diretório especificado em staticPath
+  #   Exemplo staticPath: 'public/myApp/myApplication' e staticRoute: '/' ao acessar http://DOMAIN:PORT/ index.html será carregado diretamente
+  staticPath: 'public'
+
+  # Rota para acesso a recursos estáticos
+  staticRoute: '/static'
+
+  # Caso utilize um CDN em vez do diretório local estatico, habilitar aqui e definir cdnUrl para url base do CDN
+  cdn: false
+
+  # Url do CDN
+  cdnUrl: ''
+
+  # Acessa arquivos estático do pacote (node-pkg): Necessário adicionar no package: "assets":  ["apps/**/views/*", "public"]
+  # Deve ser desativado para acesso via CDN, ou se for utilizar o diretório public para arquivos enviados pelo usuário (upload)
+  # Em caso de true deve ser empacotado novamente sempre que houver alteração dos arquivos estáticos
+  # Ao desativar não esqueça remover no package.json a entrada "public" em pkg.assets
+  loadStaticFromPackage: false
+
+  helmet: {}
+
+  customStaticRoutes: []
+
+  timezone: "America/Sao_Paulo"
+
+  https:
+    enabled: false
+    key: 'key.pem'
+    cert: 'cert.pem'
+
+# Habilita Sistema Gerenciador de Jobs e Worker
+jobManager:
+  enabled: true
+  # Array com lista de aplicações, apps e controlers habilitados, null para todos
+  applicationsEnabled: null
+  appsEnabled: null
+  controllersEnabled: null
+  logger:
+    json:
+      enabled: true # Obrigratório para log ser carregado pelo processo pai
+
+
+# Carrega monitor automaticamente (necessário servidor socket e transport socket ativo)
+monitor:
+  enabled: false
+  socketServer: 'http://localhost:4001/logger'
+
+logger:
+  # Habilita envio de log por socket (Web e monitor)
+  socket:
+    enabled: true
+    namespace: '/logger'
+
+  # Habilita Log em console
+  console:
+    enabled: true
+    handleExceptions: false
+
+  # Menor prioridade de log que será processado (emerg, alert, crit, error, warnin, notice, info, debug)
+  level: info
+
+  # Silencia log
+  silent: false
+
+################################################################################################
+# Configuração do servidor socket.io
+################################################################################################
+socket:
+  enabled: true
+  port: 4001
+  # Modo de execução, podendo ser: (REF: https://socket.io/docs/v4/server-initialization/)
+  #  - standalone (Servidor simples independente do servidor http)
+  #  - http-server (integrado com servidor http-server do framework)
+  #  - standalone-http (Integrado a um servidor http)
+  #  - standalone-https (integrado a um servidor https com certificado)
+  #     - https://socket.io/docs/v4/server-initialization/#with-an-https-server TODO: complementar configuração client authentication
+  #  - standalone-http2 (Melhor desempenho e eficiência com multiplexação, compactação de cabeçalho e push de servidor.)
+  mode: standalone
+  # Chaves usado no modo https e http2
+  keys:
+    cert: '/path/to/my/cert.pem'
+    key: '/path/to/my/key.pem'
+  # https://socket.io/docs/v4/handling-cors/
+  cors:
+    origin: '*'
+  # https://socket.io/docs/v4/how-it-works/#upgrade-mechanism
+  transports: ["polling", "websocket"]
+  # Demais opções https://socket.io/docs/v4/server-options
+  options: {}
+
+
+################################################################################################
+# Módulo de monitoramento de recurso, util para detecção de memory Leak
+################################################################################################
+resourceMonitor:
+  enabled: false
+  # Habilita dump de memória em intervalo definido por dumpInterval, mostra diferença de alocação
+  #  - Utilizar apenas em caso de análise, muito pesado, comsome muito recurso de processamento
+  #  - Exibe elementos muito alocados ou com muito crescimento de consumo
+  dumpMemory:
+    enabled: false
+    # em minutos
+    dumpInterval: 60
+    # Elementos com tamanho em bytes maior que detailSizeLimit serão exibidos em detalhes
+    detailSizeLimit: 10000
+    # Elementos com mais nodes criados que detailSizeLimit serão exibidos em detalhes
+    detailNodesLimit: 20

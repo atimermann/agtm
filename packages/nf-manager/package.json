@@ -1,0 +1,72 @@
+{
+  "name": "@agtm/nf-manager",
+  "version": "0.5.0",
+  "description": "Framework Manager, a web interface for the management of framework components, including the job scheduling system, databases, logs, machine resource utilization, sockets, and other related elements",
+  "main": "src/main.mjs",
+  "bin": {
+    "nfmanager-setEnvVar": "./scripts/setEnvVar.sh"
+  },
+  "scripts": {
+    "publish-patch": "./scripts/publish.sh patch",
+    "publish-minor": "./scripts/publish.sh minor",
+    "publish-major": "./scripts/publish.sh major",
+    "start": "NODE_ENV=production node .",
+    "dev": "./scripts/dev.sh",
+    "dev:debug": "node --inspect-brk --loader=./esm-loader.mjs .",
+    "dev:link": "npm link @agtm/util",
+    "monitor": "npx nf-monitor",
+    "update": "npm update @agtm/ncli @agtm/node-framework @agtm/util && npm list @agtm/node-framework @agtm/ncli @agtm/util && (cd web && npm run update)",
+    "build-pkg": "scripts/build-pkg.sh",
+    "build-debug": "npx pkg -t node14-linux-x64 --out-path build .",
+    "install-assets": "npx ncli install-assets",
+    "create-app": "npx ncli create-app",
+    "create-controller": "npx ncli create-controller",
+    "lint:test": "npx eslint src",
+    "lint": "npx eslint --fix src web",
+    "test": "npm run lint",
+    "generate-web": "./scripts/generate-web.sh"
+  },
+  "exports": {
+    ".": "./src/main.mjs",
+    "./web": "./web/index.mjs"
+  },
+  "author": "André Timermann <andre@timermann.com.br>",
+  "license": "ISC",
+  "pkg": {
+    "scripts": "src/apps/**/controllers/*.mjs",
+    "assets": [
+      "src",
+      "!src/public"
+    ]
+  },
+  "files": [
+    "src",
+    "scripts/setEnvVar.sh",
+    "!src/public",
+    "web/index.mjs",
+    "web/src/components",
+    "web/src/assets"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@agtm/util": "^4.2.4",
+    "cronstrue": "^2.32.0",
+    "esm-module-alias": "^2.0.3",
+    "sql-template-strings": "^2.2.2",
+    "sqlite": "^5.0.1",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "@agtm/ncli": "^5.4.0",
+    "@babel/preset-env": "^7.21.5",
+    "babel-jest": "^29.5.0",
+    "babel-plugin-module-resolver": "^5.0.0",
+    "eslint": "^8.40.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-jest": "^27.2.1",
+    "jest": "^29.5.0",
+    "supertest": "^6.3.3"
+  }
+}

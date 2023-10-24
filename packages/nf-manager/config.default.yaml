@@ -1,0 +1,18 @@
+---
+# Consulte configuração em node_modules/@agtm/node-framework/*.yaml
+jobManager:
+  enabled: false
+
+httpServer:
+
+  customStaticRoutes:
+    - staticRoute: "/manager"
+      staticPath: "public/nfManager/main"
+
+  # Necessário para liberar a execução do nuxt (executa script inline)
+  helmet:
+    contentSecurityPolicy:
+      directives:
+        scriptSrcElem:
+          - "'self'"
+          - "'unsafe-inline'"

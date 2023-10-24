@@ -108,3 +108,54 @@ dist
 build/
 
 /prisma/*/db/
+
+# Dependencies
+node_modules
+
+# Logs
+*.log*
+
+# Temp directories
+.temp
+.tmp
+
+# Yarn
+**/.yarn/cache
+**/.yarn/*state*
+
+
+# Nuxt
+.output
+.data
+.vercel_build_output
+.build-*
+.netlify
+
+# Testing
+reports
+
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+# Intellij idea
+*.iml
+
+# OSX
+.DS_Store
+.AppleDouble
+.LSOverride
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+############### NF MANAGER #####################
+/packages/nf-manager/src/public
+/packages/nf-manager/src/apps/main/assets
+/packages/nf-manager/storage

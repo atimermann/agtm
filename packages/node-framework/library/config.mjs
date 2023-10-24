@@ -188,7 +188,7 @@ export default class Config {
         ? this._transformToLowerKeys(value)
         : value
     })
-  };
+  }
 }
 
 Config.init()

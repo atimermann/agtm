@@ -1,0 +1,55 @@
+{
+  "name": "@agtm/nuxt-tools",
+  "version": "1.2.3",
+  "description": "Module with useful tools for Nuxt projects",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/atimermann/nuxt-tools.git"
+  },
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/module.mjs",
+      "require": "./dist/module.cjs"
+    }
+  },
+  "types": "./dist/types.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepack": "nuxt-module-build build",
+    "build-watch": "nodemon",
+    "dev": "nuxi dev playground",
+    "dev:build": "nuxi build playground",
+    "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxi prepare playground",
+    "lint:test": "npx eslint src",
+    "lint": "npx eslint --ext .mjs,.js,.vue --fix src",
+    "test": "echo 'No-test'",
+    "test:watch": "vitest watch",
+    "commit": "npm run lint && cz",
+    "release": "npm run test && npm run prepack && npx dotenv -- npx semantic-release"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^3.7.4"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "latest",
+    "@nuxt/eslint-config": "^0.2.0",
+    "@nuxt/module-builder": "^0.5.2",
+    "@nuxt/schema": "^3.7.4",
+    "@nuxt/test-utils": "^3.7.4",
+    "@types/node": "^18.18.1",
+    "dotenv-cli": "^7.3.0",
+    "nodemon": "^3.0.1",
+    "nuxt": "^3.7.4",
+    "nuxt-lodash": "^2.5.0",
+    "vitest": "^0.33.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

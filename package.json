@@ -1,0 +1,30 @@
+{
+  "name": "agtm",
+  "version": "1.0.0",
+  "private": false,
+  "description": "Agtm monorepo, collection of agtm packages",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "André Timermann <andre@timermann.com.br>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/atimermann/agtm/issues"
+  },
+  "homepage": "https://github.com/atimermann/agtm#readme",
+  "workspaces": [
+    "packages/*"
+  ],
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "devDependencies": {
+    "commitizen": "^4.3.0",
+    "dotenv-cli": "^7.3.0",
+    "eslint-config-standard": "^17.1.0",
+    "semantic-release": "^22.0.5"
+  }
+}

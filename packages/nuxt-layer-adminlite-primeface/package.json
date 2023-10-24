@@ -1,0 +1,54 @@
+{
+  "name": "@agtm/nuxt-layer-adminlte-primeface",
+  "private": false,
+  "type": "module",
+  "version": "0.3.2",
+  "description": "Nuxt 3 layer for integrating AdminLTE 3 and PrimeVue 3 in your project",
+  "author": "André Timermann",
+  "license": "ISC",
+  "main": "./nuxt.config.mjs",
+  "module": "./src/index.mjs",
+  "scripts": {
+    "commit": "cz",
+    "release": "dotenv -- npx semantic-release",
+    "dev": "nuxi dev playground",
+    "build": "nuxt build playground",
+    "generate": "nuxt generate playground",
+    "preview": "nuxt preview playground",
+    "lint:test": "npx eslint src",
+    "lint": "npx eslint --fix src",
+    "postinstall": "nuxt prepare playground"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ]
+  },
+  "keywords": [
+    "nuxt",
+    "nuxt3",
+    "adminlte",
+    "primevue",
+    "template",
+    "layer"
+  ],
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/vue-fontawesome": "^3.0.3",
+    "@nuxt/kit": "^3.3.2",
+    "lodash": "^4.17.21",
+    "nuxt": "^3.7.3",
+    "primeflex": "^3.3.0",
+    "primeicons": "^6.0.1",
+    "primevue": "^3.29.2"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^7.3.0",
+    "vitest": "^0.29.7"
+  },
+  "files": [
+    "src",
+    "nuxt.config.mjs"
+  ]
+}

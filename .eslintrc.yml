@@ -1,0 +1,13 @@
+root: true
+parserOptions:
+  ecmaVersion: latest
+env:
+  browser: false
+  node: true
+  jest: true
+extends:
+  - standard
+rules:
+  quotes:
+    - error
+    - single

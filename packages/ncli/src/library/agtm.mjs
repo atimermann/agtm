@@ -52,7 +52,7 @@ export async function getAgtmModulesInfo () {
           directory: moduleName,
           lastVersion: packageJson.version,
           installed,
-          installedVersion: installed ? modulesInstalledVersion[packageJson.name].version : null,
+          installedVersion: installed ? modulesInstalledVersion[packageJson.name]?.version : null,
           hasChanges: await checkAgtmHasGitChangesToCommit(modulePath),
           linked: linkedModules.includes(packageJson.name)
         }
@@ -133,7 +133,15 @@ async function getModulesInstalledVersion () {
   const command = 'npm list --depth 0  --json'
 
   const { stdout } = await spawn(command, undefined, true)
-  return JSON.parse(stdout).dependencies
+
+  const modulesList = JSON.parse(stdout)
+
+  // When it is a workspace agtm, you need to select current module
+  if (modulesList.name === 'agtm') {
+    return modulesList.dependencies[projectPackageJson.name].dependencies
+  }
+
+  return modulesList.dependencies
 }
 
 async function getLinkedModules () {

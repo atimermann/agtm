@@ -4,8 +4,11 @@ import { getAgtmModulesInfo } from './library/agtm.mjs'
 import chalk from 'chalk'
 import { table } from 'table'
 
-const installedModules = (await getAgtmModulesInfo())
-  .filter(module => module.installed === true)
+const args = process.argv.slice(2)
+
+let installedModules = (await getAgtmModulesInfo())
+
+if (!args.includes('-a')) { installedModules = installedModules.filter(module => module.installed === true) }
 
 const tableData = []
 
@@ -20,7 +23,9 @@ tableData.push([
 
 let statusOk = true
 for (const module of installedModules) {
-  const oldVersion = module.version !== module.instaledVersion
+  const installed = module.installedVersion
+
+  const oldVersion = installed && (module.version !== module.instaledVersion)
 
   const warn = module.linked || module.hasChanges || oldVersion
 
@@ -29,7 +34,9 @@ for (const module of installedModules) {
     module.linked ? chalk.red.bold('Linked') : 'No',
     module.hasChanges ? chalk.red.bold('YES') : 'No',
     module.lastVersion,
-    oldVersion ? chalk.red.bold(module.installedVersion) : module.installedVersion,
+    installed
+      ? (oldVersion ? chalk.red.bold(module.installedVersion) : module.installedVersion)
+      : chalk.blue.bold('Not installed!'),
     warn ? chalk.red.bold('Check Module!!!') : chalk.green.bold('OK')
   ])
 
@@ -37,4 +44,4 @@ for (const module of installedModules) {
 }
 
 console.log(table(tableData))
-console.log(`\nReady for deployment: ${statusOk ? chalk.green.bold('Yes') : chalk.red.bold('NOT!!!')}\n`)
+if (!args.includes('-a')) console.log(`\nReady for deployment: ${statusOk ? chalk.green.bold('Yes') : chalk.red.bold('NOT!!!')}\n`)

@@ -17,11 +17,6 @@
   "workspaces": [
     "packages/*"
   ],
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
   "devDependencies": {
     "@nuxt/eslint-config": "^0.2.0",
     "dotenv-cli": "^7.3.0",

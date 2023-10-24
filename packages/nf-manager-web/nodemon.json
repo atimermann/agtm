@@ -1,0 +1,5 @@
+{
+  "watch": ["src"],
+  "ext": "mjs,vue,ts,env,cjs,json",
+  "exec": "npm run prepack"
+}

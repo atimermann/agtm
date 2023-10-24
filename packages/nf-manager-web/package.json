@@ -1,0 +1,60 @@
+{
+  "name": "@agtm/nf-manager-web",
+  "description": "Frontend the nf-manager project and module for others nuxt project.",
+  "private": false,
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/module.mjs",
+      "require": "./dist/module.cjs"
+    }
+  },
+  "type": "module",
+  "main": "./dist/module.mjs",
+  "types": "./dist/types.d.ts",
+  "scripts": {
+    "commit": "cz",
+    "release": "./scripts/release.sh",
+    "prepack": "nuxt-module-build build",
+    "build": "nuxt build",
+    "build-watch": "nodemon",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "update": "npm update @agtm/nuxt-tool @agtm/nuxt-layer-adminlte-primeface && npm list @agtm/nuxt-layer-adminlte-primeface @agtm/nuxt-tools",
+    "lint:test": "eslint src",
+    "lint": "eslint --fix src",
+    "link": "npm link @agtm/nuxt-layer-adminlte-primeface @agtm/util",
+    "test": "echo 'No-test'"
+  },
+  "devDependencies": {
+    "@nuxt/devtools": "latest",
+    "@nuxt/module-builder": "^0.5.2",
+    "dotenv-cli": "^7.3.0",
+    "eslint": "^8.50.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-jest": "^27.4.0",
+    "nodemon": "^3.0.1",
+    "nuxt-lodash": "^2.5.0"
+  },
+  "dependencies": {
+    "@agtm/nuxt-layer-adminlte-primeface": "^0.3.2",
+    "@agtm/nuxt-tools": "^1.2.3",
+    "@agtm/util": "^4.2.4",
+    "@nuxt/kit": "^3.7.4",
+    "cronstrue": "^2.31.0",
+    "lodash": "^4.17.21",
+    "nuxt": "^3.7.3",
+    "primevue": "^3.32.2",
+    "socket.io-client": "^4.7.2"
+  },
+  "version": "0.3.0",
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "dist",
+    "src"
+  ]
+}

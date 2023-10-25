@@ -7,7 +7,7 @@
  * Description: This module provides a function to check whether a module is being executed directly or imported.
  *
  */
-import { pathToFileURL } from 'url'
+import { pathToFileURL } from 'node:url'
 
 /**
  * Checks if the module is being executed directly.

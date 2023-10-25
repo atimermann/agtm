@@ -1,5 +1,5 @@
 import JobManager from '../../library/jobs/job-manager.mjs'
-import crypto from 'crypto'
+import crypto from 'node:crypto'
 
 describe('JobManager', () => {
   describe('createJobUUID', () => {

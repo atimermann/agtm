@@ -21,10 +21,10 @@ import bodyParser from 'body-parser'
 import morgan from 'morgan'
 import helmet from 'helmet'
 import compression from 'compression'
-import { Writable } from 'stream'
-import { join } from 'path'
+import { Writable } from 'node:stream'
+import { join } from 'node:path'
 
-import { createServer } from 'http'
+import { createServer } from 'node:http'
 
 import cors from 'cors'
 import Config from './config.mjs'

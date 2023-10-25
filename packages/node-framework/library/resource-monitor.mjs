@@ -10,7 +10,7 @@
  */
 
 import memwatch from '@airbnb/node-memwatch'
-import v8 from 'v8'
+import v8 from 'node:v8'
 import { filesize } from 'filesize'
 
 import createLogger from './logger.mjs'

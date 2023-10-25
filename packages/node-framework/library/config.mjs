@@ -9,10 +9,10 @@
 import { config as dotenvConfig } from 'dotenv'
 import yaml from 'js-yaml'
 
-import { dirname, join } from 'path'
-import { fileURLToPath } from 'url'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-import fs from 'fs'
+import fs from 'node:fs'
 
 import defaultsDeep from 'lodash/defaultsDeep.js'
 import transform from 'lodash/transform.js'

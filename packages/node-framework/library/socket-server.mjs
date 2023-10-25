@@ -12,10 +12,10 @@
  *
  */
 
-import { createServer } from 'http'
-import { readFileSync } from 'fs'
-import { createServer as createHttpsServer } from 'https'
-import { createSecureServer } from 'http2'
+import { createServer } from 'node:http'
+import { readFileSync } from 'node:fs'
+import { createServer as createHttpsServer } from 'node:https'
+import { createSecureServer } from 'node:http2'
 import { Server } from 'socket.io'
 import Config from './config.mjs'
 import chalk from 'chalk'

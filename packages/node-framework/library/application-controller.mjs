@@ -9,8 +9,8 @@
  *
  */
 
-import path from 'path'
-import { readdir, access } from 'fs/promises'
+import path from 'node:path'
+import { readdir, access } from 'node:fs/promises'
 
 import Controller from './controller/controller.mjs'
 import createLogger from './logger.mjs'

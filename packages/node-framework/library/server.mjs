@@ -17,13 +17,13 @@ import WorkerRunner from './jobs/worker-runner.mjs'
 
 import BlessedInterface from './blessed.mjs'
 import Config from './config.mjs'
-import os from 'os'
+import os from 'node:os'
 
 import figlet from 'figlet'
 import { sentenceCase } from 'change-case'
 
 import createLogger from './logger.mjs'
-import { readFileSync } from 'fs'
+import { readFileSync } from 'node:fs'
 import ResourceMonitor from './resource-monitor.mjs'
 const logger = createLogger('Init')
 

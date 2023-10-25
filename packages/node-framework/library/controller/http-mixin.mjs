@@ -6,10 +6,10 @@
  *
  */
 
-import path from 'path'
+import path from 'node:path'
 
 import createLogger from '../../library/logger.mjs'
-import { performance } from 'perf_hooks'
+import { performance } from 'node:perf_hooks'
 const logger = createLogger('Controller')
 
 const paths = {}

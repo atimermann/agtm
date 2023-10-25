@@ -13,10 +13,10 @@
 
 import assert from 'node:assert'
 import ApplicationController from './application-controller.mjs'
-import path from 'path'
-import { readdir } from 'fs/promises'
+import path from 'node:path'
+import { readdir } from 'node:fs/promises'
 import createLogger from './logger.mjs'
-import { readFileSync } from 'fs'
+import { readFileSync } from 'node:fs'
 import Controller from './controller/controller.mjs'
 import WorkerManager from './jobs/worker-manager.mjs'
 import JobManager from './jobs/job-manager.mjs'

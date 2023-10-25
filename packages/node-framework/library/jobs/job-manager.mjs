@@ -11,7 +11,7 @@ import Config from '../config.mjs'
 import cloneDeep from 'lodash/cloneDeep.js'
 import createLogger from '../logger.mjs'
 import Job from './job.mjs'
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'node:events'
 
 const logger = createLogger('JobManager')
 

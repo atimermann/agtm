@@ -8,8 +8,8 @@
  */
 
 import createLogger from '../logger.mjs'
-import { EventEmitter } from 'events'
-import crypto from 'crypto'
+import { EventEmitter } from 'node:events'
+import crypto from 'node:crypto'
 
 const logger = createLogger('WorkerManager')
 

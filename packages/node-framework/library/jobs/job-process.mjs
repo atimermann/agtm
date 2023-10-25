@@ -15,8 +15,8 @@
  * @created 08/09/23
  */
 import createLogger from '../logger.mjs'
-import { fork } from 'child_process'
-import { EventEmitter } from 'events'
+import { fork } from 'node:child_process'
+import { EventEmitter } from 'node:events'
 import { setTimeout as sleep } from 'node:timers/promises'
 
 const logger = createLogger('WorkerManager')
@@ -176,7 +176,7 @@ export default class JobProcess extends EventEmitter {
         this.emit('error')
       }
 
-      this.emit('exit')
+      this.emit('exit', this.childProcess)
     })
   }
 

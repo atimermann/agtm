@@ -9,6 +9,8 @@ extends:
   - standard
   - "@nuxt/eslint-config"
   - plugin:vue/vue3-essential
+plugins:
+  - local
 rules:
   quotes:
     - error
@@ -21,3 +23,4 @@ rules:
         max: 3
       multiline:
         max: 1
+  "local/import-require-node-prefix": "warn"

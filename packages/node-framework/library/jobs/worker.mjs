@@ -22,7 +22,7 @@
 import createLogger from '../logger.mjs'
 import { EventEmitter } from 'node:events'
 import JobProcess from './job-process.mjs'
-
+import { generateUniqueIdByDate } from '@agtm/util'
 const logger = createLogger('WorkerManager')
 
 /**
@@ -30,6 +30,7 @@ const logger = createLogger('WorkerManager')
  *
  *  Events:
  *    run - Fired whenever a new worker execution starts
+ *    exit - Fired when process is finished
  */
 export default class Worker extends EventEmitter {
   /**
@@ -70,6 +71,12 @@ export default class Worker extends EventEmitter {
   jobProcesses = []
 
   /**
+   * Unique identification of the execution based on the date
+   * @type {string}
+   */
+  runId
+
+  /**
    *  Instantiate a new worker
    *
    * @param name
@@ -104,6 +111,9 @@ export default class Worker extends EventEmitter {
    * @returns {Promise<void>}
    */
   async run () {
+    this.runId = generateUniqueIdByDate()
+    this.emit('run')
+
     if (this.jobProcesses.length > 0) {
       logger.info(`Restarting Worker: "${this.name}" Job: "${this.job.name}" Persistent: "${this.persistent}"`)
       await this.restartProcesses()
@@ -111,21 +121,24 @@ export default class Worker extends EventEmitter {
       const concurrency = this.options.concurrency || 1
       logger.info(`Starting Worker: "${this.name}" Job: "${this.job.name}" Persistent: "${this.persistent}" Concurrency: ${concurrency}`)
       for (let i = 1; i <= concurrency; i++) {
-        const jobProcess = JobProcess.createAndRun(this, i, this.options)
+        const jobProcess = JobProcess.create(this, i, this.options)
 
-        jobProcess.on('error', () => {
-          this.emit('processError', jobProcess)
+        jobProcess.on('run', childProcess => {
+          this.emit('processRun', jobProcess, childProcess)
         })
 
-        jobProcess.on('log', data => {
-          this.emit('processLog', jobProcess, data)
+        jobProcess.on('log', (childProcess, data) => {
+          this.emit('processLog', jobProcess, childProcess, data)
+        })
+
+        jobProcess.on('exit', childProcess => {
+          this.emit('processExit', jobProcess, childProcess)
         })
 
         this.jobProcesses.push(jobProcess)
+        jobProcess.run()
       }
     }
-
-    this.emit('run')
   }
 
   /**

@@ -32,6 +32,11 @@ const logger = createLogger('WorkerManager')
  * Note: A `Worker` in this context doesn't represent the job's execution,
  * but rather the entity executing a given job. It gets initialized,
  *
+ * Events:
+ *  run
+ *  processError
+ *  processExit
+ *
  * @fires WorkerManager#run
  */
 export default class WorkerManager {
@@ -89,12 +94,16 @@ export default class WorkerManager {
       this.events.emit('run', worker)
     })
 
-    worker.on('processError', jobProcess => {
-      this.events.emit('processError', worker, jobProcess)
+    worker.on('processRun', (jobProcess, childProcess) => {
+      this.events.emit('processRun', worker, jobProcess, childProcess)
     })
 
-    worker.on('processLog', (jobProcess, data) => {
-      this.events.emit('processLog', worker, jobProcess, data)
+    worker.on('processExit', (jobProcess, childProcess) => {
+      this.events.emit('processExit', worker, jobProcess, childProcess)
+    })
+
+    worker.on('processLog', (jobProcess, childProcess, data) => {
+      this.events.emit('processLog', worker, jobProcess, childProcess, data)
     })
 
     this.workers.push(worker)

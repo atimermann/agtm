@@ -55,6 +55,10 @@ JOBS
     executar ele por baixo dos panos cria um novo worker com schedule automaticamente, mas a lógica de execução e
     agendamento fica no worker, evitando confusão
 
+DOCUMENTAR:
+- novo Conceite runId: Como worker para tratar várias execuções do worker, exemplo, no modo agendado, toda vez que é disparado uma nova execução runId muda
+
+
 ************************************************************************************************************************
  LOGS
 ************************************************************************************************************************

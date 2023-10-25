@@ -72,7 +72,7 @@ export default class Console2Transport extends Transport {
     const levelText = `${levelColor}${level.padEnd(5)}${resetColor}`
     const moduleText = module ? `${blueDarkColor}[ ${module} ]${resetColor}` : ''
     const msgColor = `${greenColor}${message}${resetColor}`
-    const formattedTime = `${purpleColor}${date.toLocaleTimeString()}.${date.getMilliseconds()}${resetColor}`
+    const formattedTime = `${purpleColor}${date.toLocaleString()}.${date.getMilliseconds()}${resetColor}`
     const memoryText = memoryInformation
       ? `${memoryInformation.memoryUsed} (${memoryInformation.memoryUsedPercent})`
       : ''

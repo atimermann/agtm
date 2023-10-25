@@ -188,7 +188,7 @@ export default class JobManager {
   /**
    * Returns information about jobs for monitoring
    *
-   * TODO: Assume apenas um worker pro job, se tiver mais de um pega ultimo necessario fazer tratativa
+   * TODO: Assume apenas um worker por job, se tiver mais de um pega ultimo necessario fazer tratativa
    *
    * @returns {{}}
    */

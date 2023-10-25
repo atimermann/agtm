@@ -134,7 +134,7 @@ export default class BlessedInterface {
     const levelText = `${levelColor}${level.padEnd(5)}${RESET_COLOR}`
     const moduleText = module ? `${BLUE_DARK_COLOR}[${module}]${RESET_COLOR}` : ''
     const msgColor = `${levelColor}${message}${levelColor}`
-    const formattedTime = `${PURLE_COLOR}${date.toLocaleTimeString()}.${date.getMilliseconds()}${RESET_COLOR}`
+    const formattedTime = `${PURLE_COLOR}${date.toLocaleString()}.${date.getMilliseconds()}${RESET_COLOR}`
 
     return {
       message: `${formattedTime} ${levelText} ${moduleText} ${msgColor}`,

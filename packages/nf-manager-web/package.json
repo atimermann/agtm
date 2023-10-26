@@ -13,8 +13,9 @@
   "main": "./dist/module.mjs",
   "types": "./dist/types.d.ts",
   "scripts": {
-    "commit": "cz",
-    "release": "./scripts/release.sh",
+    "publish-patch": "./scripts/release.sh && npm version patch && npm publish --access public && git push",
+    "publish-minor": "./scripts/release.sh && npm version minor && npm publish --access public && git push",
+    "publish-major": "./scripts/release.sh && npm version major && npm publish --access public && git push",
     "prepack": "nuxt-module-build build",
     "build": "nuxt build",
     "build-watch": "nodemon",
@@ -50,7 +51,7 @@
     "primevue": "^3.32.2",
     "socket.io-client": "^4.7.2"
   },
-  "version": "0.3.0",
+  "version": "0.3.1",
   "engines": {
     "node": ">=18"
   },

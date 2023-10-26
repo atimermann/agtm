@@ -6,12 +6,23 @@
  *
  */
 
-import { fileURLToPath } from 'url'
-import { dirname } from 'path'
-import { readFile } from 'fs/promises'
+import { fileURLToPath } from 'node:url'
+import { dirname } from 'node:path'
+import { readFile } from 'node:fs/promises'
 import Multi from './multi.mjs'
 import { setTimeout as sleep } from 'node:timers/promises'
 
+/**
+ * Old __dirname
+ *
+ * Example of use:
+ *
+ * __dirname(import.meta.url)
+ *
+ * @param importMetaURL
+ * @returns {string}
+ * @private
+ */
 export function __dirname (importMetaURL) {
   return dirname(fileURLToPath(importMetaURL))
 }
@@ -66,6 +77,55 @@ export default function calculateProgressPercentage (currentCount, items, step =
     const percentage = (currentCount / items.length) * 100
     callback ? callback(percentage) : console.log(`${percentage}%`)
   }
+}
+
+/**
+ * Waits for the specified function to return a value other than `undefined`.
+ *
+ * @async
+ * @function
+ * @param {Function} fn - The function to check. Should return something other than `undefined` to stop waiting.
+ * @param {number} timeout - Maximum time (in ms) to wait before throwing an error.
+ * @param {number} [interval=100] - Time interval (in ms) to wait between checks.
+ * @returns {Promise<any>} - Returns a Promise that resolves with the value returned by `fn`.
+ * @throws {Error} - Throws an error if the time exceeds the specified `timeout`.
+ *
+ * @example
+ * const testFunction = () => Math.random() > 0.9 ? 'done' : undefined;
+ * try {
+ *   const result = await wait(testFunction, 1000);
+ *   console.log('Function returned:', result);
+ * } catch (err) {
+ *   console.log('Error:', err.message);
+ * }
+ */
+export async function wait (fn, timeout, interval = 100) {
+  const startTime = Date.now()
+  let elapsedTime = 0
+
+  let result = await fn()
+
+  while (result === undefined) {
+    elapsedTime = Date.now() - startTime
+
+    if (elapsedTime >= timeout) {
+      throw new Error('Timeout')
+    }
+
+    await sleep(interval)
+    result = await fn()
+  }
+
+  return result
+}
+
+/**
+ * Generates a unique identification number based on the current date and a random number
+ *
+ * @returns {string}
+ */
+export function generateUniqueIdByDate () {
+  return `${Date.now().toString(36)}${Math.random().toString(36).substring(2, 10)}`
 }
 
 export {

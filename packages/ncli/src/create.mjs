@@ -17,7 +17,7 @@
 
 import program from 'commander'
 import fs from 'fs-extra'
-import { join } from 'path'
+import { join } from 'node:path'
 import inquirer from 'inquirer'
 import moment from 'moment'
 import { render } from './library/tool.mjs'

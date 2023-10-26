@@ -12,6 +12,6 @@ import { checkExecution } from '@agtm/node-framework'
 
 checkExecution(import.meta.url)
 
-export default function applicationLoader (Application){
+export default function applicationLoader (Application) {
   return new Application(__dirname(import.meta.url), '{{NAME}}')
 }

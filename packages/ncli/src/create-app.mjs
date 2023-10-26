@@ -7,7 +7,7 @@
  *
  */
 import program from 'commander'
-import { basename, join } from 'path'
+import { basename, join } from 'node:path'
 import inquirer from 'inquirer'
 import fs from 'fs-extra'
 import changeCase from 'change-case'

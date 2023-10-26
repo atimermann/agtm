@@ -7,7 +7,7 @@
  *   Conjunto de funções auxiliares
  *
  */
-import { dirname, join } from 'path'
+import { dirname, join } from 'node:path'
 import fs from 'fs-extra'
 import packageJsonFinder from 'find-package-json'
 import { Application } from '@agtm/node-framework'

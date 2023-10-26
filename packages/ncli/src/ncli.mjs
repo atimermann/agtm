@@ -7,7 +7,7 @@
 import { __dirname, loadJson } from '@agtm/util'
 import program from 'commander'
 
-import { join } from 'path'
+import { join } from 'node:path'
 
 ;(async () => {
   const sindriCliPackageJson = await loadJson(join(__dirname(import.meta.url), '..', 'package.json'))

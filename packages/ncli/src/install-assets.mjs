@@ -12,7 +12,7 @@
  *
  */
 
-import { join, relative } from 'path'
+import { join, relative } from 'node:path'
 import fs from 'fs-extra'
 import program from 'commander'
 import { findRootPath, validateProject } from './library/tool.mjs'

@@ -69,9 +69,11 @@
               <Column field="startAt" header="Inicializado em" />
               <Column field="endAt" header="Finalizado em" />
               <Column field="duration" header="Duração" />
-              <Column field="status" header="Status">
+              <Column header="Status">
                 <template #body="{data}">
-                  <Badge :value="data.status" :severity="data.severity" />
+                  <Badge v-show="data.running" value="Em execução" />
+                  <Badge v-show="!data.running" value="Parado" severity="warning" />
+                  <Badge v-show="data.status" :value="data.status" :severity="data.severity" />
                 </template>
               </Column>
             </DataTable>
@@ -96,12 +98,11 @@
               class="p-datatable-sm"
               @row-select="onProcessListRowSelect"
             >
+              <Column field="instance" header="Instancia" />
               <Column field="startAt" header="Inicializado em" />
               <Column field="endAt" header="Finalizado em" />
               <Column field="duration" header="Duração" />
-              <Column field="instance" header="Instancia" />
               <Column field="pid" header="PID" />
-              <Column field="lastLog" header="Último Log" />
               <Column field="status" header="Status">
                 <template #body="{data}">
                   <Badge :value="data.status" :severity="data.severity" />
@@ -158,11 +159,13 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Message from 'primevue/message'
 import cronstrue from 'cronstrue/i18n'
+import { formatDistanceStrict } from 'date-fns'
 // import as component
 
 import { computed, useSocketTools, ref } from '#imports'
 import Badge from 'primevue/badge'
 import { io } from 'socket.io-client'
+import { ptBR } from 'date-fns/locale'
 
 const props = defineProps({
   uuid: {
@@ -199,26 +202,31 @@ socket.on('connect', () => {
 })
 
 const executionList = computed(() => {
-  const statusDict = {
-    E: 'Em execução',
-    S: 'Sucesso',
-    F: 'Erro'
-  }
-
-  const severityDict = {
-    E: '',
-    S: 'success',
-    F: 'danger'
-  }
+  console.log('TODO, CHANGE')
+  console.log(JSON.stringify(executions.value))
 
   return executions.value.map(execution => {
+    const startAt = new Date(execution.startAt)
+    const endAt = execution.endAt ? new Date(execution.endAt) : null
+
+    let status
+    let severity
+    if (!execution.running && !execution.hasError) {
+      status = 'Sucesso'
+      severity = 'success'
+    } else if (execution.hasError) {
+      status = 'Error'
+      severity = 'danger'
+    }
+
     return {
       ...execution,
-      startAt: (new Date(execution.startAt)).toLocaleString(),
-      status: statusDict[execution.status],
-      severity: severityDict[execution.status],
-      duration: '---',
-      endAt: '---'
+      startAt: startAt.toLocaleString({ timeZone: 'America/Sao_Paulo' }),
+      status,
+      severity,
+      duration: formatDistanceStrict(startAt, endAt || new Date(), { locale: ptBR }),
+      running: execution.running,
+      endAt: endAt ? endAt.toLocaleString({ timeZone: 'America/Sao_Paulo' }) : ''
     }
   })
 })
@@ -248,27 +256,29 @@ const onProcessListRowSelect = event => {
 const processList = computed(() => {
   // TODO: Código repetido corrigir criando entidade unica no model
   const statusDict = {
-    E: 'Em execução',
+    X: 'Em execução',
     S: 'Sucesso',
-    F: 'Erro'
+    E: 'Erro'
   }
 
   const severityDict = {
-    E: '',
+    X: '',
     S: 'success',
-    F: 'danger'
+    E: 'danger'
   }
 
   return processes.value.map(process => {
+    const startAt = new Date(process.startAt)
+    const endAt = process.endAt ? new Date(process.endAt) : null
+
     return {
       ...process,
-      startAt: (new Date(process.startAt)).toLocaleString(),
+      startAt: startAt.toLocaleString({ timeZone: 'America/Sao_Paulo' }),
       instance: `#${process.instance}`,
       status: statusDict[process.status],
       severity: severityDict[process.status],
-      duration: '---',
-      endAt: '---',
-      lastLog: '---'
+      duration: formatDistanceStrict(startAt, endAt || new Date(), { locale: ptBR }),
+      endAt: endAt ? endAt.toLocaleString({ timeZone: 'America/Sao_Paulo' }) : ''
     }
   })
 })
@@ -279,6 +289,7 @@ const logList = computed(() => {
   const severityDict = {
     debug: 'success',
     info: 'info',
+    warn: 'warning',
     error: 'danger'
   }
 

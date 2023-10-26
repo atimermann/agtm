@@ -4,7 +4,7 @@ import { spawn } from '@agtm/util/process'
 import { getAgtmModulesInfo } from './library/agtm.mjs'
 
 const installedModules = (await getAgtmModulesInfo())
-  .filter(module => module.installed === true && module.lastVersion !== module.installedVersion)
+  .filter(module => (module.installed === true && module.lastVersion !== module.installedVersion) || module.linked)
   .map(module => `"${module.name}@${module.lastVersion}"`)
   .join(' ')
 

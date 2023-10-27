@@ -2,15 +2,16 @@
   "name": "@agtm/nuxt-layer-adminlte-primeface",
   "private": false,
   "type": "module",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Nuxt 3 layer for integrating AdminLTE 3 and PrimeVue 3 in your project",
   "author": "André Timermann",
   "license": "ISC",
   "main": "./nuxt.config.mjs",
   "module": "./src/index.mjs",
   "scripts": {
-    "commit": "cz",
-    "release": "dotenv -- npx semantic-release",
+    "publish-patch": "npm version patch && npm publish --access public && git push",
+    "publish-minor": "npm version minor && npm publish --access public && git push",
+    "publish-major": "npm version major && npm publish --access public && git push",
     "dev": "nuxi dev playground",
     "build": "nuxt build playground",
     "generate": "nuxt generate playground",
@@ -18,11 +19,6 @@
     "lint:test": "npx eslint src",
     "lint": "npx eslint --fix src",
     "postinstall": "nuxt prepare playground"
-  },
-  "release": {
-    "branches": [
-      "main"
-    ]
   },
   "keywords": [
     "nuxt",
@@ -37,6 +33,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@nuxt/kit": "^3.3.2",
+    "crypto-js": "^4.2.0",
     "lodash": "^4.17.21",
     "nuxt": "^3.7.3",
     "primeflex": "^3.3.0",

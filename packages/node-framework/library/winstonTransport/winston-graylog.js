@@ -204,7 +204,7 @@ class Log2gelf extends Transport {
     if (info.exception && this.exitOnError) {
       setTimeout(() => {
         this.end()
-        process.exit(1)
+        process.exit(5)
       }, this.exitDelay)
     }
 

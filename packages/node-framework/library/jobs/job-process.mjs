@@ -121,9 +121,16 @@ export default class JobProcess extends EventEmitter {
       for (const line of data.toString().split('\n')) {
         try {
           const logObj = JSON.parse(line)
-          const logModule = logObj.module ? `[${logObj.module}] ` : ''
-          childLogger[logObj.level](`${logModule}${logObj.message}`)
-          this.emit('log', this.childProcess, line)
+
+          if (logObj.type === 'JOB_MESSAGE') {
+            this.emit('message', this.childProcess, logObj.messageName, logObj.message)
+            childLogger.debug(line)
+            this.emit('log', this.childProcess, line)
+          } else {
+            const logModule = logObj.module ? `[${logObj.module}] ` : ''
+            childLogger[logObj.level](`${logModule}${logObj.message}`)
+            this.emit('log', this.childProcess, line)
+          }
         } catch (err) {
           // Generic messages without JSON format are treated as warnings
           if (line !== '') {

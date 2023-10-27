@@ -20,16 +20,6 @@ export default class HelloWorldController extends Controller {
     logger.info(`Timezone: ${Config.get('server.timezone')}`)
   }
 
-  async jobSetup () {
-    // Run in fork process
-    logger.info('Create database connection for all jobs')
-  }
-
-  async jobTeardown () {
-    // Run in fork process
-    logger.info('Close database connection on close job')
-  }
-
   /**
    * Jobs
    */
@@ -85,7 +75,7 @@ export default class HelloWorldController extends Controller {
 
     // Você pode manipular rotas do controller aqui!!! Pode ser usado para criar uma autenticação prévia
     // Rota pode ser acessado via "this.router"
-    // Documentação como utilizar a rota usda no framework aqui:
+    // Documentação como utilizar a rota usada no framework aqui:
     //          https://expressjs.com/pt-br/guide/routing.html#express-router
     //          https://expressjs.com/pt-br/guide/using-middleware.html
     // Autenticação:

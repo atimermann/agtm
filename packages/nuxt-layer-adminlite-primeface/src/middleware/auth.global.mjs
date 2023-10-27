@@ -6,12 +6,12 @@
  *
  */
 
-import { defineNuxtRouteMiddleware } from '#imports'
+import { defineNuxtRouteMiddleware, navigateTo } from '#imports'
 
-let logged = false
 export default defineNuxtRouteMiddleware((to, from) => {
-  // if (to.path !== '/login' && !logged) {
-  //   logged = true
-  //   return navigateTo({path: '/login'})
-  // }
+  const logged = localStorage.getItem('logged')
+
+  if (to.path !== '/login' && logged !== 'logged') {
+    return navigateTo({ path: '/login' })
+  }
 })

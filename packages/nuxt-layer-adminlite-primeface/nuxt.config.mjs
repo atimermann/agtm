@@ -1,6 +1,6 @@
 import { defineNuxtConfig } from 'nuxt/config'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
+import { fileURLToPath } from 'node:url'
+import { dirname, join } from 'node:path'
 
 // TODO: Alterar quando for corrigido
 // https://nuxt.com/docs/guide/going-further/layers#relative-paths-and-aliases

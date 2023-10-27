@@ -6,7 +6,7 @@
  *
  */
 import parseCommand from '../parse-command.mjs'
-import { spawn as processSpawn } from 'child_process'
+import { spawn as processSpawn } from 'node:child_process'
 
 /**
  * Executes a given command in a shell and buffers the output. This function makes use of Node.js child_process.spawn method.

@@ -36,6 +36,13 @@ export default class JobProcessChild extends EventEmitter {
   runId
 
   /**
+   * Process start time
+   *
+   * @type {Date}
+   */
+  startAt
+
+  /**
    * The UNIX signal that was triggered when the process was terminated, e.g., SIGINT.
    * @type {string}
    */
@@ -58,6 +65,7 @@ export default class JobProcessChild extends EventEmitter {
     const jobProcessChild = new this()
     jobProcessChild.process = fork(modulePath, args, options)
     jobProcessChild.runId = runId
+    jobProcessChild.startAt = new Date()
     jobProcessChild.pid = jobProcessChild.process.pid
 
     jobProcessChild.setupEvents()

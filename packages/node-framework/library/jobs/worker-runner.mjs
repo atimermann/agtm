@@ -57,15 +57,30 @@ export default class WorkerRunner {
 
     for (const setupFunction of this.job.setupFunctions) {
       logger.info(`Running job setup from "${this.job.name}" `)
-      await setupFunction()
+      try {
+        await setupFunction()
+      } catch (e) {
+        logger.error(e)
+        process.exit(3)
+      }
     }
 
     logger.info(`Running job "${this.job.name}" `)
-    await this.job.jobFunction()
+    try {
+      await this.job.jobFunction()
+    } catch (e) {
+      logger.error(e)
+      await this.exitProcess(4)
+    }
 
     for (const teardownFunction of this.job.teardownFunctions) {
       logger.info(`Running job teaddown from  "${this.job.name}" `)
-      await teardownFunction()
+      try {
+        await teardownFunction()
+      } catch (e) {
+        logger.error(e)
+        process.exit(5)
+      }
     }
   }
 
@@ -123,7 +138,7 @@ export default class WorkerRunner {
         await teardownFunction()
       }
     } catch (error) {
-      console.error('Error during teardown:', error)
+      console.error(error)
     } finally {
       logger.info(`Process closed! PID: ${process.pid}`)
       process.exit(exitCode)

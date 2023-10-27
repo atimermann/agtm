@@ -96,8 +96,6 @@ export default class MainController extends Controller {
         try {
           const job = JobManager.getJobByUUID(uuid)
 
-          console.log(`client getJobInfo: ${uuid}`)
-
           const response = {
             job,
             executions: await NfManagerDatabase.getJobExecutionByUUID(uuid)

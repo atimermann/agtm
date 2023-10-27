@@ -143,6 +143,9 @@ export default class Job extends EventEmitter {
 
   /**
    * Generates a unique UUID for the job based on its properties.
+   *
+   * CAUTION: If you change this method, many applications that depend on this uuid will break.
+   *
    * @param {string} applicationName
    * @param {string} appName
    * @param {string} controllerName
@@ -152,7 +155,15 @@ export default class Job extends EventEmitter {
    */
   static createUUID (applicationName, appName, controllerName, name) {
     const uniqueString = `${applicationName}${appName}${controllerName}${name}`
-    return crypto.createHash('md5').update(uniqueString).digest('hex')
+
+    const hash = crypto.createHash('sha256').update(uniqueString).digest('hex')
+    return [
+      hash.substring(0, 8),
+      hash.substring(8, 12),
+      hash.substring(12, 16),
+      hash.substring(16, 20),
+      hash.substring(20, 32)
+    ].join('-')
   }
 
   /**

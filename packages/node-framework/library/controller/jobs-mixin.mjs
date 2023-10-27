@@ -74,6 +74,50 @@ export default class JobsMixin {
   }
 
   /**
+   * Sends data to the parent process, used as communication between the running job and the application
+   *
+   * @param {string} messageName
+   * @param {object} message
+   */
+  sendMessage (messageName, message) {
+    const messageData = {
+      type: 'JOB_MESSAGE',
+      messageName,
+      message
+    }
+    console.log(JSON.stringify(messageData))
+  }
+
+  /**
+   * @callback onProcessDataCallback
+   * @param {any} data - Data sent by the job.
+   * @param {Worker} worker - Worker instance that is managing the job.
+   * @param {Object} jobProcess - Information about the job process.
+   * @param {Object} childProcess - The child process object.
+   */
+
+  /**
+   * Subscribes to a specified message from a child process, which is triggered via the `sendMessage` method.
+   *
+   * This is an alias for `WorkerManager.events.on('processMessage', async (worker, jobProcess, childProcess, messageName, message) => {...})`.
+   *
+   * @param {string} messageName - The name of the message to listen for. This is used to filter incoming messages.
+   * @param {onProcessDataCallback} fn - The callback function that will be invoked when the specified message is received.
+   *
+   * @example
+   * onMessage('myMessage', (data, worker, jobProcess, childProcess) => {
+   *  // Do something with the received data
+   * });
+   */
+  onMessage (messageName, fn) {
+    WorkerManager.events.on('processMessage', async (worker, jobProcess, childProcess, messageNameFromProcess, message) => {
+      if (messageName === messageNameFromProcess) {
+        fn(message, worker, jobProcess, childProcess)
+      }
+    })
+  }
+
+  /**
    * Defines a function that will be executed in all jobs in this controller when initializing the job
    *
    * @param {function} jobSetupFunction Function to be performed

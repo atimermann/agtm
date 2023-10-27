@@ -61,7 +61,7 @@ export default {
       }
     } catch (error) {
       console.error(error)
-      process.exit()
+      process.exit(1)
     }
   },
 

@@ -1,4 +1,5 @@
 <template>
+  <Toast position="bottom-right" />
   <div class="login-box">
     <div class="login-logo">
       <div>{{ template.logoLabel }}</div>
@@ -11,7 +12,12 @@
         </p>
 
         <div class="input-group mb-3">
-          <input type="email" class="form-control" placeholder="Email">
+          <input
+            v-model="email"
+            type="email"
+            class="form-control"
+            placeholder="Email"
+          >
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope" />
@@ -19,7 +25,12 @@
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Senha">
+          <input
+            v-model="password"
+            type="password"
+            class="form-control"
+            placeholder="Senha"
+          >
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock" />
@@ -30,7 +41,7 @@
           <div class="col-8" />
           <!-- /.col -->
           <div class="col-4">
-            <button class="btn btn-primary btn-block" @click="navigateTo({ path: '/' })">
+            <button class="btn btn-primary btn-block" @click="login">
               Entrar
             </button>
           </div>
@@ -63,9 +74,33 @@
 
 <script setup>
 
-import { definePageMeta, useAppConfig, navigateTo } from '#imports'
+import Toast from 'primevue/toast'
 
-const { template } = useAppConfig()
+import { useToast } from 'primevue/usetoast'
+import { definePageMeta, useAppConfig, navigateTo, ref } from '#imports'
+import SHA256 from 'crypto-js/sha256'
+
+const { template, unsafeAuth } = useAppConfig()
+const toast = useToast()
+
+const email = ref('')
+const password = ref('')
+
+localStorage.setItem('logged', '')
+
+async function login () {
+  if (email.value !== unsafeAuth.email) {
+    toast.add({ severity: 'error', summary: 'Atenção', detail: 'E-mail inválido', life: 3000 })
+    return
+  }
+  if (SHA256(password.value).toString() !== unsafeAuth.password) {
+    toast.add({ severity: 'error', summary: 'Atenção', detail: 'Senha inválida', life: 3000 })
+    return
+  }
+
+  localStorage.setItem('logged', 'logged')
+  navigateTo({ path: '/' })
+}
 
 definePageMeta({
   layout: 'guest'

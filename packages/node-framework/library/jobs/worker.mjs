@@ -77,6 +77,13 @@ export default class Worker extends EventEmitter {
   runId
 
   /**
+   * Worker execution start time
+   *
+   * @type {Date}
+   */
+  startAt
+
+  /**
    *  Instantiate a new worker
    *
    * @param name
@@ -112,6 +119,7 @@ export default class Worker extends EventEmitter {
    */
   async run () {
     this.runId = generateUniqueIdByDate()
+    this.startAt = new Date()
     this.emit('run')
 
     if (this.jobProcesses.length > 0) {
@@ -129,6 +137,10 @@ export default class Worker extends EventEmitter {
 
         jobProcess.on('log', (childProcess, data) => {
           this.emit('processLog', jobProcess, childProcess, data)
+        })
+
+        jobProcess.on('message', (childProcess, messageName, message) => {
+          this.emit('processMessage', jobProcess, childProcess, messageName, message)
         })
 
         jobProcess.on('exit', childProcess => {

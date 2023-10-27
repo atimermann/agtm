@@ -106,6 +106,10 @@ export default class WorkerManager {
       this.events.emit('processLog', worker, jobProcess, childProcess, data)
     })
 
+    worker.on('processMessage', (jobProcess, childProcess, messageName, message) => {
+      this.events.emit('processMessage', worker, jobProcess, childProcess, messageName, message)
+    })
+
     this.workers.push(worker)
     this.indexedWorkers[worker.name] = worker
   }

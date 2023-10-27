@@ -13,6 +13,7 @@ import { defineNuxtPlugin } from '#app'
 import PrimeVue from 'primevue/config'
 import { pt } from '../locale/locale.mjs'
 import Tooltip from 'primevue/tooltip'
+import ToastService from 'primevue/toastservice'
 
 import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
@@ -24,6 +25,7 @@ import 'primeflex/primeflex.css'
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(PrimeVue, { ripple: true, locale: pt })
+  nuxtApp.vueApp.use(ToastService)
 
   nuxtApp.vueApp.directive('tooltip', Tooltip)
 })

@@ -8,8 +8,6 @@
 import { open } from 'sqlite'
 import sqlite3 from 'sqlite3'
 import SQL from 'sql-template-strings'
-import { createLogger } from '../../../main.mjs'
-const logger = createLogger('NFManager')
 
 /**
  * Class to facilitate SQLite database management in the project.

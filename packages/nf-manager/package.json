@@ -1,6 +1,6 @@
 {
   "name": "@agtm/nf-manager",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Framework Manager, a web interface for the management of framework components, including the job scheduling system, databases, logs, machine resource utilization, sockets, and other related elements",
   "main": "src/main.mjs",
   "bin": {

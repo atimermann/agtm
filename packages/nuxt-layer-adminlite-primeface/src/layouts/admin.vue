@@ -113,27 +113,27 @@ class SubMenuItem {
   }
 }
 
-const dashboard = new MenuItem('Dashboard', ['pi', 'pi-home'], '#')
-  .setActive(true)
-  .addSubItem(new SubMenuItem('Dashboard v1', ['pi', 'pi-circle-on'], '../../index.html'))
-  .addSubItem(new SubMenuItem('Dashboard v2', ['pi', 'pi-circle-on'], '../../index2.html'))
-  .addSubItem(new SubMenuItem('Dashboard v3', ['pi', 'pi-circle-on'], '../../index3.html'))
-
-const widgets = new MenuItem('Widgets', ['pi', 'pi-calculator'], '../widgets.html')
-  .setBadge('New', ['badge-danger'])
-  .addSubItem(new SubMenuItem('Dashboard v1', ['pi', 'pi-circle-on'], '../../index.html'))
-  .addSubItem(new SubMenuItem('Dashboard v2', ['pi', 'pi-circle-on'], '../../index2.html'))
-  .addSubItem(new SubMenuItem('Dashboard v3', ['pi', 'pi-circle-on'], '../../index3.html'))
-
-const calendar = new MenuItem('Calendar', ['pi', 'pi-calendar'], '../calendar.html')
-  .setBadge('2', ['badge-info'])
-  .addSubItem(new SubMenuItem('Dashboard v1', ['pi', 'pi-circle-on'], '../../index.html'))
-  .addSubItem(new SubMenuItem('Dashboard v2', ['pi', 'pi-circle-on'], '../../index2.html'))
-  .addSubItem(new SubMenuItem('Dashboard v3', ['pi', 'pi-circle-on'], '../../index3.html'))
-
-const kanbanBoard = new MenuItem('Kanban Board', ['pi', 'pi-clone'], '../kanban.html')
-
-const menuItems = ref([dashboard, widgets, calendar, kanbanBoard])
+// const dashboard = new MenuItem('Dashboard', ['pi', 'pi-home'], '#')
+//   .setActive(true)
+//   .addSubItem(new SubMenuItem('Dashboard v1', ['pi', 'pi-circle-on'], '../../index.html'))
+//   .addSubItem(new SubMenuItem('Dashboard v2', ['pi', 'pi-circle-on'], '../../index2.html'))
+//   .addSubItem(new SubMenuItem('Dashboard v3', ['pi', 'pi-circle-on'], '../../index3.html'))
+//
+// const widgets = new MenuItem('Widgets', ['pi', 'pi-calculator'], '../widgets.html')
+//   .setBadge('New', ['badge-danger'])
+//   .addSubItem(new SubMenuItem('Dashboard v1', ['pi', 'pi-circle-on'], '../../index.html'))
+//   .addSubItem(new SubMenuItem('Dashboard v2', ['pi', 'pi-circle-on'], '../../index2.html'))
+//   .addSubItem(new SubMenuItem('Dashboard v3', ['pi', 'pi-circle-on'], '../../index3.html'))
+//
+// const calendar = new MenuItem('Calendar', ['pi', 'pi-calendar'], '../calendar.html')
+//   .setBadge('2', ['badge-info'])
+//   .addSubItem(new SubMenuItem('Dashboard v1', ['pi', 'pi-circle-on'], '../../index.html'))
+//   .addSubItem(new SubMenuItem('Dashboard v2', ['pi', 'pi-circle-on'], '../../index2.html'))
+//   .addSubItem(new SubMenuItem('Dashboard v3', ['pi', 'pi-circle-on'], '../../index3.html'))
+//
+// const kanbanBoard = new MenuItem('Kanban Board', ['pi', 'pi-clone'], '../kanban.html')
+//
+// const menuItems = ref([dashboard, widgets, calendar, kanbanBoard])
 
 // console.log('X', JSON.stringify(menuItems, undefined, ' '))
 

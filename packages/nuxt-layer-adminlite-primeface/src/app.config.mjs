@@ -9,7 +9,16 @@ export default {
       items: [
         {
           title: 'Dashboard v1'
+        },
+        {
+          title: 'Sair',
+          link: '/login',
+          iconClasses: [
+            'pi',
+            'pi-sign-out'
+          ]
         }
+
       ]
     }
   }

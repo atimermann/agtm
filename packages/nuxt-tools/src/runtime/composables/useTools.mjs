@@ -7,6 +7,8 @@
  */
 
 import { useRuntimeConfig } from '#imports'
+import { addSeconds, differenceInSeconds, formatDistance } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 
 export default {
   /**
@@ -33,5 +35,33 @@ export default {
     // }
 
     return envConfig
+  },
+
+  // TODO: Criar método que busca e define atributo numa coleção reativa(Array) do vue3
+
+  /**
+   * Calculates the Estimated Time of Arrival (ETA) to reach 100% progress.
+   *
+   * @param {Date|string} startAt - The starting date/time of the process. Accepts a JavaScript Date object or a string that can be parsed into a Date.
+   * @param {number} progress - The current progress percentage, must be between 0 and 100 (exclusive).
+   *
+   * @returns {string} - The human-readable estimated time remaining to reach 100% progress.
+   * @throws {Error} - Throws an error if the progress is not between 0 and 100 (exclusive).
+   */
+  calculateEta (startAt, progress) {
+    if (progress < 0 || progress > 100) {
+      throw new Error('Progress must be between 0 and 100 (exclusive)')
+    }
+
+    const startDate = typeof startAt === 'string'
+      ? new Date(startAt)
+      : startAt
+
+    const elapsedSeconds = differenceInSeconds(new Date(), startDate)
+    const totalSeconds = (elapsedSeconds * 100) / progress
+    const endDate = addSeconds(startDate, totalSeconds)
+
+    return formatDistance(new Date(), endDate, { locale: ptBR, includeSeconds: true })
   }
+
 }

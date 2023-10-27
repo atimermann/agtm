@@ -62,7 +62,7 @@ export default class Config {
     // Merge defaultYaml, envYaml, process.env, and .env
     this.config =
         defaultsDeep(
-          this._transformToLowerKeys(this._envToNestedObject(process.env)),
+          this._processEnvVars(),
           this._transformToLowerKeys(this.yamlConfig)
         )
   }
@@ -140,6 +140,39 @@ export default class Config {
    */
   static _isPlainObject (obj) {
     return Object.prototype.toString.call(obj) === '[object Object]'
+  }
+
+  /**
+   * Processa e disponibiliza váriaveis de ambiente para uso em envs
+   *
+   * @example
+   *  Config.get('envs.node.env')
+   *  Atalho para process.env.NODE_ENV
+   *
+   *  Se variavel de ambiente for prefixada com NF_, substitui configuração
+   *
+   *  @example
+   *    NF_SOCKET_MODE substitui socket.mode
+   *
+   * @returns object
+   * @private
+   */
+  static _processEnvVars () {
+    // Environment variables must have the NF prefix to replace application variables
+    // Selects environment variables with NF_ prefix
+    const nfProcessEnv = {}
+    for (const key of Object.keys(process.env)) {
+      if (key.substring(0, 3) === 'NF_') {
+        nfProcessEnv[key.substring(3)] = process.env[key]
+      }
+    }
+
+    const envVars = this._transformToLowerKeys(this._envToNestedObject(nfProcessEnv))
+
+    // Processes environment variables (protects application)
+    envVars.envs = this._transformToLowerKeys(this._envToNestedObject(process.env))
+
+    return envVars
   }
 
   /**

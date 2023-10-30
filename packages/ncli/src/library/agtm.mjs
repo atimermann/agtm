@@ -12,30 +12,79 @@ import { access, constants, readdir, stat } from 'node:fs/promises'
 import { simpleGit } from 'simple-git'
 import { spawn } from '@agtm/util/process'
 
-const projectPackageJson = await loadJson('package.json')
+const agtmModulesDirectoryPath = resolve(__dirname(import.meta.url), '..', '..', '..')
+
+const agtmModules = []
+const agtmModulesIndex = {}
+
+await loadAgtmModulesInfo()
 
 /**
  * Returns information about #@agtm modules
  *
  * @returns {Promise<*[]>}
  */
-export async function getAgtmModulesInfo () {
+export async function getReport (projectPackageJson) {
   const modulesInfo = []
 
-  const agtmModulesDirectoryPath = resolve(__dirname(import.meta.url), '..', '..', '..')
-
-  const modulesInstalledVersion = await getModulesInstalledVersion()
+  const modulesInstalled = await getModulesInstalled(projectPackageJson)
   const linkedModules = await getLinkedModules()
 
+  for (const agtModule of agtmModules) {
+    let moduleInfo
+    /// ///////////////////////////////////////
+    // Carrega informações
+    /// ///////////////////////////////////////
+    const installed = isAgtmModulesInstalled(projectPackageJson, agtModule.name)
+    try {
+      moduleInfo = {
+        name: agtModule.name,
+        directory: agtModule.directory,
+        lastVersion: agtModule.version,
+        installed,
+        installedVersion: installed ? modulesInstalled[agtModule.name]?.version : null,
+        hasChanges: agtModule.hasChanges,
+        linked: linkedModules.includes(agtModule.name),
+        deep: await checkModuleDependencies(agtModule.name, modulesInstalled[agtModule.name])
+      }
+    } catch (error) {
+      console.error(`Diretório inválido ${agtModule}: ${error}`)
+      continue
+    }
+    //
+    // // /// ///////////////////////////////////////
+    // // // Verfica se é publicável
+    // // /// ///////////////////////////////////////
+    // // const {
+    // //   publishable,
+    // //   latestReleaseTag
+    // // } = await isModulePublishable(modulePath)
+    //
+    // // moduleInfo.isPublishable = (publishable === PUBLISHABLE)
+    // // moduleInfo.latestReleaseTag = latestReleaseTag
+    // // moduleInfo.noTag = (publishable === NO_TAG)
+    //
+    modulesInfo.push(moduleInfo)
+  }
+
+  return modulesInfo
+}
+
+/**
+ * Returns information about #@agtm modules
+ *
+ * @returns {Promise<*[]>}
+ */
+export async function loadAgtmModulesInfo () {
   for (const moduleName of await readdir(agtmModulesDirectoryPath)) {
     const modulePath = join(agtmModulesDirectoryPath, moduleName)
     if ((await stat(modulePath)).isDirectory()) {
       let moduleInfo
 
       let packageJson
+      const packageJsonPath = join(modulePath, 'package.json')
 
       try {
-        const packageJsonPath = join(modulePath, 'package.json')
         await access(packageJsonPath, constants.R_OK | constants.W_OK)
         packageJson = await loadJson(packageJsonPath)
       } catch {
@@ -45,48 +94,68 @@ export async function getAgtmModulesInfo () {
       /// ///////////////////////////////////////
       // Carrega informações
       /// ///////////////////////////////////////
-      const installed = isAgtmModulesInstalled(packageJson.name)
       try {
         moduleInfo = {
           name: packageJson.name,
           directory: moduleName,
-          lastVersion: packageJson.version,
-          installed,
-          installedVersion: installed ? modulesInstalledVersion[packageJson.name]?.version : null,
-          hasChanges: await checkAgtmHasGitChangesToCommit(modulePath),
-          linked: linkedModules.includes(packageJson.name)
+          version: packageJson.version,
+          hasChanges: await checkAgtmHasGitChangesToCommit(modulePath)
         }
       } catch (error) {
         console.error(`Diretório inválido ${moduleName}: ${error}`)
         continue
       }
 
-      // /// ///////////////////////////////////////
-      // // Verfica se é publicável
-      // /// ///////////////////////////////////////
-      // const {
-      //   publishable,
-      //   latestReleaseTag
-      // } = await isModulePublishable(modulePath)
+      agtmModulesIndex[packageJson.name] = moduleInfo
+      agtmModules.push(moduleInfo)
+    }
+  }
+}
 
-      // moduleInfo.isPublishable = (publishable === PUBLISHABLE)
-      // moduleInfo.latestReleaseTag = latestReleaseTag
-      // moduleInfo.noTag = (publishable === NO_TAG)
+/**
+ * Check outdated version of nested dependencies
+ *
+ * @param moduleName
+ * @param moduleInstalledInfo
+ * @returns {Promise<*[]>}
+ */
+async function checkModuleDependencies (moduleName, moduleInstalledInfo) {
+  const deepReport = []
 
-      modulesInfo.push(moduleInfo)
+  if (moduleInstalledInfo && moduleInstalledInfo.dependencies) {
+    const dependencies = moduleInstalledInfo.dependencies
+
+    if (moduleInstalledInfo.dependencies) {
+      for (const dependenciesKey in dependencies) {
+        if (Object.keys(agtmModulesIndex).includes(dependenciesKey)) {
+          const installedVersion = dependencies[dependenciesKey].version
+          const lastVersion = agtmModulesIndex[dependenciesKey].version
+
+          if (lastVersion !== installedVersion) {
+            deepReport.push(`${dependenciesKey} v${installedVersion}`)
+          }
+
+          // Check Next Level
+          const nextLevelReport = await checkModuleDependencies(dependenciesKey, dependencies[dependenciesKey])
+          for (const nextLevelReportElement of nextLevelReport) {
+            deepReport.push(`${dependenciesKey} => ${nextLevelReportElement}`)
+          }
+        }
+      }
     }
   }
 
-  return modulesInfo
+  return deepReport
 }
 
 /**
  * Checks if the @agtm module is installed in the current project
  *
+ * @param projectPackageJson
  * @param moduleName
  * @returns {boolean}
  */
-function isAgtmModulesInstalled (moduleName) {
+function isAgtmModulesInstalled (projectPackageJson, moduleName) {
   try {
     // Verifica se o módulo está listado como uma dependência no package.json
     return (
@@ -127,10 +196,10 @@ async function checkAgtmHasGitChangesToCommit (modulePath) {
 /**
  * Returns all modules installed in the current project
  *
- * @returns {Promise<*>}
+ * @param projectPackageJson
  */
-async function getModulesInstalledVersion () {
-  const command = 'npm list --depth 0  --json'
+async function getModulesInstalled (projectPackageJson) {
+  const command = 'npm list --depth 5  --json'
 
   const { stdout } = await spawn(command, undefined, true)
 
@@ -145,7 +214,7 @@ async function getModulesInstalledVersion () {
 }
 
 async function getLinkedModules () {
-  const command = 'npm list --depth 0 --json --link'
+  const command = 'npm list --depth 5 --json --link'
 
   const { stdout } = await spawn(command, undefined, true)
 

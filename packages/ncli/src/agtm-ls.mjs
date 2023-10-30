@@ -1,12 +1,15 @@
 #!/usr/bin/env node
 
-import { getAgtmModulesInfo } from './library/agtm.mjs'
+import { getReport } from './library/agtm.mjs'
 import chalk from 'chalk'
 import { table } from 'table'
+import { loadJson } from '@agtm/util'
 
 const args = process.argv.slice(2)
 
-let installedModules = (await getAgtmModulesInfo())
+const projectPackageJson = await loadJson('package.json')
+
+let installedModules = (await getReport(projectPackageJson))
 
 if (!args.includes('-a')) { installedModules = installedModules.filter(module => module.installed === true) }
 
@@ -18,6 +21,7 @@ tableData.push([
   chalk.bold('Need commit'),
   chalk.bold('Last Version'),
   chalk.bold('Installed Version'),
+  chalk.bold('Deep check'),
   chalk.bold('Status')
 ])
 
@@ -27,7 +31,7 @@ for (const module of installedModules) {
 
   const oldVersion = installed && (module.version !== module.instaledVersion)
 
-  const warn = module.linked || module.hasChanges || oldVersion
+  const warn = module.linked || module.hasChanges || oldVersion || module.deep.length > 0
 
   tableData.push([
     warn ? chalk.red.bold(module.name) : module.name,
@@ -37,6 +41,7 @@ for (const module of installedModules) {
     installed
       ? (oldVersion ? chalk.red.bold(module.installedVersion) : module.installedVersion)
       : chalk.blue.bold('Not installed!'),
+    chalk.red.bold(module.deep.join('\n')),
     warn ? chalk.red.bold('Check Module!!!') : chalk.green.bold('OK')
   ])
 

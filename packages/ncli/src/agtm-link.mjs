@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
 import { spawn } from '@agtm/util/process'
-import { getAgtmModulesInfo } from './library/agtm.mjs'
+import { getReport } from './library/agtm.mjs'
+import { loadJson } from '@agtm/util'
 
-const installedModules = (await getAgtmModulesInfo())
+const projectPackageJson = await loadJson('package.json')
+const installedModules = (await getReport(projectPackageJson))
   .filter(module => module.installed === true)
   .map(module => `"${module.name}"`)
   .join(' ')

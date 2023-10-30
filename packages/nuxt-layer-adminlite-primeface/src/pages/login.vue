@@ -77,10 +77,12 @@
 import Toast from 'primevue/toast'
 
 import { useToast } from 'primevue/usetoast'
-import { definePageMeta, useAppConfig, navigateTo, ref } from '#imports'
-import { SHA256 } from 'crypto-js'
+import { definePageMeta, navigateTo, ref, useAppConfig, useNuxtTools } from '#imports'
 
 const { template, unsafeAuth } = useAppConfig()
+
+const { encryptText } = useNuxtTools
+
 const toast = useToast()
 
 const email = ref('')
@@ -93,7 +95,8 @@ async function login () {
     toast.add({ severity: 'error', summary: 'Atenção', detail: 'E-mail inválido', life: 3000 })
     return
   }
-  if (SHA256(password.value).toString() !== unsafeAuth.password) {
+
+  if (await encryptText(password.value) !== unsafeAuth.password) {
     toast.add({ severity: 'error', summary: 'Atenção', detail: 'Senha inválida', life: 3000 })
     return
   }

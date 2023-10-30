@@ -60,5 +60,8 @@ export default defineNuxtConfig({
         '@assets': join(currentDir, 'src', 'assets')
       }
     }
-  }
+  },
+  modules: [
+    '@agtm/nuxt-tools'
+  ]
 })

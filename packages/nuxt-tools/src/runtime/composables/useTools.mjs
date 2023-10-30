@@ -62,6 +62,31 @@ export default {
     const endDate = addSeconds(startDate, totalSeconds)
 
     return formatDistance(new Date(), endDate, { locale: ptBR, includeSeconds: true })
+  },
+
+  /**
+   * Encrypts a given text using a specified hashing algorithm.
+   *
+   * @async
+   * @function
+   * @param {string} text - The text to be encrypted.
+   * @param {string} [algorithm='SHA-256'] - The hashing algorithm to be used. Defaults to 'SHA-256'.
+   * @returns {Promise<string>} The encrypted text as a hexadecimal string.
+   * @throws Will throw an error if the hashing algorithm is not supported.
+   *
+   * @example
+   * const encryptedText = await encryptText('hello');
+   * console.log(encryptedText);  // Outputs the encrypted text in hexadecimal format.
+   */
+  async encryptText (text, algorithm = 'SHA-256') {
+    const encoder = new TextEncoder()
+    const data = encoder.encode(text)
+    const hashBuffer = await crypto.subtle.digest(algorithm, data)
+    const hashArray = Array.from(new Uint8Array(hashBuffer)) // convert buffer to byte array
+    // convert bytes to hex string
+    return hashArray
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('')
   }
 
 }

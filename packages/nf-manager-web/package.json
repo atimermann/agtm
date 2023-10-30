@@ -40,7 +40,7 @@
     "nuxt-lodash": "^2.5.0"
   },
   "dependencies": {
-    "@agtm/nuxt-layer-adminlte-primeface": "^0.3.2",
+    "@agtm/nuxt-layer-adminlte-primeface": "^0.5.1",
     "@agtm/nuxt-tools": "^1.2.3",
     "@agtm/util": "^4.2.4",
     "@nuxt/kit": "^3.7.4",

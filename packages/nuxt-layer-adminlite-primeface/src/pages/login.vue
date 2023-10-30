@@ -78,7 +78,7 @@ import Toast from 'primevue/toast'
 
 import { useToast } from 'primevue/usetoast'
 import { definePageMeta, useAppConfig, navigateTo, ref } from '#imports'
-import SHA256 from 'crypto-js/sha256'
+import { SHA256 } from 'crypto-js'
 
 const { template, unsafeAuth } = useAppConfig()
 const toast = useToast()

@@ -176,13 +176,7 @@ export default class JobManager {
    * @returns {Job} The job instance that matches the given attributes.
    */
   static getJobByUUID (uuid) {
-    const job = this.jobs[uuid]
-
-    if (!job) {
-      throw new Error(`Job "${uuid}" does not exist.`)
-    }
-
-    return job
+    return this.jobs[uuid]
   }
 
   /**

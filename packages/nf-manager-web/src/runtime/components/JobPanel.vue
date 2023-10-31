@@ -20,6 +20,9 @@
               <li class="list-group-item">
                 <b>Job</b> <a class="float-right">{{ job.name }}</a>
               </li>
+              <li class="list-group-item">
+                <b>Job UUID</b> <a class="float-right">{{ job.uuid }}</a>
+              </li>
             </ul>
             <strong><i class="pi pi-tag" /> Agendamento</strong>
             <p class="text-muted">
@@ -194,9 +197,14 @@ socket.on('connect', () => {
 
   socket.emit('getJobInfo', props.uuid, response => {
     executions.value = response.executions
+
+    const schedule = response.job.schedule
+      ? cronstrue.toString(response.job.schedule, { locale: 'pt_BR', use24HourTimeFormat: true })
+      : 'Persistente'
+
     job.value = {
       ...response.job,
-      schedule: cronstrue.toString(response.job.schedule, { locale: 'pt_BR' })
+      schedule
     }
   })
 })

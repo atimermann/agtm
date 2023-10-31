@@ -52,18 +52,18 @@ let jobsIndex = {}
 // TODO: Renomear para toJobPanel
 defineEmits(['toOverview'])
 
-socket.on('connect', () => {
-  console.info('Connection with server ok')
-})
-
-socket.on('jobsList', jobInformation => {
-  jobsIndex = jobInformation
-  updateJobsList()
-})
-
 const jobs = ref(
   []
 )
+
+socket.on('connect', () => {
+  console.info('Connection with server ok')
+
+  socket.on('jobsList', jobInformation => {
+    jobsIndex = jobInformation
+    updateJobsList()
+  })
+})
 
 function updateJobsList () {
   jobs.value = []

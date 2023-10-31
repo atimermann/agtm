@@ -45,12 +45,12 @@ export default {
    * @param {Date|string} startAt - The starting date/time of the process. Accepts a JavaScript Date object or a string that can be parsed into a Date.
    * @param {number} progress - The current progress percentage, must be between 0 and 100 (exclusive).
    *
-   * @returns {string} - The human-readable estimated time remaining to reach 100% progress.
+   * @returns {string|null} - The human-readable estimated time remaining to reach 100% progress.
    * @throws {Error} - Throws an error if the progress is not between 0 and 100 (exclusive).
    */
   calculateEta (startAt, progress) {
-    if (progress < 0 || progress > 100) {
-      throw new Error('Progress must be between 0 and 100 (exclusive)')
+    if (progress <= 0 || progress >= 100) {
+      return null
     }
 
     const startDate = typeof startAt === 'string'

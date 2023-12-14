@@ -6,7 +6,8 @@
     - https://www.typescriptlang.org/docs/handbook/intro-to-js-ts.html
     - https://www.reddit.com/r/vuejs/comments/st2zkt/jsdoc_or_typescript/
 
-- Setup funciona apenas quando http_server está ativado, como é um metodo globa, vamos tirar do http_server e deixar rodando independentemente
+- [FEITO] DOCUMENTAR:
+- Setup funciona apenas quando http_server está ativado, como é um metodo global, vamos tirar do http_server e deixar rodando independentemente
     - Verificar outros métodos do controller tb
     - remover do escodo do http_server
 

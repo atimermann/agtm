@@ -23,6 +23,9 @@ import JobsMixin from './jobs-mixin.mjs'
 import HttpMixin from './http-mixin.mjs'
 import HttpViewMixin from './http-view-mixin.mjs'
 
+import createLogger from '../../library/logger.mjs'
+const logger = createLogger('Controller')
+
 /**
  * @mixes JobsMixin
  */
@@ -100,6 +103,13 @@ class Controller extends Multi.inherit(SocketMixin, JobsMixin, HttpMixin, HttpVi
 
   get completeIndentification () {
     return `application: ${this.applicationName}, app: ${this.appName}, controller: ${this.controllerName}`
+  }
+
+  /**
+   * Abstract Setup method, used for initial execution
+   */
+  async setup () {
+    logger.debug(`Setup not implemented in ${this.completeIndentification}.`)
   }
 }
 

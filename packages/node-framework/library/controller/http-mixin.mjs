@@ -127,13 +127,6 @@ export default class HttpMixin {
   }
 
   /**
-   * Abstract Setup method, used for initial execution
-   */
-  async setup () {
-    logger.debug(`Setup not implemented in ${this.completeIndentification}.`)
-  }
-
-  /**
    * Abstract Router method, used to configure Routes
    */
   async routes () {

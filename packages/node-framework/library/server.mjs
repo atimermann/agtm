@@ -81,6 +81,11 @@ export default {
 
     this.logInfo(application)
 
+    // Load initializers
+    for (const controller of application.getControllers()) {
+      await controller.setup()
+    }
+
     // Order is important
     if (Config.get('httpServer.enabled', 'boolean')) {
       await HttpServer.run(application)

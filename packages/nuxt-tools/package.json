@@ -1,11 +1,11 @@
 {
   "name": "@agtm/nuxt-tools",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "Module with useful tools for Nuxt projects",
   "private": false,
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/atimermann/nuxt-tools.git"
+    "url": "git+ssh://git@github.com:atimermann/agtm.git"
   },
   "license": "MIT",
   "type": "module",

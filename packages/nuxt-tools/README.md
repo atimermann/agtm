@@ -30,9 +30,6 @@ Module with useful tools for Nuxt projects
 <!-- Highlight some of the features your module provide here -->
 
 - ⛰ getEnvConfig
-- 🚠 &nbsp;Bar
-- 🌲 &nbsp;Baz
-- 💩
 
 ## Quick Setup
 
@@ -112,7 +109,46 @@ Exemplo de Uso:
 
 ```
 
+## Guia de Uso: useTools
+
+### getEnvConfig
+
+Carrega um atributo público definido com `runtimeconfig` e definido com uma variável de ambiente, validando se foi definido.
+
+- **Parâmetros:**
+  - `attributeName` (string): Nome do atributo a ser carregado e validado.
+  - `required` (boolean): Se é requerido. Padrão é `true`.
+- **Retorno:** Promise<void>.
+
+### calculateEta
+
+Calcula o Tempo Estimado de Chegada (ETA) para atingir 100% de progresso.
+
+- **Parâmetros:**
+  - `startAt` (Date|string): Data/hora de início do processo. Aceita um objeto Date do JavaScript ou uma string que pode ser convertida em Date.
+  - `progress` (number): Porcentagem atual de progresso, deve estar entre 0 e 100 (exclusivo).
+- **Retorno:** string|null. Retorna o tempo estimado restante para atingir 100% de progresso de forma legível.
+- **Exceções:** Lança um erro se o progresso não estiver entre 0 e 100 (exclusivo).
+
+### encryptText
+
+Criptografa um texto dado usando um algoritmo de hash especificado.
+
+- **Parâmetros:**
+  - `text` (string): O texto a ser criptografado.
+  - `algorithm` (string): O algoritmo de hash a ser usado. Padrão é 'SHA-256'.
+- **Retorno:** Promise<string>. O texto criptografado como uma string hexadecimal.
+- **Exceções:** Lançará um erro se o algoritmo de hash não for suportado.
+
+```javascript
+const encryptedText = await encryptText('hello');
+console.log(encryptedText);  // Saídas do texto criptografado em formato hexadecimal.
+```
+
+
 ## Development
+
+Reference: https://nuxt.com/docs/guide/going-further/modules
 
 ```bash
 # Install dependencies

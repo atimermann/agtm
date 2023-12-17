@@ -3,6 +3,6 @@
     <div class="login-logo">
       <b>Nuxt Layer Admin LTE + Primeface</b>
     </div>
-    <p> Layout default deve ser criado.</p>
+    <p> Default layout must be created.</p>
   </div>
 </template>

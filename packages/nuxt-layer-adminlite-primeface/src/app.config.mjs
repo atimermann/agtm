@@ -1,14 +1,16 @@
-// Este arquivo é apenas refẽrencia
-
+// AdminLte 3 Configuration Template
 export default {
   template: {
+    login: {
+      enable: false
+    },
     logoPath: 'DEFAULT',
     logoLabel: 'AdminLte 3',
     version: '',
     menu: {
       items: [
         {
-          title: 'Dashboard v1'
+          title: 'Hello World'
         },
         {
           title: 'Sair',

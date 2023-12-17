@@ -21,7 +21,6 @@
 </template>
 
 <script setup>
-
 import { useAppConfig } from '#imports'
 
 const { template } = useAppConfig()

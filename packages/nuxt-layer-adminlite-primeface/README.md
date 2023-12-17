@@ -2,7 +2,8 @@
 
 Este projeto é uma camada do Nuxt 3 (layer). ([Leia sobre layer aqui](https://nuxt.com/docs/guide/going-further/layers))
 
-Desenvolvida para facilitar a integração do [PrimeVue 3](https://primefaces.org/primevue/) e do [AdminLTE 3](https://adminlte.io/themes/v3/). Esta camada é
+Desenvolvida para facilitar a integração do [PrimeVue 3](https://primefaces.org/primevue/) e
+do [AdminLTE 3](https://adminlte.io/themes/v3/). Esta camada é
 projetada para ser facilmente adicionada a qualquer projeto Nuxt 3, fornecendo um template completo e funcional para
 construção de aplicações web.
 
@@ -22,6 +23,7 @@ na [documentação oficial](https://nuxt.com/docs/getting-started/introduction) 
 Primeiramente instale o nuxt3, mais detalhes em: https://nuxt.com/
 
 Requisitos:
+
 * Source dir deve estar configurado para src, veja mais detalhes em configuração abaixo
 
 Para instalar esta camada do Nuxt 3, siga os passos abaixo:
@@ -31,6 +33,13 @@ Para instalar esta camada do Nuxt 3, siga os passos abaixo:
 
 ```bash
 npm i @agtm/nuxt-layer-adminlte-primeface
+
+# Dependencia do projeto, verificar se é necessário quando carregar este layer como dependencia em vez de "linkado"
+# usar -f defido a um bug do npm, verificar se já foi corrigido.  
+#   - https://stackoverflow.com/questions/74003458/cannot-find-module-pinia-dist-pinia-mjs-when-using-run-dev
+#   - https://github.com/vuejs/pinia/issues/1542#issuecomment-1238820465
+npm i -f pinia @pinia/nuxt
+npm i @pinia-plugin-persistedstate/nuxt
 ```
 
 Instale o primevue no seu projeto para poder utilizar componentes primevue que não foram importado no
@@ -40,22 +49,42 @@ nuxt-layer-adminlte-primeface:
 npm i primefaces
 ```
 
+
+
 ## Configuração
 
 No arquivo nuxt.config.js, adicione a camada no array buildModules:
 
 ```javascript
 defineNuxtConfig({
-    ssr: false,
-    srcDir: 'src', // Obrigatório
-    extends: '@agtm/nuxt-layer-adminlte-primeface'
+  $development: {
+    devtools: {
+      enabled: true,
+      timeline: {
+        enabled: true
+      }
+    },
+    vite: {
+      server: {
+        fs: {
+          strict: false
+        }
+      }
+    }
+  },
+  ssr: false,
+  srcDir: 'src', // Obrigatório
+  extends: '@agtm/nuxt-layer-adminlte-primeface'
 })
 ```
 
 **Importante:** Este template está pré-configurado para utilizar o diretório src para armazenas o código fonte do
 projeto, então crie a pasta src e jogue os diretótrios assets, pages, public para lá.
 
-Para personalizar o template você pode custimizar o layout (veja próximo tópico) e através de configuração no
+**Notas**
+* Vite.server.fs.strict = true permite que o vite acesse arquivos fora do diretório src, por exemplo ao utilizar npm link. [Rererência aqui](https://vitejs.dev/config/server-options.html#server-fs-allow)
+
+Para personalizar o template você pode customizar o layout (veja próximo tópico) e através de configuração no
 app.config
 
 [Consulte aqui refêrencia completa do app.config](./docs/config.md)
@@ -109,7 +138,7 @@ import {defineNuxtPlugin} from '#app'
 import Card from 'primevue/card'
 
 export default defineNuxtPlugin((nuxtApp) => {
-    nuxtApp.vueApp.component('Card', Card)
+  nuxtApp.vueApp.component('Card', Card)
 })
 ```
 
@@ -122,8 +151,8 @@ Depois de tudo configurado, [entre aqui para começar desenvolver sua aplicaçã
 Foi desenvolvido alguns componentes baseado no AdmiLte não vinculado ao PrimeVue:
 
 ### NfCard
-[Documentação aqui](./docs/components/nf-card.md)
 
+[Documentação aqui](./docs/components/nf-card.md)
 
 # Desenvolvimento
 

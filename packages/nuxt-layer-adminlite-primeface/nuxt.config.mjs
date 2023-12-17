@@ -30,7 +30,7 @@ export default defineNuxtConfig({
     // 'primevue/resources/themes/bootstrap4-light-blue/theme.css', (Não usar direto)
     join(currentDir, './src/assets/theme.css'),
 
-    // TODO: Esta importação é problemática, foi carregado diretamente em src/plubins/primevue.mjs
+    // TODO: Esta importação é problemática, foi carregado diretamente em src/plugins/primevue.mjs
     // '~/assets/theme.css', // (Customizado) Este arquivo foi gerado em https://designer.primevue.org/#/ e modificado
     // join(currentDir, './node_modules/primevue/resources/primevue.min.css'),
     // join(currentDir, './node_modules/primeicons/primeicons.css'),
@@ -62,6 +62,8 @@ export default defineNuxtConfig({
     }
   },
   modules: [
-    '@agtm/nuxt-tools'
+    '@agtm/nuxt-tools',
+    '@pinia/nuxt',
+    '@pinia-plugin-persistedstate/nuxt'
   ]
 })

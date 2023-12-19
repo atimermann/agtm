@@ -18,7 +18,7 @@ export default class {{CONTROLLER_NAME}}Controller extends Controller {
   setup () {
     logger.info('App "{{APP}}" Controller "{{CONTROLLER_FILE_NAME}}" OK.')
 
-    logger.info(`Timezone: ${Config.get('server.timezone')}`)
+    logger.info(`Timezone: ${Config.get('httpServer.timezone')}`)
   }
 
   async jobSetup () {
@@ -98,7 +98,7 @@ export default class {{CONTROLLER_NAME}}Controller extends Controller {
    */
   pos () {
     setTimeout(() => {
-      logger.info(`Seu novo projeto está online! Acesse pela url: http://localhost:${Config.get('server.port')}`)
+      logger.info(`Seu novo projeto está online! Acesse pela url: http://localhost:${Config.get('httpServer.port')}`)
     }, 2000)
   }
 

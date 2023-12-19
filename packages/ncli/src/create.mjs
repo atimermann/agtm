@@ -22,6 +22,7 @@ import inquirer from 'inquirer'
 import moment from 'moment'
 import { render } from './library/tool.mjs'
 import { __dirname } from '@agtm/util'
+import { spawn } from '@agtm/util/process'
 import semver from 'semver'
 
 import { paramCase } from 'change-case';
@@ -167,10 +168,13 @@ import { paramCase } from 'change-case';
     console.log(`Criando app "${answers.app}"`)
     await fs.move(join(srcPath, 'apps', '__app_template'), join(srcPath, 'apps', answers.app))
 
+    await spawn(`cd "${projectFolderName}" && npm i`)
+    await spawn(`cd "${projectFolderName}" && npm i @agtm/node-framework @agtm/util`)
+    await spawn(`cd "${projectFolderName}" && npm i -d @agtm/ncli`)
+
     console.log('\n------------------------------------')
     console.log('Projeto criado com sucesso!')
     console.log(`\tcd ${projectFolderName}`)
-    console.log('\tnpm install')
     console.log('\nCarregue os assets com: \n\tnpm run install-assets')
     console.log('\nEm seguida:\n\tnpm run dev')
     // console.log('\nPara gerar binário:\n\tnpm run build')

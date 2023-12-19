@@ -1,0 +1,8 @@
+{
+  "verbose": true,
+  "ignore": [
+    "http",
+    "tests"
+  ],
+  "delay": 1000
+}

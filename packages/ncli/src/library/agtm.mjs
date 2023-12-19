@@ -1,7 +1,7 @@
 /**
  * **Created on 24/10/23**
  *
- * <File Reference Aqui: agtm.mjs>
+ * packages/ncli/src/library/agtm.mjs
  * @author André Timermann <andre@timermann.com.br>
  *
  */
@@ -20,7 +20,7 @@ const agtmModulesIndex = {}
 await loadAgtmModulesInfo()
 
 /**
- * Returns information about #@agtm modules
+ * Returns information about @agtm modules
  *
  * @returns {Promise<*[]>}
  */

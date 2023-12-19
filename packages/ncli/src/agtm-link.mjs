@@ -10,6 +10,11 @@ const installedModules = (await getReport(projectPackageJson))
   .map(module => `"${module.name}"`)
   .join(' ')
 
+if (!installedModules) {
+  console.log('No modules installed!')
+  process.exit(0)
+}
+console.log(`Modulos instalados: ${installedModules}`)
 console.log('Creating links...')
-await spawn(`npm link ${installedModules}`)
+await spawn(`npm --verbose link ${installedModules}`)
 await spawn('ls -l node_modules/@agtm')

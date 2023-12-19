@@ -10,7 +10,6 @@
 import { dirname, join } from 'node:path'
 import fs from 'fs-extra'
 import packageJsonFinder from 'find-package-json'
-import { Application } from '@agtm/node-framework'
 
 process.env.SUPPRESS_NO_CONFIG_WARNING = true
 process.env.LOGGER_CONSOLE_ENABLED = false
@@ -36,6 +35,8 @@ export async function findRootPath () {
  * @returns {boolean}
  */
 export async function validateProject (srcPath) {
+  const { Application } = await import('@agtm/node-framework')
+
   const mainFilePathCommonJs = join(srcPath, 'main.js')
   const mainFilePathESM = join(srcPath, 'main.mjs')
   let mainFilePath

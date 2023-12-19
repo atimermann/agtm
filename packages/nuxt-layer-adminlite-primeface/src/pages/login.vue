@@ -11,42 +11,45 @@
           Digite seus dados para entrar
         </p>
 
-        <div class="input-group mb-3">
-          <input
-            v-model="email"
-            type="email"
-            class="form-control"
-            placeholder="Email"
-          >
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-envelope" />
+        <form @submit.prevent="login">
+          <div class="input-group mb-3">
+            <input
+              v-model="usarname"
+              type="text"
+              class="form-control"
+              placeholder="Usuário"
+            >
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-envelope" />
+              </div>
             </div>
           </div>
-        </div>
-        <div class="input-group mb-3">
-          <input
-            v-model="password"
-            type="password"
-            class="form-control"
-            placeholder="Senha"
-          >
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-lock" />
+          <div class="input-group mb-3">
+            <input
+              v-model="password"
+              type="password"
+              class="form-control"
+              placeholder="Senha"
+            >
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock" />
+              </div>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-8" />
-          <!-- /.col -->
-          <div class="col-4">
-            <button class="btn btn-primary btn-block" @click="login">
-              Entrar
-            </button>
+          <div class="row">
+            <div class="col-8" />
+            <!-- /.col -->
+            <div class="col-4">
+              <button class="btn btn-primary btn-block">
+                Entrar
+              </button>
+            </div>
+            <!-- /.col -->
           </div>
-          <!-- /.col -->
-        </div>
+        </form>
+        <!--        {{ AuthStore }}-->
 
         <!--        <div class="social-auth-links text-center mb-3">-->
         <!--          <p>- OR -</p>-->
@@ -73,36 +76,37 @@
 </template>
 
 <script setup>
+/*
+TODO: O cookie "auth" não tem o atributo "SameSite" com valor válido. Em breve, cookies sem o atributo
+ "SameSite" ou com valor inválido serão tratados como "Lax". Significa que o cookie não será mais enviado em
+ contextos de terceiros. Se sua aplicação depender da disponibilidade deste cookie em tais contextos, adicione
+ o atributo "SameSite=None". Saiba mais sobre o atributo "SameSite" em
+ https://developer.mozilla.org/docs/Web/HTTP/Headers/Set-Cookie/SameSite
+*/
 
 import Toast from 'primevue/toast'
 
 import { useToast } from 'primevue/usetoast'
-import { definePageMeta, navigateTo, ref, useAppConfig, useNuxtTools } from '#imports'
+import { definePageMeta, navigateTo, ref, useAppConfig } from '#imports'
+import { useAuthStore } from '../stores/auth.mjs'
 
-const { template, unsafeAuth } = useAppConfig()
-
-const { encryptText } = useNuxtTools
-
+const AuthStore = useAuthStore()
+const { template } = useAppConfig()
 const toast = useToast()
 
-const email = ref('')
+const usarname = ref('')
 const password = ref('')
 
-localStorage.setItem('logged', '')
-
 async function login () {
-  if (email.value !== unsafeAuth.email) {
-    toast.add({ severity: 'error', summary: 'Atenção', detail: 'E-mail inválido', life: 3000 })
-    return
-  }
+  const auth = await AuthStore.login(usarname.value, password.value)
 
-  if (await encryptText(password.value) !== unsafeAuth.password) {
-    toast.add({ severity: 'error', summary: 'Atenção', detail: 'Senha inválida', life: 3000 })
-    return
+  if (auth.auth) {
+    navigateTo()
+  } else {
+    toast.add({ severity: 'error', summary: 'Atenção', detail: auth.message, life: 3000 })
+    usarname.value = ''
+    password.value = ''
   }
-
-  localStorage.setItem('logged', 'logged')
-  navigateTo({ path: '/' })
 }
 
 definePageMeta({

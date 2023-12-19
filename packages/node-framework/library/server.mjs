@@ -83,7 +83,12 @@ export default {
 
     // Load initializers
     for (const controller of application.getControllers()) {
-      await controller.setup()
+      try {
+        await controller.setup()
+      } catch (e) {
+        logger.error(`Error initializing controller "${controller.completeIndentification}": ${e.message}`)
+        throw e
+      }
     }
 
     // Order is important

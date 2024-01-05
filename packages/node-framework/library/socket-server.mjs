@@ -2,6 +2,7 @@
  * Created on 27/07/23
  *
  * /socket
+ *
  * @author André Timermann <andre@timermann.com.br>
  * TODO:
  *  - Abstrair middlesares? ?? https://socket.io/docs/v4/middlewares/
@@ -9,7 +10,6 @@
  *  https://www.youtube.com/watch?v=0RMYomgf4a8
  *
  * Todas as opções disponivel para serem analisada e implentada: https://socket.io/docs/v4/server-options/
- *
  */
 
 import { createServer } from 'node:http'
@@ -25,6 +25,7 @@ const logger = createLogger('Socket')
 
 /**
  * Class representing a Socket Server
+ *
  * @class
  */
 export default class SocketServer {
@@ -49,7 +50,7 @@ export default class SocketServer {
    * The SSL key pair for the server, used when creating an HTTPS or HTTP2 server. Loaded from the configuration file.
    * Contains paths to the key and certificate files.
    *
-   * @type {Object}
+   * @type {object}
    * @static
    */
   static keys
@@ -63,6 +64,8 @@ export default class SocketServer {
 
   /**
    * Runs the Socket Server based on the configuration mode
+   *
+   * @param  application
    * @static
    * @throws {Error} When an invalid socket mode is provided
    */
@@ -119,6 +122,7 @@ export default class SocketServer {
    * Loads the configuration for the Socket Server from the Config module.
    * This method should be called before creating the server.
    * The configuration includes the server mode, port, and SSL key pair.
+   *
    * @private
    * @static
    */
@@ -130,7 +134,8 @@ export default class SocketServer {
 
   /**
    * Loads Applications
-   * @param application {Application}    Information about the Application
+   *
+   * @param application  {Application}    Information about the Application
    *
    * @private
    */
@@ -146,8 +151,9 @@ export default class SocketServer {
 
   /**
    * Configures an existing Express HTTP Server for use with socket.io
+   *
    * @static
-   * @param {Object} httpServer - The HTTP server instance to configure.
+   * @param {object} httpServer  - The HTTP server instance to configure.
    */
   static configureExpressHttpServer (httpServer) {
     if (Config.get('socket.enabled', 'boolean') && Config.get('socket.mode') === 'http-server') {
@@ -157,9 +163,10 @@ export default class SocketServer {
 
   /**
    * Creates a standalone Socket Server
+   *
    * @private
    * @static
-   * @returns {Server} - The newly created Socket Server
+   * @return {Server} - The newly created Socket Server
    */
   static _createStandaloneServer () {
     return new Server(this.port, this._getOptions())
@@ -167,9 +174,10 @@ export default class SocketServer {
 
   /**
    * Creates a standalone HTTP Socket Server
+   *
    * @private
    * @static
-   * @returns {Server} - The newly created Socket Server
+   * @return {Server} - The newly created Socket Server
    */
   static _createStandaloneHttpServer () {
     const httpServer = createServer()
@@ -180,9 +188,10 @@ export default class SocketServer {
 
   /**
    * Creates a standalone HTTPS Socket Server
+   *
    * @private
    * @static
-   * @returns {Server} - The newly created Socket Server
+   * @return {Server} - The newly created Socket Server
    */
   static _createStandaloneHttpsServer () {
     const httpsServer = createHttpsServer(this._getHttpsOptions())
@@ -193,9 +202,10 @@ export default class SocketServer {
 
   /**
    * Creates a standalone HTTP2 Socket Server
+   *
    * @private
    * @static
-   * @returns {Server} - The newly created Socket Server
+   * @return {Server} - The newly created Socket Server
    */
   static _createStandaloneHttp2Server () {
     const httpsServer = createSecureServer({ allowHTTP1: true, ...this._getHttpsOptions() })
@@ -206,9 +216,10 @@ export default class SocketServer {
 
   /**
    * Gets HTTPS options for creating a secure server
+   *
    * @private
    * @static
-   * @returns {Object} - An object containing the key and cert for HTTPS
+   * @return {object} - An object containing the key and cert for HTTPS
    */
   static _getHttpsOptions () {
     return {
@@ -219,7 +230,7 @@ export default class SocketServer {
   /**
    * Genreate Socket config options
    *
-   * @returns {Object}
+   * @return {object}
    * @private
    */
   static _getOptions () {

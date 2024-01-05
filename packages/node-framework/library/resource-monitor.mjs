@@ -6,7 +6,6 @@
  * @author André Timermann <andre@timermann.com.br>
  *
  * Lib responsible for monitoring application resources such as memory consumption, Event Listeners created, among others
- *
  */
 
 import memwatch from '@airbnb/node-memwatch'
@@ -19,6 +18,7 @@ let logger
 
 /**
  * ResourceMonitor Class
+ *
  * @class
  *
  * Monitoring application resources such as memory consumption, Event Listeners created, among others
@@ -54,6 +54,7 @@ export default class ResourceMonitor {
   /**
    * Initialize memory dumping
    * Sets an interval to call the dumpMemory method every monitorInterval minutes.
+   *
    * @static
    * @private
    */
@@ -68,8 +69,9 @@ export default class ResourceMonitor {
   /**
    * Get memory information
    * Collects heap statistics and returns an object containing detailed information.
+   *
    * @static
-   * @returns {Object|null} Object containing memory statistics or null if monitoring is not enabled.
+   * @return {object | null} Object containing memory statistics or null if monitoring is not enabled.
    */
   static getMemoryInfo () {
     if (this.enabled === undefined) this.enabled = Config.get('resourceMonitor.enabled', 'boolean')
@@ -88,6 +90,7 @@ export default class ResourceMonitor {
   /**
    * Perform memory dumping
    * Analyzes heap differences since the last dump and logs the changes.
+   *
    * @static
    * @private
    */

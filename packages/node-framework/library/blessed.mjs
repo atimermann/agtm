@@ -10,11 +10,13 @@ const PURLE_COLOR = '\x1b[35m'
 
 /**
  * Tamanho do historico diminuir se travando
+ *
  * @type {number}
  */
 const LOG_HISTORY_SIZE = 20
 /**
  * Intervalo de atualização dos logs, aumentar se travando
+ *
  * @type {number}
  */
 const LOG_UPDATE_INTERVAL = 1000
@@ -23,8 +25,8 @@ const LOG_UPDATE_INTERVAL = 1000
  * Created on 06/07/2023
  *
  * /blessed.mjs
- * @author André Timermann <andre@timermann.com.br>
  *
+ * @author André Timermann <andre@timermann.com.br>
  */
 export default class BlessedInterface {
   static indexedBoxes = {}
@@ -35,12 +37,14 @@ export default class BlessedInterface {
   /**
    * Representa cada linha da caixa de log, será convertido para texto e será o conteudo do box
    * Indexado pelo nome do box
+   *
    * @type {{}}
    */
   static boxesLines = {}
 
   /**
    * Boxs para serem atualizados (quando tem novo log)
+   *
    * @type {{}}
    */
   static boxesForUpdate = {}
@@ -105,6 +109,10 @@ export default class BlessedInterface {
     })
   }
 
+  /**
+   *
+   * @param level
+   */
   static _getLevelColor (level) {
     switch (level) {
       case 'info': // INFO
@@ -123,8 +131,8 @@ export default class BlessedInterface {
   /**
    * Formatting raw message received from the server
    *
-   * @param logObj
-   * @returns {string}
+   * @param           logObj
+   * @return {string}
    */
   static _parselogObj (logObj) {
     const { level, module, message } = logObj
@@ -145,8 +153,8 @@ export default class BlessedInterface {
   /**
    * Adds a message to the specified box. If the box does not exist, it creates a new box.
    *
-   * @param {string} message - The message to add to the box.
-   * @param {string} boxName - The name of the box to add the message to.
+   * @param {string} message  - The message to add to the box.
+   * @param {string} boxName  - The name of the box to add the message to.
    * @static
    */
   static log (message, boxName) {
@@ -175,6 +183,9 @@ export default class BlessedInterface {
     }
   }
 
+  /**
+   *
+   */
   static _updateLogs () {
     for (const boxName of Object.keys(this.indexedBoxes)) {
       if (this.boxesForUpdate[boxName]) {
@@ -203,7 +214,7 @@ export default class BlessedInterface {
    * Creates a status bar at the bottom of the screen.
    *
    * @private
-   * @param {string} boxName - Name of the box to which the status bar will be added.
+   * @param {string} boxName  - Name of the box to which the status bar will be added.
    * @static
    */
   static _createStatusBar (boxName) {
@@ -247,7 +258,7 @@ export default class BlessedInterface {
    * Creates a box on the screen with the specified name.
    *
    * @private
-   * @param {string} boxName - The name of the box to create.
+   * @param {string} boxName  - The name of the box to create.
    * @static
    */
   static _createBox (boxName) {
@@ -296,10 +307,10 @@ export default class BlessedInterface {
    * Resizes all boxes according to the screen size and given custom dimensions and offsets.
    *
    * @private
-   * @param {number} customWidth - Custom width for the boxes. If negative, it's subtracted from screen width.
-   * @param {number} customHeight - Custom height for the boxes. If negative, it's subtracted from screen height.
-   * @param {number} offsetWidth - The amount of space left on the sides of the boxes.
-   * @param {number} offsetHeight - The amount of space left on top and bottom of the boxes.
+   * @param {number} customWidth   - Custom width for the boxes. If negative, it's subtracted from screen width.
+   * @param {number} customHeight  - Custom height for the boxes. If negative, it's subtracted from screen height.
+   * @param {number} offsetWidth   - The amount of space left on the sides of the boxes.
+   * @param {number} offsetHeight  - The amount of space left on top and bottom of the boxes.
    * @static
    */
   static _resizeBoxes (customWidth, customHeight, offsetWidth = 0, offsetHeight = 0) {
@@ -329,7 +340,7 @@ export default class BlessedInterface {
    * Moves focus to a specific direction. If there are no boxes in the direction, nothing happens.
    *
    * @private
-   * @param {string} direction - The direction to move the focus to. Can be 'up', 'down', 'left', 'right'.
+   * @param {string} direction  - The direction to move the focus to. Can be 'up', 'down', 'left', 'right'.
    * @static
    */
   static _moveBoxFocusTo (direction) {

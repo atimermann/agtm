@@ -2,16 +2,15 @@
  * **Created on 07/06/2023**
  *
  * library/jobs/worker.mjs
+ *
  * @author André Timermann <andre@timermann.com.br>
  *
  *   @typedef {import('./job-process.mjs').default} JobProcess
  *   @typedef {import('./job.mjs').default} Job
- *
- *
  */
 
 /**
- *  `run` event.
+ * `run` event.
  *
  * @event WorkerManager#run *
  * @type {object}
@@ -28,9 +27,9 @@ const logger = createLogger('WorkerManager')
 /**
  * Manages the executions of a given job
  *
- *  Events:
- *    run - Fired whenever a new worker execution starts
- *    exit - Fired when process is finished
+ * Events:
+ * run - Fired whenever a new worker execution starts
+ * exit - Fired when process is finished
  */
 export default class Worker extends EventEmitter {
   /**
@@ -42,36 +41,42 @@ export default class Worker extends EventEmitter {
 
   /**
    * The job associated with the worker.
+   *
    * @type {Job}
    */
   job
 
   /**
    * Whether the worker is persistent.
+   *
    * @type {boolean}
    */
   persistent
 
   /**
    * If the worker was created automatically by the manager
+   *
    * @type {boolean}
    */
   auto
 
   /**
    * The options for the worker.
+   *
    * @type {{}}
    */
   options = {}
 
   /**
-   *  List of processes that are running the job
+   * List of processes that are running the job
+   *
    *  @type {JobProcess[]}
    */
   jobProcesses = []
 
   /**
    * Unique identification of the execution based on the date
+   *
    * @type {string}
    */
   runId
@@ -84,14 +89,19 @@ export default class Worker extends EventEmitter {
   startAt
 
   /**
-   *  Instantiate a new worker
+   * Instantiate a new worker
    *
-   * @param name
-   * @param job
-   * @param persistent
-   * @param auto
-   * @param options
-   * @returns {Worker}
+   * @param           name.name
+   * @param           name
+   * @param           job
+   * @param           persistent
+   * @param           auto
+   * @param           options
+   * @param           name.job
+   * @param           name.persistent
+   * @param           name.auto
+   * @param           name.options
+   * @return {Worker}
    */
   static create ({
     name,
@@ -115,7 +125,7 @@ export default class Worker extends EventEmitter {
   /**
    * Run processes from this worker
    *
-   * @returns {Promise<void>}
+   * @return {Promise<void>}
    */
   async run () {
     this.runId = generateUniqueIdByDate()

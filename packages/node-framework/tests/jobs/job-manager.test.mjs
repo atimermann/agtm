@@ -1,3 +1,6 @@
+/**
+ * @file Test job manager.
+ */
 import JobManager from '../../library/jobs/job-manager.mjs'
 import crypto from 'node:crypto'
 

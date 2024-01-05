@@ -1,0 +1,17 @@
+root: true
+parserOptions:
+  ecmaVersion: latest
+env:
+  browser: false
+  node: true
+  jest: true
+extends:
+  - standard
+  - tjw-jsdoc
+plugins:
+  - local
+rules:
+  quotes:
+    - error
+    - single
+  "local/import-require-node-prefix": "warn"

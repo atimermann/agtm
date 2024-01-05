@@ -1,12 +1,14 @@
 /**
  * **Created on 16/11/18**
  *
- * src/library/application-controller.js
  * @author André Timermann <andre@timermann.com.br>
  *
- *   Object to load and control applications
+ * @file ApplicationController.mjs
+ * Central controller logic for managing application's controllers.
+ * Provides functionality to get instances of all controllers,
+ * check the existence of directories, and handle the loading and instantiation of controller modules.
  *
- *
+ * @typedef {import('./application.mjs').default} Application
  */
 
 import path from 'node:path'
@@ -16,11 +18,15 @@ import Controller from './controller/controller.mjs'
 import createLogger from './logger.mjs'
 const logger = createLogger('ApplicationController')
 
+/**
+ *
+ */
 export default class ApplicationController {
   /**
-   * Returns all controllers of the current application and sets attributes about the current application
+   * Returns all controllers of the current application and sets attributes about the current application.
    *
-   * @returns {Promise<Array>}
+   * @param  {Array<Application>} applications  - Array of application objects to process
+   * @return {Promise<Array>}                   A promise that resolves to an array of controller instances
    */
   static async getControllersInstances (applications) {
     const controllersInstances = []
@@ -44,11 +50,11 @@ export default class ApplicationController {
   }
 
   /**
-   * Returns all controllers of the specified app
+   * Returns all controllers of the specified app.
    *
-   * @param appsPath  {string} Physical path of the directory where the apps of this application are located
+   * @param  {string}         appsPath  Physical path of the directory where the apps of this application are located
    *
-   * @returns {Promise<Array>} List of already instantiated controllers
+   * @return {Promise<Array>}           List of already instantiated controllers
    * @private
    */
   static async _getControllersInstanceByApps (appsPath) {
@@ -75,11 +81,11 @@ export default class ApplicationController {
   }
 
   /**
-   * Loads and returns all controllers defined in the 'Controllers' directory
+   * Loads and returns all controllers defined in the 'Controllers' directory.
    *
-   * @param controllersPath     {string}  Directory where the controllers are located
+   * @param  {string}         controllersPath  Directory where the controllers are located
    *
-   * @returns {Promise<Array>}  List of already instantiated controllers
+   * @return {Promise<Array>}                  List of already instantiated controllers
    * @private
    */
   static async _getControllersInstanceByControllers (controllersPath) {
@@ -109,6 +115,12 @@ export default class ApplicationController {
     return controllersInstances
   }
 
+  /**
+   * Checks if the directory for the given application exists.
+   *
+   * @param {Application} application  - Array of application objects to process
+   * @throws {Error} Throws an error if the directory specified in the application's 'appsPath' does not exist.
+   */
   static async checkAppsDirectoryExist (application) {
     try {
       await access(application.appsPath)
@@ -118,7 +130,10 @@ export default class ApplicationController {
   }
 
   /**
-   * returns if directory exists
+   * Checks if the specified directory exists.
+   *
+   * @param  {string}  directoryPath  - The path of the directory to check.
+   * @return {boolean}                Returns true if the directory exists, false otherwise.
    */
   static async exists (directoryPath) {
     try {

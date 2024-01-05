@@ -8,7 +8,7 @@
  * @typedef {import('./worker.mjs').default} Worker
  *
  * @class
- * @extends EventEmitter
+ * @augments EventEmitter
  *
  * @file library/jobs/job-process.mks.mjs
  * @author André Timermann <andre@timermann.com.br>
@@ -20,9 +20,13 @@ import JobProcessChild from './job-process-child.mjs'
 
 const logger = createLogger('WorkerManager')
 
+/**
+ *
+ */
 export default class JobProcess extends EventEmitter {
   /**
    * JobProcess instance ID, relative to the number of instances defined in the worker
+   *
    * @type {number}
    */
   instance
@@ -36,18 +40,21 @@ export default class JobProcess extends EventEmitter {
 
   /**
    * Counter keeping track of the number of times the process was terminated due to errors.
+   *
    * @type {number}
    */
   exitOnErrorCount = 0
 
   /**
    * Indicates if the process is in the process of being terminated
+   *
    * @type {boolean}
    */
   killing = false
 
   /**
    * Indicates if the process is currently running.
+   *
    * @type {boolean}
    */
   running = false
@@ -70,6 +77,7 @@ export default class JobProcess extends EventEmitter {
 
   /**
    * Classe que representa o processo em execução
+   *
    * @type {JobProcessChild}
    */
   childProcess
@@ -77,11 +85,11 @@ export default class JobProcess extends EventEmitter {
   /**
    * Factory method to create a new JobProcess instance, set its properties, and initiate the process.
    *
-   * @param {Worker} worker - The worker that owns this process.
-   * @param {number} instance - A unique identifier for this process.
-   * @param {Object} options - Additional options for this process.
+   * @param  {Worker}     worker    - The worker that owns this process.
+   * @param  {number}     instance  - A unique identifier for this process.
+   * @param  {object}     options   - Additional options for this process.
    *
-   * @returns {JobProcess} - A new JobProcess instance.
+   * @return {JobProcess}           - A new JobProcess instance.
    */
   static create (worker, instance, options = {}) {
     const process = new this()

@@ -10,8 +10,8 @@
     "publish-minor": "npm version minor && npm publish --access public && git push",
     "publish-major": "npm version major && npm publish --access public && git push",
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
-    "lint": "npx eslint --ext .mjs,.js --fix .",
-    "lint:test": "npx eslint  --ext .mjs,.js .",
+    "lint": "npx eslint --ext .mjs,.js --fix . & npx tsc",
+    "lint:test": "npx eslint  --ext .mjs,.js . & npx tsc",
     "update": "npm update @agtm/util && npm list @agtm/util",
     "audit": "npm audit --omit=dev"
   },
@@ -55,5 +55,11 @@
   ],
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "eslint-config-tjw-jsdoc": "^1.0.5",
+    "eslint-plugin-jsdoc": "^48.0.2",
+    "typescript": "^5.3.3"
   }
 }

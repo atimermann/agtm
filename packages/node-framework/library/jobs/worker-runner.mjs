@@ -2,20 +2,24 @@
  * **Created on 07/06/2023**
  *
  * library/worker-manager.mjs
+ *
  * @author André Timermann <andre@timermann.com.br>
  *
  * Class responsible for execution in a separate process.
  *
  * @typedef {import('./job.mjs').default} Job
- *
  */
 
 import { logger } from '../../index.mjs'
 import JobManager from './job-manager.mjs'
 
+/**
+ *
+ */
 export default class WorkerRunner {
   /**
    * Job running
+   *
    * @type {Job}
    * @static
    */
@@ -23,6 +27,7 @@ export default class WorkerRunner {
 
   /**
    * Pid of parent process
+   *
    * @type {*}
    */
   static parentPid = undefined
@@ -31,11 +36,11 @@ export default class WorkerRunner {
    * This method is execution of a worker in a separate process.
    * It loads all jobs and executes the specific job that matches the command-line arguments.
    *
-   * @param {import('../application.mjs').Application} application - The application context.
+   * @param  {import('../application.mjs').Application} application  - The application context.
    *
    * @throws Will throw an error if the specific job could not be found.
    *
-   * @returns {Promise<void>}
+   * @return {Promise<void>}
    *
    * @static
    */
@@ -84,6 +89,10 @@ export default class WorkerRunner {
     }
   }
 
+  /**
+   *
+   * @param exitCode
+   */
   static async exitProcess (exitCode = 0) {
     await this._exitProcess(this.job, exitCode)
   }
@@ -93,9 +102,9 @@ export default class WorkerRunner {
    * The application then calls the 'jobTeardown' method of the controller and finally terminates itself.
    * SIGKILL and SIGTERM should be handled by the application.
    *
-   * @param {Job} job - The Job in execution
+   * @param  {Job}  job  - The Job in execution
    *
-   * @returns {void}
+   * @return {void}
    *
    * @static
    */
@@ -126,9 +135,9 @@ export default class WorkerRunner {
   /**
    * Finish process
    *
-   * @param {Job} job - The Job in execution
-   * @param exitCode
-   * @returns {Promise<void>}
+   * @param  {Job}           job       - The Job in execution
+   * @param                  exitCode
+   * @return {Promise<void>}
    * @private
    */
   static async _exitProcess (job, exitCode = 0) {

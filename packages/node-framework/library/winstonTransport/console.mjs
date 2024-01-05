@@ -2,6 +2,7 @@
  * **Created on 06/07/2023**
  *
  * /console.mjs
+ *
  * @author André Timermann <andre@timermann.com.br>
  *
  * COLOR: https://misc.flogisoft.com/bash/tip_colors_and_formatting
@@ -38,8 +39,8 @@ const purpleColor = '\x1b[35m'
 
 /**
  * @function
- * @param {number} level - The log level
- * @returns {string} - The corresponding color for the log level
+ * @param  {number} level  - The log level
+ * @return {string}        - The corresponding color for the log level
  */
 function getLevelColor (level) {
   switch (level) {
@@ -56,12 +57,24 @@ function getLevelColor (level) {
   }
 }
 
+/**
+ *
+ */
 export default class Console2Transport extends Transport {
+  /**
+   *
+   * @param opts
+   */
   constructor (opts) {
     super(opts)
     this.name = 'Console2Transport'
   }
 
+  /**
+   *
+   * @param logObj
+   * @param callback
+   */
   log (logObj, callback) {
     const { level, module, message } = logObj
 

@@ -2,6 +2,7 @@
  * **Created on 13/11/18**
  *
  * src/library/kernel.js
+ *
  * @author André Timermann <andre@timermann.com.br>
  *
  *   The Framework HTTP Server, where the server is configured and initialized.
@@ -13,7 +14,6 @@
  *  https://expressjs.com/en/advanced/best-practice-security.html
  *
  *  @typedef {import('./application.mjs').default} Application
- *
  */
 
 import express from 'express'
@@ -42,8 +42,7 @@ export default {
   /**
    * Initializes the server
    *
-   * @param application {Application}    Instance of application
-   *
+   * @param application  {Application}    Instance of application
    */
   async run (application) {
     // TODO: Verificar pra q serve global.__BASE = join(application.path, '/')
@@ -150,10 +149,10 @@ export default {
    *
    * Note: We do not use express view engine, but an external one implemented in the controller
    *
-   * @param httpServer  {Object}  HTTP object (Nodejs)
-   * @param application {Application}  Information about the application being loaded
+   * @param           httpServer   {object}  HTTP object (Nodejs)
+   * @param           application  {Application}  Information about the application being loaded
    *
-   * @returns {Object}  Express object
+   * @return {object}              Express object
    * @private
    */
   _configureExpressHttpServer (httpServer, application) {
@@ -268,8 +267,8 @@ export default {
   /**
    * Loads Applications
    *
-   * @param app         {Object}    Expressjs object
-   * @param application {Application}    Information about the Application
+   * @param app          {Object}    Expressjs object
+   * @param application  {Application}    Information about the Application
    *
    * @private
    */

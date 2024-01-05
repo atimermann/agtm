@@ -2,13 +2,16 @@
  * Created on 28/07/23
  *
  * library/controller/http-view-mixin.mjs
- * @author André Timermann <andre@timermann.com.br>
  *
+ * @author André Timermann <andre@timermann.com.br>
  */
 
 import path from 'node:path'
 import consolidate from 'consolidate'
 
+/**
+ *
+ */
 export default class HttpViewMixin {
   /**
    * URL base padrão  para acesso a recursos estáticos.
@@ -28,11 +31,11 @@ export default class HttpViewMixin {
    * Reference: https://github.com/tj/consolidate.js
    * Reference: http://handlebarsjs.com/
    *
-   * @param templatePath    {string}  Template a ser carregado
-   * @param locals  {object}  Váraveis disponíveis no template e configurações diversas
-   * @param engine  {string}  Engine de template a ser renderizado
+   * @param                  templatePath  {string}  Template a ser carregado
+   * @param                  locals        {object}  Váraveis disponíveis no template e configurações diversas
+   * @param                  engine        {string}  Engine de template a ser renderizado
    *
-   * @returns {Promise<void>}
+   * @return {Promise<void>}
    */
   async view (templatePath, locals = {}, engine = 'handlebars') {
     const viewPath = path.join(this.appPath, 'views', templatePath)
@@ -42,13 +45,13 @@ export default class HttpViewMixin {
   /**
    * Permite Carregar View de outra aplicação/app
    *
-   * @param applicationName {string}  Nome da aplicação
-   * @param appName         {string}  Nome do app onde o template está
-   * @param templatePath    {string}  Template a ser carregado
-   * @param locals  {object}  Váraveis disponíveis no template e configurações diversas
-   * @param engine  {string}  Engine de template a ser renderizado
+   * @param                  applicationName  {string}  Nome da aplicação
+   * @param                  appName          {string}  Nome do app onde o template está
+   * @param                  templatePath     {string}  Template a ser carregado
+   * @param                  locals           {object}  Váraveis disponíveis no template e configurações diversas
+   * @param                  engine           {string}  Engine de template a ser renderizado
    *
-   * @returns {Promise<void>}
+   * @return {Promise<void>}
    */
   async remoteView (applicationName, appName, templatePath, locals = {}, engine = 'handlebars') {
     if (!this.applicationsPath[applicationName]) {
@@ -67,11 +70,11 @@ export default class HttpViewMixin {
   /**
    * Renderiza uma View
    *
-   * @param viewPath    {string}  Caminho da View
-   * @param locals  {object}  Váraveis disponíveis no template e configurações diversas
-   * @param engine  {string}  Engine de template a ser renderizado
+   * @param                  viewPath  {string}  Caminho da View
+   * @param                  locals    {object}  Váraveis disponíveis no template e configurações diversas
+   * @param                  engine    {string}  Engine de template a ser renderizado
    *
-   * @returns {Promise<void>}
+   * @return {Promise<void>}
    * @private
    */
   async _renderView (viewPath, locals, engine) {
@@ -89,10 +92,9 @@ export default class HttpViewMixin {
        *
        * Ex: imagem.png é convertido para static/[ApplicationName]/[AppName]/imagem.png
        *
+       * @param               args
        *
-       * @param args
-       *
-       * @returns {*|string|*}
+       * @return {*|string|*}
        */
       '@asset': (...args) => {
         if (args.length === 2) {

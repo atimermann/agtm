@@ -1,9 +1,9 @@
 /**
  * **Created on 27/07/23**
  *
- * /socket.test.mjs
- * @author André Timermann <andre@timermann.com.br>
+ * @file Teste servidor socket
  *
+ * @author André Timermann <andre@timermann.com.br>
  */
 
 import { io } from 'socket.io-client'

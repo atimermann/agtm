@@ -7,11 +7,13 @@
  *
  * @module socket-mixin
  * @author André Timermann <andre@timermann.com.br>
- *
  */
 import createLogger from '../../library/logger.mjs'
 const logger = createLogger('Controller')
 
+/**
+ *
+ */
 export default class SocketMixin {
   /**
    * Holds the instance of the Socket.io server.
@@ -23,8 +25,8 @@ export default class SocketMixin {
   /**
    * Returns a namespace instance from the Socket.io server.
    *
-   * @param {string} path  Path of the namespace
-   * @returns {import("socket.io").Namespace} The namespace instance
+   * @param  {string}                        path  Path of the namespace
+   * @return {import("socket.io").Namespace}       The namespace instance
    */
   namespace (path) {
     return this.io.of(path)

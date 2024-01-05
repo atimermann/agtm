@@ -4,10 +4,10 @@
 # TODO: Não deixe um grupo vazio se não irá substituir tudo
 # Carrega monitor automaticamente (necessário logger socket ativo)
 monitor:
-  enabled: true
+  enabled: false
 logger:
   console:
-    enabled: false
+    enabled: true
     handleExceptions: false
   level: debug
   silent: false

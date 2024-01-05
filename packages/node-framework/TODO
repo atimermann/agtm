@@ -1,3 +1,11 @@
+************************************************************************************************************************
+BUGS - URGENT
+************************************************************************************************************************
+- Monitor com problema, porta sempre ocupada no socket, se tiver ocupada tentar outra, desativado por padrão
+
+************************************************************************************************************************
+
+- Definir padrão de service, baseado no NEST, ver outros padrões e criar exemplos
 - Migrar todos os arquivos para ESM
 - Criar teste unitário
 - Criar validação restrita do JSDOC com todos os tipos

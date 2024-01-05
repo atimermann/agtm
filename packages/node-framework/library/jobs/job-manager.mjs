@@ -2,8 +2,8 @@
  * **Created on 07/06/2023**
  *
  * library/jobs/job-manager.mjs
- * @author André Timermann <andre@timermann.com.br>
  *
+ * @author André Timermann <andre@timermann.com.br>
  */
 import cron from 'node-cron'
 import WorkerManager from './worker-manager.mjs'
@@ -22,6 +22,9 @@ const controllersEnabled = Config.get('jobManager.controllersEnabled', 'array')
 const SETUP_FUNCTION = 1
 const TEARDOWN_FUNCTION = 2
 
+/**
+ *
+ */
 export default class JobManager {
   /**
    * A static object property holding a collection of all jobs managed by the system.
@@ -41,8 +44,8 @@ export default class JobManager {
    * Load Manager
    * (Loads jobs and workers)
    *
-   * @param application
-   * @returns {Promise<void>}
+   * @param                  application
+   * @return {Promise<void>}
    */
   static async load (application) {
     await this._loadJobsAndWorkersFromController(application)
@@ -53,9 +56,9 @@ export default class JobManager {
    * Initializes the Job Manager. This involves setting up the worker environment
    * and starting the job schedules.
    *
-   * @param {import('../application.mjs').Application} application - The application context within which the job manager operates.
+   * @param  {import('../application.mjs').Application} application  - The application context within which the job manager operates.
    *
-   * @returns {Promise<void>} A promise that resolves when the Job Manager has been initialized.
+   * @return {Promise<void>}                                         A promise that resolves when the Job Manager has been initialized.
    * @static
    */
   static async run (application) {
@@ -127,8 +130,8 @@ export default class JobManager {
   /**
    * Checks if job is active
    *
-   * @param {Controller} controller
-   * @return boolean
+   * @param  {Controller} controller
+   * @return                          boolean
    * @private
    */
   static _isJobEnabled (controller) {
@@ -151,12 +154,12 @@ export default class JobManager {
    * Retrieves a Job instance from worker attributes. This involves searching through
    * the static job collection and returning the job that matches the given attributes.
    *
-   * @param {string} applicationName - The name of the application the job is associated with.
-   * @param {string} appName - The name of the app under which the job falls.
-   * @param {string} controllerName - The name of the controller managing the job.
-   * @param {string} name - The name of the job.
+   * @param  {string} applicationName  - The name of the application the job is associated with.
+   * @param  {string} appName          - The name of the app under which the job falls.
+   * @param  {string} controllerName   - The name of the controller managing the job.
+   * @param  {string} name             - The name of the job.
    *
-   * @returns {Job} The job instance that matches the given attributes.
+   * @return {Job}                     The job instance that matches the given attributes.
    * @static
    */
   static getJob (applicationName, appName, controllerName, name) {
@@ -172,8 +175,8 @@ export default class JobManager {
   /**
    * Retrieves a Job instance by uuid
    *
-   * @param {string} uuid
-   * @returns {Job} The job instance that matches the given attributes.
+   * @param  {string} uuid
+   * @return {Job}          The job instance that matches the given attributes.
    */
   static getJobByUUID (uuid) {
     return this.jobs[uuid]
@@ -184,7 +187,7 @@ export default class JobManager {
    *
    * TODO: Assume apenas um worker por job, se tiver mais de um pega ultimo necessario fazer tratativa
    *
-   * @returns {{}}
+   * @return {{}}
    */
   static getJobsInformation () {
     const clonedJobs = cloneDeep(this.jobs)
@@ -229,6 +232,7 @@ export default class JobManager {
 
   /**
    * Configures setup and teardown functions for all system jobs according to application, app and controller
+   *
    * @private
    */
   static _configureSetupAndTeardownFunctions () {
@@ -248,8 +252,8 @@ export default class JobManager {
   /**
    * Filter list of setup and teardown functions for specific job
    *
-   * @param job
-   * @returns {*[]}
+   * @param        job
+   * @return {*[]}
    * @private
    */
   static _filterFunctiontoJob (job) {
@@ -286,13 +290,17 @@ export default class JobManager {
    * Loads the job and worker details from the user-defined application context.
    * This involves scanning through all the controllers and extracting the job details.
    *
-   * @param {import('../application.mjs').Application} application - The application context within which to find the jobs.
+   * @param  {import('../application.mjs').Application} application  - The application context within which to find the jobs.
    *
-   * @returns {Promise<void>} A promise that resolves when all jobs and workers have been loaded.
+   * @return {Promise<void>}                                         A promise that resolves when all jobs and workers have been loaded.
    * @static
    * @private
    */
 
+  /**
+   *
+   * @param application
+   */
   static async _loadJobsAndWorkersFromController (application) {
     logger.info('Loading jobs and Workers from controllers...')
 
@@ -307,7 +315,7 @@ export default class JobManager {
    * Starts all the scheduled jobs. This involves initiating the execution of each job
    * as per its predefined schedule.
    *
-   * @returns {Promise<void>} A promise that resolves when all scheduled jobs have started execution.
+   * @return {Promise<void>} A promise that resolves when all scheduled jobs have started execution.
    * @static
    * @private
    */
@@ -329,8 +337,8 @@ export default class JobManager {
    * Schedules a job to run at predefined intervals. This involves creating a cron job
    * that triggers the job execution as per its schedule.
    *
-   * @param {Job} job - The job object that needs to be scheduled.
-   * @returns {Promise<void>} A promise that resolves when the job has been scheduled.
+   * @param  {Job}           job  - The job object that needs to be scheduled.
+   * @return {Promise<void>}      A promise that resolves when the job has been scheduled.
    * @static
    * @private
    */

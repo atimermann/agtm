@@ -3,8 +3,8 @@
  *
  * https://stackoverflow.com/questions/56591967/winston-custom-transport-with-typescript
  * library/logger.mjs
- * @author André Timermann <andre@timermann.com.br>
  *
+ * @author André Timermann <andre@timermann.com.br>
  */
 
 import { createLogger as winstonCreateLogger, transports, format } from 'winston'
@@ -40,6 +40,10 @@ if (loggerConfig.console?.enabled) {
   logger.add(new Console2Transport())
 }
 
+/**
+ *
+ * @param module
+ */
 export default function createLogger (module) {
   const childLogger = logger.child({ module })
 

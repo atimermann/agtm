@@ -2,8 +2,8 @@
  * Created on 06/07/2023
  *
  * /config.mjs
- * @author André Timermann <andre@timermann.com.br>
  *
+ * @author André Timermann <andre@timermann.com.br>
  */
 
 import { config as dotenvConfig } from 'dotenv'
@@ -30,7 +30,7 @@ dotenvConfig()
  * and YAML files with prioritization among them.
  */
 export default class Config {
-  /** @type {Object} The merged configuration object. */
+  /** @type {object} The merged configuration object. */
   static config = {}
 
   /**
@@ -70,9 +70,9 @@ export default class Config {
   /**
    * Returns configuration exclusively from yaml (ignores ENV) and keeps case
    *
-   * @param key The configuration key.
-   * @param type The expected type of the configuration value.
-   * @returns {*}
+   * @param      key   The configuration key.
+   * @param      type  The expected type of the configuration value.
+   * @return {*}
    */
   static getYaml (key, type) {
     return this.get(key, type, true)
@@ -81,12 +81,12 @@ export default class Config {
   /**
    * Get a configuration value by its key.
    *
-   * @param {string} key - The configuration key.
-   * @param {string} [type] - The expected type of the configuration value: number, boolean, string, array
-   * @param {boolean} yamlOnly  - Force load configuration from yaml configuration without losing case
+   * @param  {string}  key       - The configuration key.
+   * @param  {string}  [type]    - The expected type of the configuration value: number, boolean, string, array
+   * @param  {boolean} yamlOnly  - Force load configuration from yaml configuration without losing case
    *
    * @throws Will throw an error if the configuration key is not found.
-   * @returns {*} The configuration value.
+   * @return {*}                 The configuration value.
    */
   static get (key, type, yamlOnly = false) {
     const parts = yamlOnly
@@ -135,8 +135,9 @@ export default class Config {
 
   /**
    * Check if a value is a plain object.
-   * @param {*} obj - The value to check.
-   * @returns {boolean} Returns true if the value is a plain object, else false.
+   *
+   * @param  {*}       obj  - The value to check.
+   * @return {boolean}      Returns true if the value is a plain object, else false.
    */
   static _isPlainObject (obj) {
     return Object.prototype.toString.call(obj) === '[object Object]'
@@ -154,7 +155,7 @@ export default class Config {
    *  @example
    *    NF_SOCKET_MODE substitui socket.mode
    *
-   * @returns object
+   * @return object
    * @private
    */
   static _processEnvVars () {
@@ -177,8 +178,9 @@ export default class Config {
 
   /**
    * Convert an environment object into a nested configuration object.
-   * @param {Object} env - The environment object.
-   * @returns {Object} The nested configuration object.
+   *
+   * @param  {object} env  - The environment object.
+   * @return {object}      The nested configuration object.
    */
   static _envToNestedObject (env) {
     const result = {}
@@ -208,8 +210,8 @@ export default class Config {
    * Transforms all keys of an object to lowercase.
    * If the object contains nested objects, the keys of those objects will also be transformed.
    *
-   * @param {Object} obj - The object whose keys should be transformed.
-   * @return {Object} A new object with all keys transformed to lowercase.
+   * @param  {object} obj  - The object whose keys should be transformed.
+   * @return {object}      A new object with all keys transformed to lowercase.
    *
    * @private
    */

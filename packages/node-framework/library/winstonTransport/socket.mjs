@@ -2,10 +2,10 @@
  * **Created on 06/07/2023**
  *
  * library/winstonTransport/socket.mjs
+ *
  * @author André Timermann <andre@timermann.com.br>
  *
  *   TODO: Não conecta no modo HTTP_SERVER
- *
  */
 
 import Transport from 'winston-transport'
@@ -16,12 +16,22 @@ let SocketServer
 let io
 const namespace = Config.get('logger.socket.namespace')
 
+/**
+ *
+ */
 export default class SocketIoTransport extends Transport {
+  /**
+   *
+   * @param opts
+   */
   constructor (opts) {
     super(opts)
     this.name = 'SocketTransport'
   }
 
+  /**
+   *
+   */
   async handleSocketConnection () {
     /*
     O SocketServer deve ser importado de maneira dinâmica, pois a classe SocketServer também faz a importação do
@@ -52,6 +62,11 @@ export default class SocketIoTransport extends Transport {
     return true
   }
 
+  /**
+   *
+   * @param logObj
+   * @param callback
+   */
   async log (logObj, callback) {
     // Adiciona o logObj ao buffer, pois ele será processado abaixo
     buffer.push(logObj)

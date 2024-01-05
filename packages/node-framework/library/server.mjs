@@ -2,10 +2,10 @@
  * **Created on 09/20/18**
  *
  * src/library/server.js
+ *
  * @author André Timermann <andre@timermann.com.br>
  *
  *   Bootstrap, server execution
- *
  */
 
 import Application from './application.mjs'
@@ -32,12 +32,12 @@ export default {
   /**
    * Initializes the server.
    *
-   * @param {function(Application): Application} applicationLoader - A function that receives the Application class and returns an instance of it.
+   * @param  {function(Application): Application} applicationLoader  - A function that receives the Application class and returns an instance of it.
    *
    * @throws {TypeError} If the provided applicationLoader does not return an instance of Application.
    * @throws {Error} If the jobManager is disabled when running in 'job' mode.
    *
-   * @returns {void}
+   * @return {void}
    */
   async init (applicationLoader) {
     try {

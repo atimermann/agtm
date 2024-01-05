@@ -2,8 +2,8 @@
  * Created on 28/07/23
  *
  * library/controller/http-mixin.mjs
- * @author André Timermann <andre@timermann.com.br>
  *
+ * @author André Timermann <andre@timermann.com.br>
  */
 
 import path from 'node:path'
@@ -14,6 +14,9 @@ const logger = createLogger('Controller')
 
 const paths = {}
 
+/**
+ *
+ */
 export default class HttpMixin {
   /**
    * Objeto Router Express
@@ -35,30 +38,58 @@ export default class HttpMixin {
   // Helper Methods for Route and REST API Creation
   // Other methods can be accessed using this.app (object that refers to express instance used in the application)
   // -------------------------------------------------------------------------------------------------------------------
+  /**
+   *
+   * @param {...any} args
+   */
   all (...args) {
     this._processRestMethod('all', ...args)
   }
 
+  /**
+   *
+   * @param {...any} args
+   */
   use (...args) {
     this._processRestMethod('use', ...args)
   }
 
+  /**
+   *
+   * @param {...any} args
+   */
   post (...args) {
     this._processRestMethod('post', ...args)
   }
 
+  /**
+   *
+   * @param {...any} args
+   */
   get (...args) {
     this._processRestMethod('get', ...args)
   }
 
+  /**
+   *
+   * @param {...any} args
+   */
   put (...args) {
     this._processRestMethod('put', ...args)
   }
 
+  /**
+   *
+   * @param {...any} args
+   */
   delete (...args) {
     this._processRestMethod('delete', ...args)
   }
 
+  /**
+   *
+   * @param {...any} args
+   */
   patch (...args) {
     this._processRestMethod('patch', ...args)
   }
@@ -69,15 +100,15 @@ export default class HttpMixin {
    *
    * @async
    * @function
-   * @param {Function} lastCallback - The callback function that handles the HTTP request and generates a response.
-   *                                  This function is expected to be asynchronous and take in Express's request and
-   *                                  response objects, along with any additional arguments.
-   * @param {Object} request - The Express.js Request object, which contains all the information about the incoming
-   *                           HTTP request, such as headers, query parameters, and body.
-   * @param {Object} response - The Express.js Response object, used to formulate and send an HTTP response to the client.
-   * @param {...any} args - Additional arguments that the `lastCallback` function may require.
-   * @returns {Promise<void>} A Promise that resolves when the response has been sent. If an error occurs in the callback,
-   *                          the Promise rejects with the error, and an error response is sent to the client.
+   * @param  {Function}      lastCallback  - The callback function that handles the HTTP request and generates a response.
+   *                                       This function is expected to be asynchronous and take in Express's request and
+   *                                       response objects, along with any additional arguments.
+   * @param  {object}        request       - The Express.js Request object, which contains all the information about the incoming
+   *                                       HTTP request, such as headers, query parameters, and body.
+   * @param  {object}        response      - The Express.js Response object, used to formulate and send an HTTP response to the client.
+   * @param  {...any}        args          - Additional arguments that the `lastCallback` function may require.
+   * @return {Promise<void>}               A Promise that resolves when the response has been sent. If an error occurs in the callback,
+   *                                       the Promise rejects with the error, and an error response is sent to the client.
    * @throws Will throw an error if the `lastCallback` function throws an error. The error is also logged to the console
    *         and to a logger, including the error message and stack trace.
    */
@@ -96,8 +127,8 @@ export default class HttpMixin {
    * Standardized error handling of the API, can be extended by the user to standardize or select errors that
    * will be displayed
    *
-   * @param err
-   * @returns {Promise<{errorInfo: {error: boolean, message: *}, status: number}>}
+   * @param                                                                       err
+   * @return {Promise<{errorInfo: {error: boolean, message: *}, status: number}>}
    */
   async errorHandler (err) {
     return {
@@ -146,14 +177,13 @@ export default class HttpMixin {
    *
    * @private
    * @function
-   * @param {string} httpMethod - The HTTP method to be processed.
-   * @param {...any} args - An array of arguments for the method, which include callbacks
-   *                        defined by the user to be used as middleware.
-   * @returns {void} - This method does not return a value.
+   * @param  {string} httpMethod  - The HTTP method to be processed.
+   * @param  {...any} args        - An array of arguments for the method, which include callbacks
+   *                              defined by the user to be used as middleware.
+   * @return {void}               - This method does not return a value.
    *
    * @throws {TypeError} Throws an error if the first argument of the method (routePath)
    *                     is not a string, meaning it's a pathless method like 'use'.
-   *
    */
   _processRestMethod (httpMethod, ...args) {
     // Gets last callback and modifies to handle returns

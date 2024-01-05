@@ -9,15 +9,20 @@ import { setTimeout as sleep } from 'node:timers/promises'
 
 const logger = createLogger('WorkerManager')
 
+/**
+ *
+ */
 export default class JobProcessChild extends EventEmitter {
   /**
-   *  The child process instance created by the Node.js fork method.
+   * The child process instance created by the Node.js fork method.
+   *
    * @type {import('child_process').ChildProcess}
    */
   process
 
   /**
    * process pid
+   *
    * @type {number}
    */
   pid
@@ -44,12 +49,14 @@ export default class JobProcessChild extends EventEmitter {
 
   /**
    * The UNIX signal that was triggered when the process was terminated, e.g., SIGINT.
+   *
    * @type {string}
    */
   exitSignal
 
   /**
    * The exit code of the UNIX process. Any code other than 0 indicates an error.
+   *
    * @type {number}
    */
   exitCode
@@ -61,6 +68,13 @@ export default class JobProcessChild extends EventEmitter {
    */
   killed = false
 
+  /**
+   *
+   * @param modulePath
+   * @param args
+   * @param options
+   * @param runId
+   */
   static create (modulePath, args, options, runId) {
     const jobProcessChild = new this()
     jobProcessChild.process = fork(modulePath, args, options)
@@ -73,6 +87,9 @@ export default class JobProcessChild extends EventEmitter {
     return jobProcessChild
   }
 
+  /**
+   *
+   */
   setupEvents () {
     this.process.stdout.on('data', (data) => {
       this.emit('log', data)
@@ -104,8 +121,8 @@ export default class JobProcessChild extends EventEmitter {
   /**
    * Try to kill the process
    *
-   * @param killWaitTime
-   * @returns {Promise<void>}
+   * @param                  killWaitTime
+   * @return {Promise<void>}
    */
   async kill (killWaitTime) {
     // Send SIGNIT
@@ -126,8 +143,8 @@ export default class JobProcessChild extends EventEmitter {
    * Sends a specified kill signal to the child process and waits for a set period (defined by killWaitTime)
    * before returning to allow for potential process cleanup.
    *
-   * @param {NodeJS.Signals} signal - The UNIX signal to send to the process (SIGINT, SIGTERM, or SIGKILL).
-   * @param {number}  killWaitTime  - Time in milliseconds to wait for the process to die
+   * @param {NodeJS.Signals} signal        - The UNIX signal to send to the process (SIGINT, SIGTERM, or SIGKILL).
+   * @param {number}         killWaitTime  - Time in milliseconds to wait for the process to die
    * @async
    * @private
    */

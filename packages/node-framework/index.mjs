@@ -2,8 +2,9 @@
  * **Created on 27/01/2023**
  *
  * index.mjs
- * @author André Timermann <andre@timermann.com.br>
  *
+ * @file Main entry point for the DataFrost server application, handling imports and exports of core functionalities.
+ * @author André Timermann <andre@timermann.com.br>
  */
 
 import Application from './library/application.mjs'

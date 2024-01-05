@@ -2,6 +2,7 @@
  * Created on 04/07/2023
  *
  * /worker-manager.mjs
+ *
  * @author André Timermann <andre@timermann.com.br>
  *
  * @typedef {import('./worker.mjs').default} Worker
@@ -12,12 +13,12 @@
  */
 
 /**
- *  `run` event.
+ * `run` event.
  *
  * @event WorkerManager#run
  *
  * @type {object}
- * @property {Worker} worker - Worker who started new execution
+ * @property {Worker} worker  - Worker who started new execution
  */
 
 import createLogger from '../logger.mjs'
@@ -33,15 +34,16 @@ const logger = createLogger('WorkerManager')
  * but rather the entity executing a given job. It gets initialized,
  *
  * Events:
- *  run
- *  processError
- *  processExit
+ * run
+ * processError
+ * processExit
  *
  * @fires WorkerManager#run
  */
 export default class WorkerManager {
   /**
    * List of workers
+   *
    * @type {Worker[]}
    */
   static workers = []
@@ -63,6 +65,7 @@ export default class WorkerManager {
 
   /**
    * EventEmitter
+   *
    * @type {module:events.EventEmitter}
    */
   static events = new EventEmitter()
@@ -70,7 +73,7 @@ export default class WorkerManager {
   /**
    * Starts Worker Manager
    *
-   * @returns {Promise<void>}
+   * @return {Promise<void>}
    */
   static async init () {
     if (this.workers.length > 0) {
@@ -81,6 +84,7 @@ export default class WorkerManager {
 
   /**
    * Add a new Worker
+   *
    * @param {Worker} worker
    */
   static addWorker (worker) {
@@ -117,13 +121,13 @@ export default class WorkerManager {
   /**
    * Creates a new worker.
    *
-   * @param {string} name - The name of the worker.
-   * @param {Object} job - The job associated with the worker.
-   * @param {boolean} persistent - Whether the worker is persistent.
-   * @param {boolean} auto  - automatically created
-   * @param {Object} options - The options for the worker.
+   * @param  {string}  name        - The name of the worker.
+   * @param  {object}  job         - The job associated with the worker.
+   * @param  {boolean} persistent  - Whether the worker is persistent.
+   * @param  {boolean} auto        - automatically created
+   * @param  {object}  options     - The options for the worker.
    *
-   * @returns {Worker}
+   * @return {Worker}
    */
   static createWorker (name, job, persistent, auto, options = {}) {
     const newWorker = Worker.create({
@@ -141,7 +145,8 @@ export default class WorkerManager {
 
   /**
    * Starts execution of persistent workers.
-   * @returns {Promise<void>}
+   *
+   * @return {Promise<void>}
    */
   static async runPersistentWorkers () {
     for (const worker of this.workers) {
@@ -180,7 +185,8 @@ export default class WorkerManager {
 
   /**
    * returns worker information for monitoring
-   * @returns {{}}
+   *
+   * @return {{}}
    */
   static getWorkersInformation () {
     return this.indexedWorkers

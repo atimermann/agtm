@@ -4,7 +4,6 @@
  * library/controller/jobs-mixin.mjs
  *
  * @author André Timermann <andre@timermann.com.br>
- *
  */
 import createLogger from '../../library/logger.mjs'
 import WorkerRunner from '../jobs/worker-runner.mjs'
@@ -33,10 +32,10 @@ export default class JobsMixin {
   /**
    * Create a new job.
    *
-   * @param {string} name - The name of the job.
-   * @param {string|null} schedule - The schedule for the job in cron format, or null if the job is not scheduled.
-   * @param {function} jobFunction - The function that will be executed when the job is processed.
-   * @param {Object} [options={}] - Optional settings for the job.
+   * @param {string}      name         - The name of the job.
+   * @param {string|null} schedule     - The schedule for the job in cron format, or null if the job is not scheduled.
+   * @param {Function}    jobFunction  - The function that will be executed when the job is processed.
+   * @param {object}      [options]    - Optional settings for the job.
    * @throws {Error} If a job with the provided name already exists.
    */
   createJob (name, schedule, jobFunction, options = {}) {
@@ -56,9 +55,9 @@ export default class JobsMixin {
   /**
    * Creates workers to process a given job
    *
-   * @param {string} name Nome do Grupo de workes
+   * @param {string} name     Nome do Grupo de workes
    * @param {string} jobName  Nome da tarefa que será processda
-   * @param options Configuração dos workers
+   * @param          options  Configuração dos workers
    */
   createWorkers (name, jobName, options) {
     const job = JobManager.getJob(this.applicationName, this.appName, this.controllerName, jobName)
@@ -89,11 +88,11 @@ export default class JobsMixin {
   }
 
   /**
-   * @callback onProcessDataCallback
-   * @param {any} data - Data sent by the job.
-   * @param {Worker} worker - Worker instance that is managing the job.
-   * @param {Object} jobProcess - Information about the job process.
-   * @param {Object} childProcess - The child process object.
+   * @callback          onProcessDataCallback
+   * @param    {any}    data                   - Data sent by the job.
+   * @param    {Worker} worker                 - Worker instance that is managing the job.
+   * @param    {object} jobProcess             - Information about the job process.
+   * @param    {object} childProcess           - The child process object.
    */
 
   /**
@@ -101,8 +100,8 @@ export default class JobsMixin {
    *
    * This is an alias for `WorkerManager.events.on('processMessage', async (worker, jobProcess, childProcess, messageName, message) => {...})`.
    *
-   * @param {string} messageName - The name of the message to listen for. This is used to filter incoming messages.
-   * @param {onProcessDataCallback} fn - The callback function that will be invoked when the specified message is received.
+   * @param {string}                messageName  - The name of the message to listen for. This is used to filter incoming messages.
+   * @param {onProcessDataCallback} fn           - The callback function that will be invoked when the specified message is received.
    *
    * @example
    * onMessage('myMessage', (data, worker, jobProcess, childProcess) => {
@@ -120,10 +119,10 @@ export default class JobsMixin {
   /**
    * Defines a function that will be executed in all jobs in this controller when initializing the job
    *
-   * @param {function} jobSetupFunction Function to be performed
-   * @param {boolean} allApplications    Runs on all jobs in all applications
-   * @param {boolean} allApps            Run all games from all apps in this application
-   * @param {boolean} allControllers     Executes all jobs on all controllers in this app
+   * @param {Function} jobSetupFunction  Function to be performed
+   * @param {boolean}  allApplications   Runs on all jobs in all applications
+   * @param {boolean}  allApps           Run all games from all apps in this application
+   * @param {boolean}  allControllers    Executes all jobs on all controllers in this app
    */
   jobSetup (jobSetupFunction, allApplications = false, allApps = false, allControllers = false) {
     JobManager.setSetupFunction(
@@ -138,10 +137,10 @@ export default class JobsMixin {
    * Defines a function that will be executed in all jobs after the job is finished
    * For persistent jobs, only when an error occurs
    *
-   * @param {function} jobTeardownFunction Function to be performed
-   * @param {boolean} allApplications    Runs on all jobs in all applications
-   * @param {boolean} allApps            Run all games from all apps in this application
-   * @param {boolean} allControllers     Executes all jobs on all controllers in this app
+   * @param {Function} jobTeardownFunction  Function to be performed
+   * @param {boolean}  allApplications      Runs on all jobs in all applications
+   * @param {boolean}  allApps              Run all games from all apps in this application
+   * @param {boolean}  allControllers       Executes all jobs on all controllers in this app
    */
   jobTeardown (jobTeardownFunction, allApplications = false, allApps = false, allControllers = false) {
     JobManager.setTeardownFunction(
@@ -155,8 +154,8 @@ export default class JobsMixin {
   /**
    * Ends the execution of the job, it must always be called to perform finishing tasks.
    *
-   * @param {number}  exitCode
-   * @returns {Promise<void>}
+   * @param  {number}        exitCode
+   * @return {Promise<void>}
    */
   async exit (exitCode = 0) {
     logger.debug(`Exiting controller "${this.completeIndentification}..."`)

@@ -2,14 +2,14 @@
  * **Created on 14/11/18**
  *
  * src/library/winstonTransport/winston-graylog.js
+ *
  * @author André Timermann <andre@timermann.com.br>
  *
- * Versão modificado do Transport https://github.com/Buzut/winston-log2gelf
+ * @file
+ *  Versão modificado do Transport https://github.com/Buzut/winston-log2gelf *
+ *  Adiciona suporte a Cluster
  *
- * Adiciona suporte a Cluster
- *
- * TODO: Refazer usando biblioteca oficial: https://marketplace.graylog.org/addons/d1c625ef-3d51-4376-aecd-5c1fa1156aee
- *
+ * @todo Refazer usando biblioteca oficial: https://marketplace.graylog.org/addons/d1c625ef-3d51-4376-aecd-5c1fa1156aee
  */
 'use strict'
 
@@ -20,7 +20,15 @@ const http = require('http')
 const https = require('https')
 const Transport = require('winston-transport')
 
+/**
+ *
+ */
 class Log2gelf extends Transport {
+  /**
+   * Constructs an instance of the Log2gelf transport.
+   *
+   * @param {object} options  - Configuration options for the transport.
+   */
   constructor (options) {
     super(options)
 
@@ -58,9 +66,12 @@ class Log2gelf extends Transport {
   }
 
   /**
-   * Parse winston level as a string and return its equivalent numeric value
-   * @param { String }
-   * @return {int} level
+   * Parse a Winston log level string and return its equivalent numeric value.
+   * The log levels are mapped as follows: error: 0, warn: 1, info: 2, verbose: 3, debug: 4, silly: 5.
+   * Any unrecognized level defaults to 0.
+   *
+   * @param  {string} level  - The log level as a string.
+   * @return {number}        The numeric value corresponding to the provided log level.
    */
   levelToInt(level) { // eslint-disable-line
     if (level === 'error') return 0
@@ -74,7 +85,8 @@ class Log2gelf extends Transport {
   }
 
   /**
-   * Open a TCP socket and return a logger funtion
+   * Open a TCP socket and return a logger funtion.
+   *
    * @return { Function } logger – logger(JSONlogs)
    */
   sendTCPGelf () {
@@ -129,7 +141,8 @@ class Log2gelf extends Transport {
   }
 
   /**
-   * Set HTTP(S) connection and return logger function
+   * Set HTTP(S) connection and return logger function.
+   *
    * @return { Function } logger – logger(JSONlogs)
    */
   sendHTTPGelf () {
@@ -166,9 +179,12 @@ class Log2gelf extends Transport {
   }
 
   /**
-   * Handle log message
-   * @param { Object } info – log object
-   * @param { Function } callback
+   * Handles the log message, formats it, and sends it to the logging service.
+   * If 'silent' mode is on, the callback is invoked immediately without logging.
+   * Converts the message to a structured format and merges it with any custom payload before sending.
+   *
+   * @param {object}   info      - Log object containing message and metadata.
+   * @param {Function} callback  - Callback function to execute after logging.
    */
   log (info, callback) {
     if (this.silent) {
@@ -212,9 +228,10 @@ class Log2gelf extends Transport {
   }
 
   /**
-   * @agt Atualiza informação do cluster
-   * @param node
-   * @param leader
+   * Updates the cluster node and leader information for the transport.
+   *
+   * @param {string}  node    - Identifier for the current cluster node.
+   * @param {boolean} leader  - Indicates if the current node is the cluster leader.
    */
   updateClusterInfo (node, leader) {
     this.clusterNode = node

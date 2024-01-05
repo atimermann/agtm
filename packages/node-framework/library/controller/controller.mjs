@@ -3,6 +3,7 @@
  * **Created on 16/11/18**
  *
  * library/controller/controller.mjs
+ *
  * @author André Timermann <andre@timermann.com.br>
  *
  *   Classe Abstrata que representa Controlador do MVC, aqui fica o ponto de entrada da nossa aplicação, desde execução de serviços, configuração de
@@ -12,7 +13,6 @@
  *
  * TODO: Documentar criar um diagrama de fluxo de execução igual do Vuejs
  * TODO: Verificar proxy para deixar alguns atributos readonly
- *
  */
 
 import { Multi } from '@agtm/util'
@@ -94,6 +94,9 @@ class Controller extends Multi.inherit(SocketMixin, JobsMixin, HttpMixin, HttpVi
    */
   applicationsPath = undefined
 
+  /**
+   *
+   */
   constructor () {
     super()
     if (new.target === Controller) {
@@ -101,6 +104,9 @@ class Controller extends Multi.inherit(SocketMixin, JobsMixin, HttpMixin, HttpVi
     }
   }
 
+  /**
+   *
+   */
   get completeIndentification () {
     return `application: ${this.applicationName}, app: ${this.appName}, controller: ${this.controllerName}`
   }

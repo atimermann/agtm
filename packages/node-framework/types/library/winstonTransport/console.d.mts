@@ -1,7 +1,7 @@
 /**
  *
  */
-export default class Console2Transport {
+export default class Console2Transport extends Transport {
     /**
      *
      * @param opts
@@ -15,4 +15,5 @@ export default class Console2Transport {
      */
     log(logObj: any, callback: any): void;
 }
+import Transport from 'winston-transport';
 //# sourceMappingURL=console.d.mts.map

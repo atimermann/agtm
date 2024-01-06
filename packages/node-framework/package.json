@@ -1,19 +1,22 @@
 {
   "name": "@agtm/node-framework",
-  "version": "7.1.0",
+  "version": "7.1.2",
   "description": "Framework nodejs baseado no ExpressJs",
+  "types": "./types/index.d.mts",
   "bin": {
     "nf-monitor": "scripts/monitor.mjs"
   },
   "scripts": {
+    "prepare": "npm run create-types ; npm run lint ; npm run test",
     "publish-patch": "npm version patch && npm publish --access public && git push",
     "publish-minor": "npm version minor && npm publish --access public && git push",
     "publish-major": "npm version major && npm publish --access public && git push",
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
-    "lint": "npx eslint --ext .mjs,.js --fix . & npx tsc",
-    "lint:test": "npx eslint  --ext .mjs,.js . & npx tsc",
+    "lint": "npx eslint --ext .mjs,.js --fix .",
+    "lint:test": "npx eslint  --ext .mjs,.js .",
     "update": "npm update @agtm/util && npm list @agtm/util",
-    "audit": "npm audit --omit=dev"
+    "audit": "npm audit --omit=dev",
+    "create-types": "npx tsc"
   },
   "author": "André Timermann <andre@timermann.com.br>",
   "license": "ISC",
@@ -51,7 +54,8 @@
     "index.mjs",
     "config.default.yaml",
     "config.development.yaml",
-    "config.production.yaml"
+    "config.production.yaml",
+    "types"
   ],
   "engines": {
     "node": ">=18"
@@ -61,6 +65,5 @@
     "eslint-config-tjw-jsdoc": "^1.0.5",
     "eslint-plugin-jsdoc": "^48.0.2",
     "typescript": "^5.3.3"
-  },
-  "types": "types/index.d.ts"
+  }
 }

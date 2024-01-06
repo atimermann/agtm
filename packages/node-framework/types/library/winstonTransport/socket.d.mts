@@ -1,7 +1,7 @@
 /**
  *
  */
-export default class SocketIoTransport {
+export default class SocketIoTransport extends Transport {
     /**
      *
      * @param opts
@@ -19,4 +19,5 @@ export default class SocketIoTransport {
      */
     log(logObj: any, callback: any): Promise<void>;
 }
+import Transport from 'winston-transport';
 //# sourceMappingURL=socket.d.mts.map

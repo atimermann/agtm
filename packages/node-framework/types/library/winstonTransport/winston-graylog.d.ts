@@ -2,7 +2,7 @@ export = Log2gelf;
 /**
  *
  */
-declare class Log2gelf {
+declare class Log2gelf extends Transport {
     /**
      * Constructs an instance of the Log2gelf transport.
      *
@@ -66,4 +66,5 @@ declare class Log2gelf {
      */
     updateClusterInfo(node: string, leader: boolean): void;
 }
+import Transport = require("winston-transport");
 //# sourceMappingURL=winston-graylog.d.ts.map

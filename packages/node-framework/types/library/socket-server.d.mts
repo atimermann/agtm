@@ -32,7 +32,7 @@ export default class SocketServer {
      *
      * @type {import("socket.io").Server}
      */
-    static io: any;
+    static io: import("socket.io").Server;
     /**
      * Runs the Socket Server based on the configuration mode
      *

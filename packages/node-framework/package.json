@@ -1,6 +1,6 @@
 {
   "name": "@agtm/node-framework",
-  "version": "7.0.1",
+  "version": "7.1.0",
   "description": "Framework nodejs baseado no ExpressJs",
   "bin": {
     "nf-monitor": "scripts/monitor.mjs"
@@ -61,5 +61,6 @@
     "eslint-config-tjw-jsdoc": "^1.0.5",
     "eslint-plugin-jsdoc": "^48.0.2",
     "typescript": "^5.3.3"
-  }
+  },
+  "types": "types/index.d.ts"
 }

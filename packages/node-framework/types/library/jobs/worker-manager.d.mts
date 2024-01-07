@@ -19,13 +19,12 @@ export default class WorkerManager {
      */
     static workers: Worker[];
     /**
-     * Workers dictionary, indexed by name
+     * A dictionary of workers, indexed by their names.
+     * It allows quick access to worker instances based on a unique string identifier.
      *
-     * @type {Object.<string, Worker>}
+     * @type {WorkerDict}
      */
-    static indexedWorkers: {
-        [x: string]: Worker;
-    };
+    static indexedWorkers: WorkerDict;
     /**
      * Flag that indicates that workManager is in the verification phase
      * TODO: Validar necessidade
@@ -40,15 +39,17 @@ export default class WorkerManager {
      */
     static events: any;
     /**
-     * Starts Worker Manager
+     * Starts Worker Manager.
      *
      * @return {Promise<void>}
      */
     static init(): Promise<void>;
     /**
-     * Add a new Worker
+     * Adds a new Worker to the Worker Manager.
      *
-     * @param {Worker} worker
+     * @param {Worker} worker  - The Worker instance to add.
+     *
+     * @throws {Error} If a Worker with the same name already exists.
      */
     static addWorker(worker: Worker): void;
     /**
@@ -57,10 +58,10 @@ export default class WorkerManager {
      * @param  {string}  name        - The name of the worker.
      * @param  {object}  job         - The job associated with the worker.
      * @param  {boolean} persistent  - Whether the worker is persistent.
-     * @param  {boolean} auto        - automatically created
+     * @param  {boolean} auto        - Indicates if the worker was automatically created.
      * @param  {object}  options     - The options for the worker.
      *
-     * @return {Worker}
+     * @return {Worker}              A new instance of a Worker, configured and ready to be added to the worker management system.
      */
     static createWorker(name: string, job: object, persistent: boolean, auto: boolean, options?: object): Worker;
     /**
@@ -78,17 +79,23 @@ export default class WorkerManager {
      */
     static verifyWorkersHealth(): void;
     /**
-     * returns worker information for monitoring
+     * Returns worker information for monitoring.
      *
-     * @return {{}}
+     * @return {WorkerDict} An object containing workers indexed by their names.
      */
-    static getWorkersInformation(): {};
+    static getWorkersInformation(): WorkerDict;
 }
+/**
+ * Created on 04/07/2023
+ */
+export type Worker = import('./worker.mjs').default;
 /**
  * TODO: Criar controle de processos zumbis
  * TODO: Parametrizar delay
  * TODO: Parametrizar options for workers
  */
-export type Worker = import('./worker.mjs').default;
+export type WorkerDict = {
+    [key: string]: Worker;
+};
 import Worker from './worker.mjs';
 //# sourceMappingURL=worker-manager.d.mts.map

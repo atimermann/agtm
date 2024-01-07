@@ -73,6 +73,13 @@ declare class Controller extends Controller_base {
      */
     applicationsPath: string;
     /**
+     * Tipo de controller, exemplo, http, jobs, socket
+     * Defined in the controllerController, do not modify.
+     *
+     * @type {string}
+     */
+    controllerType: string;
+    /**
      * Gets a complete identification string for the controller, including the application, app, and controller names.
      *
      * @return {string} A string that identifies the controller.

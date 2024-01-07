@@ -1,11 +1,13 @@
 /**
  * Created on 04/07/2023
  *
- * /worker-manager.mjs
+ * @file packages/node-framework/library/jobs/worker-manager.mjs
+ * Manager for workers that oversees the execution and monitoring of background jobs.
  *
  * @author André Timermann <andre@timermann.com.br>
  *
  * @typedef {import('./worker.mjs').default} Worker
+ * @typedef {{ [key: string]: Worker }} WorkerDict
  *
  * TODO: Criar controle de processos zumbis
  * TODO: Parametrizar delay
@@ -49,9 +51,10 @@ export default class WorkerManager {
   static workers = []
 
   /**
-   * Workers dictionary, indexed by name
+   * A dictionary of workers, indexed by their names.
+   * It allows quick access to worker instances based on a unique string identifier.
    *
-   * @type {Object.<string, Worker>}
+   * @type {WorkerDict}
    */
   static indexedWorkers = {}
 
@@ -71,21 +74,23 @@ export default class WorkerManager {
   static events = new EventEmitter()
 
   /**
-   * Starts Worker Manager
+   * Starts Worker Manager.
    *
    * @return {Promise<void>}
    */
   static async init () {
     if (this.workers.length > 0) {
       await this.runPersistentWorkers()
-      await this.monitorWorkersHealth()
+      this.monitorWorkersHealth()
     }
   }
 
   /**
-   * Add a new Worker
+   * Adds a new Worker to the Worker Manager.
    *
-   * @param {Worker} worker
+   * @param {Worker} worker  - The Worker instance to add.
+   *
+   * @throws {Error} If a Worker with the same name already exists.
    */
   static addWorker (worker) {
     logger.info(`Add new Worker: ${worker}`)
@@ -124,10 +129,10 @@ export default class WorkerManager {
    * @param  {string}  name        - The name of the worker.
    * @param  {object}  job         - The job associated with the worker.
    * @param  {boolean} persistent  - Whether the worker is persistent.
-   * @param  {boolean} auto        - automatically created
+   * @param  {boolean} auto        - Indicates if the worker was automatically created.
    * @param  {object}  options     - The options for the worker.
    *
-   * @return {Worker}
+   * @return {Worker}              A new instance of a Worker, configured and ready to be added to the worker management system.
    */
   static createWorker (name, job, persistent, auto, options = {}) {
     const newWorker = Worker.create({
@@ -184,9 +189,9 @@ export default class WorkerManager {
   }
 
   /**
-   * returns worker information for monitoring
+   * Returns worker information for monitoring.
    *
-   * @return {{}}
+   * @return {WorkerDict} An object containing workers indexed by their names.
    */
   static getWorkersInformation () {
     return this.indexedWorkers

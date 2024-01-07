@@ -103,27 +103,18 @@ export default class Job extends EventEmitter {
   options
 
   /**
+   * Creates a job instance.
    *
-   * @param      applicationName
-   * @param      appName
-   * @param      controllerName
-   * @param      name
-   * @param      schedule
-   * @param      jobFunction
-   * @param      options
-   * @return {*}
-   */
-
-  /**
-   *
-   * @param root0
-   * @param root0.applicationName
-   * @param root0.appName
-   * @param root0.controllerName
-   * @param root0.name
-   * @param root0.schedule
-   * @param root0.jobFunction
-   * @param root0.options
+   * @static
+   * @param  {object}   root0                  - An object containing job creation properties.
+   * @param  {string}   root0.applicationName  - The application name.
+   * @param  {string}   root0.appName          - The application name.
+   * @param  {string}   root0.controllerName   - The controller name.
+   * @param  {string}   root0.name             - The job name.
+   * @param  {string}   root0.schedule         - The job schedule.
+   * @param  {Function} root0.jobFunction      - The job function.
+   * @param  {object}   [root0.options]        - Additional options.
+   * @return {Job}                             - The created job instance.
    */
   static create ({
     applicationName,

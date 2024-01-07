@@ -5,6 +5,7 @@ BUGS - URGENT
 
 ************************************************************************************************************************
 
+- Renomear Check para prepare quando todos os erros estiverel corrigidos
 - Definir padrão de service, baseado no NEST, ver outros padrões e criar exemplos
 - Migrar todos os arquivos para ESM
 - Criar teste unitário

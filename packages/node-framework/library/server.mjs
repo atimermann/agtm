@@ -1,11 +1,11 @@
 /**
  * **Created on 09/20/18**
  *
- * src/library/server.js
+ * @file src/library/server.js
+ * Bootstrap and server execution module.
+ * Provides functions to initialize the server and its components.
  *
  * @author André Timermann <andre@timermann.com.br>
- *
- *   Bootstrap, server execution
  */
 
 import Application from './application.mjs'
@@ -31,13 +31,12 @@ export default {
 
   /**
    * Initializes the server.
+   * Calls the applicationLoader function to get an Application instance and then initializes various server components based on the configuration.
    *
-   * @param  {function(Application): Application} applicationLoader  - A function that receives the Application class and returns an instance of it.
+   * @param {function(typeof Application): Application} applicationLoader  - A function that receives the Application class and returns an instance of it.
    *
    * @throws {TypeError} If the provided applicationLoader does not return an instance of Application.
    * @throws {Error} If the jobManager is disabled when running in 'job' mode.
-   *
-   * @return {void}
    */
   async init (applicationLoader) {
     try {
@@ -54,6 +53,7 @@ export default {
         if (Config.get('jobManager.enabled', 'boolean')) {
           await WorkerRunner.run(application)
         } else {
+          // noinspection ExceptionCaughtLocallyJS
           throw new Error('jobManager disabled')
         }
       } else {
@@ -66,9 +66,10 @@ export default {
   },
 
   /**
-   * Initializes Server
+   * Initializes the HTTP, Job, and Socket servers based on the application's configuration.
+   * It also initiates resource monitoring and displays application information.
    *
-   * @param {Application} application
+   * @param {Application} application  - The instance of the application to initialize servers for.
    */
   async initServer (application) {
     if (Config.get('monitor.enabled', 'boolean')) {
@@ -82,7 +83,7 @@ export default {
     this.logInfo(application)
 
     // Load initializers
-    for (const controller of application.getControllers()) {
+    for (const controller of application.getControllers('controller')) {
       try {
         await controller.setup()
       } catch (e) {
@@ -96,13 +97,18 @@ export default {
       await HttpServer.run(application)
     }
 
-    if (Config.get('httpServer.enabled', 'boolean')) {
+    if (Config.get('jobManager.enabled', 'boolean')) {
       await JobManager.run(application)
     }
 
-    if (Config.get('socket.enabled', 'boolean')) await SocketServer.run(application)
+    if (Config.get('socket.enabled', 'boolean')) SocketServer.run(application)
   },
 
+  /**
+   * Logs the startup information of the application including Node, system details, and application version.
+   *
+   * @param {Application} application  - The instance of the application to log information for.
+   */
   logInfo (application) {
     const filePath = new URL('../package.json', import.meta.url)
     const packageInfo = JSON.parse(readFileSync(filePath, 'utf8'))

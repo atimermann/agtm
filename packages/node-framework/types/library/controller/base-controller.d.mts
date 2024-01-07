@@ -1,14 +1,23 @@
-export default Controller;
-declare const Controller_base: any;
 /**
- * @mixes JobsMixin
- * @mixes SocketMixin
- * @mixes HttpMixin
- * @mixes HttpViewMixin
+ * **Created on 16/11/18**
+ *
+ * @file library/controller/controller.mjs
+ * Abstract class representing the MVC Controller, which is the entry point of our application, from service execution, route configuration, middleware (for plugin implementation), among others.
+ * @see https://stackoverflow.com/questions/29480569/does-ecmascript-6-have-a-convention-for-abstract-classes - Defining abstract class.
+ * @todo Document creating a flowchart diagram similar to Vuejs.
+ * @todo Check proxy to make some attributes readonly.
+ * @author André Timermann <andre@timermann.com.br>
+ *
+ * @file
+ *   Classe Abstrata que representa Controlador do MVC, aqui fica o ponto de entrada da nossa aplicação, desde execução de serviços, configuração de
+ *   rotas, middleware (Para implementação de plugins) entre outros
+ *
+ * REF: Definindo classe abstrata - https://stackoverflow.com/questions/29480569/does-ecmascript-6-have-a-convention-for-abstract-classes *
+ */
+/**
  * Represents a base controller class in the MVC architecture. It's an abstract class and should not be instantiated directly.
  */
-declare class Controller extends Controller_base {
-    [x: string]: any;
+export default class BaseController {
     /**
      * The name of the application this controller belongs to.
      * Defined in the controllerController, do not modify.
@@ -73,14 +82,17 @@ declare class Controller extends Controller_base {
      */
     applicationsPath: string;
     /**
+     * Tipo de controller, exemplo, http, jobs, socket
+     * Defined in the controllerController, do not modify.
+     *
+     * @type {string}
+     */
+    controllerType: string;
+    /**
      * Gets a complete identification string for the controller, including the application, app, and controller names.
      *
      * @return {string} A string that identifies the controller.
      */
     get completeIndentification(): string;
-    /**
-     * Abstract setup method, used for initial execution. Should be implemented by subclasses.
-     */
-    setup(): Promise<void>;
 }
-//# sourceMappingURL=controller.d.mts.map
+//# sourceMappingURL=base-controller.d.mts.map

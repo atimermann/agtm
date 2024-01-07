@@ -16,7 +16,15 @@ import { readdir, access } from 'node:fs/promises'
 
 import Controller from './controller/controller.mjs'
 import createLogger from './logger.mjs'
+import BaseController from './controller/base-controller.mjs'
 const logger = createLogger('ApplicationController')
+
+/**
+ * Whenever you implement new types of controllers, define the name of the directory to be loaded here
+ *
+ * @type {string[]}
+ */
+const CONTROLLERS_DIRECTORY = ['jobs']
 
 /**
  *
@@ -25,8 +33,8 @@ export default class ApplicationController {
   /**
    * Returns all controllers of the current application and sets attributes about the current application.
    *
-   * @param  {Array<Application>} applications  - Array of application objects to process
-   * @return {Promise<Array>}                   A promise that resolves to an array of controller instances
+   * @param  {Array<Application>}         applications  - Array of application objects to process
+   * @return {Promise<Array<Controller>>}               A promise that resolves to an array of controller instances
    */
   static async getControllersInstances (applications) {
     const controllersInstances = []
@@ -52,9 +60,9 @@ export default class ApplicationController {
   /**
    * Returns all controllers of the specified app.
    *
-   * @param  {string}         appsPath  Physical path of the directory where the apps of this application are located
+   * @param  {string}                     appsPath  Physical path of the directory where the apps of this application are located
    *
-   * @return {Promise<Array>}           List of already instantiated controllers
+   * @return {Promise<Array<Controller>>}           List of already instantiated controllers
    * @private
    */
   static async _getControllersInstanceByApps (appsPath) {
@@ -63,16 +71,19 @@ export default class ApplicationController {
     for (const appName of await readdir(appsPath)) {
       logger.debug(`Entering App '${appName}'`)
 
-      const controllersPath = path.join(appsPath, appName, 'controllers')
       const appPath = path.join(appsPath, appName)
 
-      if (await this.exists(appsPath)) {
-        for (const controllerInstance of await this._getControllersInstanceByControllers(controllersPath)) {
-          // Defines app attributes to the Controller
-          controllerInstance.appName = appName
-          controllerInstance.appPath = appPath
+      for (const controllerDirectory of CONTROLLERS_DIRECTORY) {
+        const controllersPath = path.join(appsPath, appName, controllerDirectory)
+        if (await this.exists(controllersPath)) {
+          for (const controllerInstance of await this._getControllersInstanceByControllers(controllersPath)) {
+            // Defines app attributes to the Controller
+            controllerInstance.appName = appName
+            controllerInstance.appPath = appPath
+            controllerInstance.controllerType = controllerDirectory
 
-          controllersInstances.push(controllerInstance)
+            controllersInstances.push(controllerInstance)
+          }
         }
       }
     }
@@ -83,9 +94,9 @@ export default class ApplicationController {
   /**
    * Loads and returns all controllers defined in the 'Controllers' directory.
    *
-   * @param  {string}         controllersPath  Directory where the controllers are located
+   * @param  {string}                     controllersPath  Directory where the controllers are located
    *
-   * @return {Promise<Array>}                  List of already instantiated controllers
+   * @return {Promise<Array<Controller>>}                  List of already instantiated controllers
    * @private
    */
   static async _getControllersInstanceByControllers (controllersPath) {
@@ -101,7 +112,7 @@ export default class ApplicationController {
         TargetController = (await import(controllerPath)).default
         const controllerInstance = new TargetController()
 
-        if (!(controllerInstance instanceof Controller)) {
+        if (!(controllerInstance instanceof BaseController)) {
           throw new TypeError('Controller must be an instance of Controller. If you are importing a sub-application ' +
               'of a module, make sure that both are using the same version of the node-framework, you must use the same ' +
               `instance, import from the same file. Use ApplicationLoader! Controller incompatible in "${controllerPath}"!`)
@@ -132,8 +143,8 @@ export default class ApplicationController {
   /**
    * Checks if the specified directory exists.
    *
-   * @param  {string}  directoryPath  - The path of the directory to check.
-   * @return {boolean}                Returns true if the directory exists, false otherwise.
+   * @param  {string}           directoryPath  - The path of the directory to check.
+   * @return {Promise<boolean>}                Returns true if the directory exists, false otherwise.
    */
   static async exists (directoryPath) {
     try {

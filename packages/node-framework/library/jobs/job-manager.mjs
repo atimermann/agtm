@@ -299,15 +299,15 @@ export default class JobManager {
 
   /**
    *
-   * @param application
+   * @param {import('../application.mjs').default} application
    */
   static async _loadJobsAndWorkersFromController (application) {
     logger.info('Loading jobs and Workers from controllers...')
 
-    for (const controller of application.getControllers()) {
+    for (const controller of application.getControllers('jobs')) {
       logger.info(`Loading "${controller.completeIndentification}"...`)
       if (!this._isJobEnabled(controller)) continue
-      await controller.jobs()
+      await controller.setup()
     }
   }
 

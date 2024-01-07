@@ -180,10 +180,11 @@ export default class Application {
   /**
    * Returns the loaded controllers.
    *
-   * @return {Array<Controller>} The loaded controllers.
+   * @return {Array<Controller>}       The loaded controllers.
+   * @param  {string}            type  Controller type
    */
-  getControllers () {
-    return this.controllers
+  getControllers (type) {
+    return this.controllers.filter(controller => controller.controllerType === type)
   }
 
   /**

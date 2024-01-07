@@ -1,13 +1,13 @@
 {
   "name": "@agtm/node-framework",
-  "version": "7.1.2",
+  "version": "7.1.4",
   "description": "Framework nodejs baseado no ExpressJs",
   "types": "./types/index.d.mts",
   "bin": {
     "nf-monitor": "scripts/monitor.mjs"
   },
   "scripts": {
-    "prepare": "npm run create-types ; npm run lint ; npm run test",
+    "check": "npm run tsc ; npm run lint ; npm run test",
     "publish-patch": "npm version patch && npm publish --access public && git push",
     "publish-minor": "npm version minor && npm publish --access public && git push",
     "publish-major": "npm version major && npm publish --access public && git push",
@@ -16,7 +16,7 @@
     "lint:test": "npx eslint  --ext .mjs,.js .",
     "update": "npm update @agtm/util && npm list @agtm/util",
     "audit": "npm audit --omit=dev",
-    "create-types": "npx tsc"
+    "tsc": "npx tsc"
   },
   "author": "André Timermann <andre@timermann.com.br>",
   "license": "ISC",
@@ -61,6 +61,10 @@
     "node": ">=18"
   },
   "devDependencies": {
+    "@types/blessed": "^0.1.25",
+    "@types/figlet": "^1.5.8",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node-cron": "^3.0.11",
     "eslint": "^8.56.0",
     "eslint-config-tjw-jsdoc": "^1.0.5",
     "eslint-plugin-jsdoc": "^48.0.2",

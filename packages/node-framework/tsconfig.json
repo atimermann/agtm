@@ -11,7 +11,9 @@
     "declarationDir": "types",
     "declarationMap": true,
     "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "strictNullChecks": false,
+    "strictPropertyInitialization": true
   },
   "exclude": [
     "./node_modules",

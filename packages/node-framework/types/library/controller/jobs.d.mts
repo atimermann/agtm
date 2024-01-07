@@ -1,40 +1,31 @@
 /**
- * Provides job-related functionality for extending classes.
- *
- * This mixin encapsulates logic related to job management and execution. Classes
- * that need job-related capabilities can extend this mixin to inherit its methods
- * and properties.
- *
- * @mixin
- *
- * @requires {string} Controller#appName          - Expected to be defined in the base class.
- * @requires {string} Controller#applicationName  - Expected to be defined in the base class.
- * @requires {string} Controller#controllerName   - Expected to be defined in the base class. *
+ * Controller responsible for managing jobs and workers.
+ * Inherits functionalities from BaseController and extends them to manage jobs and workers.
  */
-export default class JobsMixin {
+export default class JobsController extends BaseController {
     /**
      * Create a new job.
      *
-     * @param {string}      name         - The name of the job.
-     * @param {string|null} schedule     - The schedule for the job in cron format, or null if the job is not scheduled.
-     * @param {Function}    jobFunction  - The function that will be executed when the job is processed.
-     * @param {object}      [options]    - Optional settings for the job.
+     * @param {string}      name         The name of the job. Must be unique.
+     * @param {string|null} schedule     The schedule for the job in cron format, or null for immediate execution.
+     * @param {Function}    jobFunction  The function that will be executed when the job runs.
+     * @param {object}      [options]    Optional settings for the job.
      * @throws {Error} If a job with the provided name already exists.
      */
     createJob(name: string, schedule: string | null, jobFunction: Function, options?: object): void;
     /**
      * Creates workers to process a given job.
      *
-     * @param {string} name     Nome do Grupo de workes
-     * @param {string} jobName  Nome da tarefa que será processda
-     * @param          options  Configuração dos workers
+     * @param {string} name     The name of the worker group.
+     * @param {string} jobName  The name of the job to be processed.
+     * @param {object} options  Configuration options for the workers.
      */
-    createWorkers(name: string, jobName: string, options: any): void;
+    createWorkers(name: string, jobName: string, options: object): void;
     /**
-     * Sends data to the parent process, used as communication between the running job and the application
+     * Sends data to the parent process, used as communication between the running job and the application.
      *
-     * @param {string} messageName
-     * @param {object} message
+     * @param {string} messageName  The identifier for the message type.
+     * @param {object} message      The message payload.
      */
     sendMessage(messageName: string, message: object): void;
     /**
@@ -59,7 +50,7 @@ export default class JobsMixin {
      */
     onMessage(messageName: string, fn: (data: any, worker: Worker, jobProcess: object, childProcess: object) => any): void;
     /**
-     * Defines a function that will be executed in all jobs in this controller when initializing the job
+     * Defines a function that will be executed in all jobs in this controller when initializing the job.
      *
      * @param {Function} jobSetupFunction  Function to be performed
      * @param {boolean}  allApplications   Runs on all jobs in all applications
@@ -68,8 +59,8 @@ export default class JobsMixin {
      */
     jobSetup(jobSetupFunction: Function, allApplications?: boolean, allApps?: boolean, allControllers?: boolean): void;
     /**
-     * Defines a function that will be executed in all jobs after the job is finished
-     * For persistent jobs, only when an error occurs
+     * Defines a function that will be executed in all jobs after the job is finished.
+     * For persistent jobs, only when an error occurs.
      *
      * @param {Function} jobTeardownFunction  Function to be performed
      * @param {boolean}  allApplications      Runs on all jobs in all applications
@@ -78,9 +69,9 @@ export default class JobsMixin {
      */
     jobTeardown(jobTeardownFunction: Function, allApplications?: boolean, allApps?: boolean, allControllers?: boolean): void;
     /**
-     * Ends the execution of the job, it must always be called to perform finishing tasks.
+     * Ends the execution of the job. This should always be called to perform finishing tasks.
      *
-     * @param  {number}        exitCode
+     * @param  {number}        exitCode  The exit code for the process.
      * @return {Promise<void>}
      */
     exit(exitCode?: number): Promise<void>;
@@ -90,7 +81,8 @@ export default class JobsMixin {
      * Optional abstract method, used for defining jobs.
      * Can be overridden in a subclass if custom job definitions are needed.
      */
-    jobs(): Promise<void>;
+    setup(): Promise<void>;
 }
+import BaseController from './base-controller.mjs';
 import Worker from '../jobs/worker.mjs';
-//# sourceMappingURL=jobs-mixin.d.mts.map
+//# sourceMappingURL=jobs.d.mts.map

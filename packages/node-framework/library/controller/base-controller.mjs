@@ -13,29 +13,12 @@
  *   rotas, middleware (Para implementação de plugins) entre outros
  *
  * REF: Definindo classe abstrata - https://stackoverflow.com/questions/29480569/does-ecmascript-6-have-a-convention-for-abstract-classes *
- *
- * TODO: Documentar criar um diagrama de fluxo de execução igual do Vuejs
- * TODO: Verificar proxy para deixar alguns atributos readonly
  */
-
-import { Multi } from '@agtm/util'
-
-// Mixins
-import SocketMixin from './socket-mixin.mjs'
-import HttpMixin from './http-mixin.mjs'
-import HttpViewMixin from './http-view-mixin.mjs'
-
-import createLogger from '../../library/logger.mjs'
-const logger = createLogger('Controller')
 
 /**
- * @mixes JobsMixin
- * @mixes SocketMixin
- * @mixes HttpMixin
- * @mixes HttpViewMixin
  * Represents a base controller class in the MVC architecture. It's an abstract class and should not be instantiated directly.
  */
-class Controller extends Multi.inherit(SocketMixin, HttpMixin, HttpViewMixin) {
+export default class BaseController {
   /**
    * The name of the application this controller belongs to.
    * Defined in the controllerController, do not modify.
@@ -122,8 +105,7 @@ class Controller extends Multi.inherit(SocketMixin, HttpMixin, HttpViewMixin) {
    * @throws {TypeError} if an attempt is made to instantiate it directly.
    */
   constructor () {
-    super()
-    if (new.target === Controller) {
+    if (new.target === BaseController) {
       throw new TypeError('Cannot construct Abstract instances directly')
     }
   }
@@ -136,13 +118,4 @@ class Controller extends Multi.inherit(SocketMixin, HttpMixin, HttpViewMixin) {
   get completeIndentification () {
     return `application: ${this.applicationName}, app: ${this.appName}, controller: ${this.controllerName}`
   }
-
-  /**
-   * Abstract setup method, used for initial execution. Should be implemented by subclasses.
-   */
-  async setup () {
-    logger.debug(`Setup not implemented in ${this.completeIndentification}.`)
-  }
 }
-
-export default Controller

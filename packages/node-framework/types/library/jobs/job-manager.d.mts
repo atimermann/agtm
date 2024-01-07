@@ -128,9 +128,9 @@ export default class JobManager {
      */
     /**
      *
-     * @param application
+     * @param {import('../application.mjs').default} application
      */
-    static _loadJobsAndWorkersFromController(application: any): Promise<void>;
+    static _loadJobsAndWorkersFromController(application: import('../application.mjs').default): Promise<void>;
     /**
      * Starts all the scheduled jobs. This involves initiating the execution of each job
      * as per its predefined schedule.

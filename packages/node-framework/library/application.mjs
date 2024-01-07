@@ -11,9 +11,14 @@
  * An Application can load other applications or be loaded by other applications,
  * enabling reusability.
  *
+ * @typedef {import('./controller/base-controller.mjs').default} BaseController
+ * @typedef {import('./controller/jobs.mjs').default} JobsController - The controller for handling job-related actions.
+ * @typedef {import('./controller/socket.mjs').default} SocketController - The controller for handling socket-related actions.
+ * @typedef {import('./controller/core.mjs').default} CoreController - The main controller handling core framework functionalities.
+ * @typedef {import('./controller/http.mjs').default} HttpController - The controller for handling HTTP-related actions.
+ *
  * @typedef {object} Libraries
  * @property {Function}             createLogger     - Function to create a logger instance.
- * @property {typeof Controller}    Controller       - The Controller class.
  * @property {typeof JobManager}    JobManager       - The JobManager class.
  * @property {typeof WorkerManager} WorkerManager    - The WorkerManager class.
  * @property {typeof Config}        Config           - The Config class.
@@ -30,7 +35,6 @@ import path from 'node:path'
 import { readdir } from 'node:fs/promises'
 import createLogger from './logger.mjs'
 // import { readFileSync } from 'node:fs' TODO: usado por _nodeFrameworkVersion, remover depois de garantir q não será usado
-import Controller from './controller/controller.mjs'
 import WorkerManager from './jobs/worker-manager.mjs'
 import JobManager from './jobs/job-manager.mjs'
 import Config from './config.mjs'
@@ -62,7 +66,7 @@ export default class Application {
   /**
    * Lista de instancia de controllers
    *
-   * @type {Array<Controller>}
+   * @type {Array<BaseController>}
    */
   controllers = []
 
@@ -86,7 +90,6 @@ export default class Application {
   static getLibraries () {
     return {
       createLogger,
-      Controller,
       JobManager,
       WorkerManager,
       Config
@@ -178,13 +181,39 @@ export default class Application {
   }
 
   /**
-   * Returns the loaded controllers.
+   * @overload
+   * @param  {'jobs'}                type  - Controller type specified as 'jobs'.
+   * @return {Array<JobsController>}       The loaded controllers of type 'jobs'.
+   */
+  /**
+   * @overload
+   * @param  {'socket'}                type  - Controller type specified as 'socket'.
+   * @return {Array<SocketController>}       The loaded controllers of type 'socket'.
+   */
+  /**
+   * @overload
+   * @param  {'core'}                type  - Controller type specified as 'core'.
+   * @return {Array<CoreController>}       The loaded controllers of type 'core'.
+   */
+  /**
+   * @overload
+   * @param  {'http'}                type  - Controller type specified as 'http'.
+   * @return {Array<HttpController>}       The loaded controllers of type 'http'.
+   */
+  /**
+   * Returns the loaded controllers of the specified type.
    *
-   * @return {Array<Controller>}       The loaded controllers.
-   * @param  {string}            type  Controller type
+   * @param  {string}                type  - Controller type.
+   * @return {Array<BaseController>}       The loaded controllers of unspecified type.
    */
   getControllers (type) {
-    return this.controllers.filter(controller => controller.controllerType === type)
+    return this.controllers
+      .filter(controller => controller.controllerType === type)
+      .map(controller => {
+        ApplicationController.instanceOf(controller, type)
+
+        return controller
+      })
   }
 
   /**

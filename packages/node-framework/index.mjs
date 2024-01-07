@@ -12,8 +12,10 @@ import ApplicationController from './library/application-controller.mjs'
 import Server from './library/server.mjs'
 import createLogger from './library/logger.mjs'
 import Config from './library/config.mjs'
-import Controller from './library/controller/controller.mjs'
 import JobsController from './library/controller/jobs.mjs'
+import SocketController from './library/controller/socket.mjs'
+import HttpController from './library/controller/http.mjs'
+import CoreController from './library/controller/core.mjs'
 import checkExecution from './library/check-execution.mjs'
 import JobManager from './library/jobs/job-manager.mjs'
 import WorkerManager from './library/jobs/worker-manager.mjs'
@@ -27,8 +29,10 @@ export {
   logger,
   Config,
   ApplicationController,
-  Controller,
   JobsController,
+  HttpController,
+  CoreController,
+  SocketController,
   checkExecution,
   JobManager,
   WorkerManager

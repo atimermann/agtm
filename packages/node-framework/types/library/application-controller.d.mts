@@ -3,12 +3,31 @@
  */
 export default class ApplicationController {
     /**
+     *
+     * Um mapeamento de tipos de controlador para suas respectivas classes. Cada chave é uma string
+     * que representa o tipo de controlador, e o valor é a classe do controlador correspondente.
+     *
+     * @type {{[key: string]: typeof BaseController}}
+     */
+    static controllerMap: {
+        [key: string]: typeof BaseController;
+    };
+    /**
+     * Verifica se controller é instancia da classe type.
+     *
+     * @param  {BaseController} controller
+     * @param  {string}         type
+     *
+     * @return {void}
+     */
+    static instanceOf(controller: BaseController, type: string): void;
+    /**
      * Returns all controllers of the current application and sets attributes about the current application.
      *
-     * @param  {Array<Application>}         applications  - Array of application objects to process
-     * @return {Promise<Array<Controller>>}               A promise that resolves to an array of controller instances
+     * @param  {Array<Application>}             applications  - Array of application objects to process
+     * @return {Promise<Array<BaseController>>}               A promise that resolves to an array of controller instances
      */
-    static getControllersInstances(applications: Array<Application>): Promise<Array<Controller>>;
+    static getControllersInstances(applications: Array<Application>): Promise<Array<BaseController>>;
     /**
      * Returns all controllers of the specified app.
      *
@@ -46,5 +65,5 @@ export default class ApplicationController {
  * **Created on 16/11/18**
  */
 export type Application = import('./application.mjs').default;
-import Controller from './controller/controller.mjs';
+import BaseController from './controller/base-controller.mjs';
 //# sourceMappingURL=application-controller.d.mts.map

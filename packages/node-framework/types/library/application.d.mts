@@ -25,9 +25,9 @@ export default class Application {
     /**
      * Lista de instancia de controllers
      *
-     * @type {Array<Controller>}
+     * @type {Array<BaseController>}
      */
-    controllers: Array<Controller>;
+    controllers: Array<BaseController>;
     /**
      * A unique identifier for the application
      */
@@ -66,12 +66,29 @@ export default class Application {
      */
     init(): Promise<void>;
     /**
-     * Returns the loaded controllers.
-     *
-     * @return {Array<Controller>}       The loaded controllers.
-     * @param  {string}            type  Controller type
+     * @overload
+     * @param  {'jobs'}                type  - Controller type specified as 'jobs'.
+     * @return {Array<JobsController>}       The loaded controllers of type 'jobs'.
      */
-    getControllers(type: string): Array<Controller>;
+    getControllers(type: 'jobs'): Array<JobsController>;
+    /**
+     * @overload
+     * @param  {'socket'}                type  - Controller type specified as 'socket'.
+     * @return {Array<SocketController>}       The loaded controllers of type 'socket'.
+     */
+    getControllers(type: 'socket'): Array<SocketController>;
+    /**
+     * @overload
+     * @param  {'core'}                type  - Controller type specified as 'core'.
+     * @return {Array<CoreController>}       The loaded controllers of type 'core'.
+     */
+    getControllers(type: 'core'): Array<CoreController>;
+    /**
+     * @overload
+     * @param  {'http'}                type  - Controller type specified as 'http'.
+     * @return {Array<HttpController>}       The loaded controllers of type 'http'.
+     */
+    getControllers(type: 'http'): Array<HttpController>;
     /**
      * Returns information about all apps from all loaded applications.
      *
@@ -84,15 +101,33 @@ export default class Application {
  *
  * src/library/application.js
  */
+export type BaseController = import('./controller/base-controller.mjs').default;
+/**
+ * - The controller for handling job-related actions.
+ */
+export type JobsController = import('./controller/jobs.mjs').default;
+/**
+ * - The controller for handling socket-related actions.
+ */
+export type SocketController = import('./controller/socket.mjs').default;
+/**
+ * - The main controller handling core framework functionalities.
+ */
+export type CoreController = import('./controller/core.mjs').default;
+/**
+ * - The controller for handling HTTP-related actions.
+ */
+export type HttpController = import('./controller/http.mjs').default;
+/**
+ * Created at 20/09/2018
+ *
+ * src/library/application.js
+ */
 export type Libraries = {
     /**
      * - Function to create a logger instance.
      */
     createLogger: Function;
-    /**
-     * - The Controller class.
-     */
-    Controller: typeof Controller;
     /**
      * - The JobManager class.
      */
@@ -125,7 +160,6 @@ export type AppInfo = {
      */
     appName: string;
 };
-import Controller from './controller/controller.mjs';
 import JobManager from './jobs/job-manager.mjs';
 import WorkerManager from './jobs/worker-manager.mjs';
 import Config from './config.mjs';

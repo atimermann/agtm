@@ -9,10 +9,12 @@ export const logger: {
 };
 import Config from './library/config.mjs';
 import ApplicationController from './library/application-controller.mjs';
-import Controller from './library/controller/controller.mjs';
 import JobsController from './library/controller/jobs.mjs';
+import HttpController from './library/controller/http.mjs';
+import CoreController from './library/controller/core.mjs';
+import SocketController from './library/controller/socket.mjs';
 import checkExecution from './library/check-execution.mjs';
 import JobManager from './library/jobs/job-manager.mjs';
 import WorkerManager from './library/jobs/worker-manager.mjs';
-export { Application, Server, createLogger, Config, ApplicationController, Controller, JobsController, checkExecution, JobManager, WorkerManager };
+export { Application, Server, createLogger, Config, ApplicationController, JobsController, HttpController, CoreController, SocketController, checkExecution, JobManager, WorkerManager };
 //# sourceMappingURL=index.d.mts.map

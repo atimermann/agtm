@@ -1,20 +1,18 @@
 /**
  * Created on 28/07/23
  *
- * library/controller/socket-mixin.mjs
- *
- * SocketMixin module
+ * @file library/controller/socket-mixin.mjs
+ * Socket,io Controller
  *
  * @module socket-mixin
  * @author André Timermann <andre@timermann.com.br>
  */
-import createLogger from '../../library/logger.mjs'
-const logger = createLogger('Controller')
+import BaseController from './base-controller.mjs'
 
 /**
  *
  */
-export default class SocketMixin {
+export default class SocketController extends BaseController {
   /**
    * Holds the instance of the Socket.io server.
    *
@@ -37,7 +35,7 @@ export default class SocketMixin {
    *
    * @async
    */
-  async socket () {
-    logger.debug(`Socket pre not implemented in ${this.completeIndentification}.`)
+  async setup () {
+    throw new Error(`Mandatory to define setup method in ${this.completeIndentification}.`)
   }
 }

@@ -339,7 +339,7 @@ export default {
 
     for (const controller of controllers) {
       // Configura Rotas
-      await controller.routes()
+      await controller.setup()
 
       // Retorna e define Rota Configurada pelo controller
       controller.path

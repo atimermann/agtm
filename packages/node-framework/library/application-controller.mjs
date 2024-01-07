@@ -14,27 +14,54 @@
 import path from 'node:path'
 import { readdir, access } from 'node:fs/promises'
 
-import Controller from './controller/controller.mjs'
-import createLogger from './logger.mjs'
 import BaseController from './controller/base-controller.mjs'
-const logger = createLogger('ApplicationController')
+import SocketController from './controller/socket.mjs'
+import CoreController from './controller/core.mjs'
+import JobsController from './controller/jobs.mjs'
+import HttpController from './controller/http.mjs'
 
-/**
- * Whenever you implement new types of controllers, define the name of the directory to be loaded here
- *
- * @type {string[]}
- */
-const CONTROLLERS_DIRECTORY = ['jobs']
+import createLogger from './logger.mjs'
+const logger = createLogger('ApplicationController')
 
 /**
  *
  */
 export default class ApplicationController {
   /**
+   *
+   * Um mapeamento de tipos de controlador para suas respectivas classes. Cada chave é uma string
+   * que representa o tipo de controlador, e o valor é a classe do controlador correspondente.
+   *
+   * @type {{[key: string]: typeof BaseController}}
+   */
+  static controllerMap = {
+    socket: SocketController,
+    core: CoreController,
+    jobs: JobsController,
+    http: HttpController
+  }
+
+  /**
+   * Verifica se controller é instancia da classe type.
+   *
+   * @param  {BaseController} controller
+   * @param  {string}         type
+   *
+   * @return {void}
+   */
+  static instanceOf (controller, type) {
+    const controllerName = controller.controllerName
+
+    if (!(controller instanceof this.controllerMap[type])) {
+      throw new TypeError(`Controller "${controllerName}" must to be an instance of "${this.controllerMap[type].name}"`)
+    }
+  }
+
+  /**
    * Returns all controllers of the current application and sets attributes about the current application.
    *
-   * @param  {Array<Application>}         applications  - Array of application objects to process
-   * @return {Promise<Array<Controller>>}               A promise that resolves to an array of controller instances
+   * @param  {Array<Application>}             applications  - Array of application objects to process
+   * @return {Promise<Array<BaseController>>}               A promise that resolves to an array of controller instances
    */
   static async getControllersInstances (applications) {
     const controllersInstances = []
@@ -73,7 +100,7 @@ export default class ApplicationController {
 
       const appPath = path.join(appsPath, appName)
 
-      for (const controllerDirectory of CONTROLLERS_DIRECTORY) {
+      for (const controllerDirectory of Object.keys(this.controllerMap)) {
         const controllersPath = path.join(appsPath, appName, controllerDirectory)
         if (await this.exists(controllersPath)) {
           for (const controllerInstance of await this._getControllersInstanceByControllers(controllersPath)) {

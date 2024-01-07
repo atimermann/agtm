@@ -34,83 +34,115 @@ export default class SocketServer {
      */
     static io: import("socket.io").Server;
     /**
-     * Runs the Socket Server based on the configuration mode
+     * Runs the Socket Server based on the configuration mode.
      *
-     * @param  application
+     * @param {Application} application  Application instance
      * @static
      * @throws {Error} When an invalid socket mode is provided
      */
-    static run(application: any): void;
+    static run(application: Application): Promise<void>;
     /**
      * Loads the configuration for the Socket Server from the Config module.
      * This method should be called before creating the server.
      * The configuration includes the server mode, port, and SSL key pair.
      *
-     * @private
      * @static
      */
-    private static _loadConfiguration;
+    static "__#1@#loadConfiguration"(): void;
     /**
-     * Loads Applications
+     * Loads Applications.
      *
-     * @param application  {Application}    Information about the Application
-     *
-     * @private
+     * @param {Application} application  Information about the Application
      */
-    private static _loadApplications;
+    static "__#1@#loadApplications"(application: Application): Promise<void>;
     /**
-     * Configures an existing Express HTTP Server for use with socket.io
+     * Configures an existing Express HTTP Server for use with socket.io.
      *
      * @static
      * @param {object} httpServer  - The HTTP server instance to configure.
      */
     static configureExpressHttpServer(httpServer: object): void;
     /**
-     * Creates a standalone Socket Server
+     * Creates a standalone Socket Server.
      *
-     * @private
      * @static
      * @return {Server} - The newly created Socket Server
      */
-    private static _createStandaloneServer;
+    static "__#1@#createStandaloneServer"(): Server;
     /**
-     * Creates a standalone HTTP Socket Server
+     * Creates a standalone HTTP Socket Server.
      *
-     * @private
      * @static
      * @return {Server} - The newly created Socket Server
      */
-    private static _createStandaloneHttpServer;
+    static "__#1@#createStandaloneHttpServer"(): Server;
     /**
-     * Creates a standalone HTTPS Socket Server
+     * Creates a standalone HTTPS Socket Server.
      *
-     * @private
      * @static
      * @return {Server} - The newly created Socket Server
      */
-    private static _createStandaloneHttpsServer;
+    static "__#1@#createStandaloneHttpsServer"(): Server;
     /**
-     * Creates a standalone HTTP2 Socket Server
+     * Creates a standalone HTTP2 Socket Server.
      *
-     * @private
      * @static
      * @return {Server} - The newly created Socket Server
      */
-    private static _createStandaloneHttp2Server;
+    static "__#1@#createStandaloneHttp2Server"(): Server;
     /**
-     * Gets HTTPS options for creating a secure server
+     * Gets HTTPS options for creating a secure server.
      *
-     * @private
      * @static
      * @return {object} - An object containing the key and cert for HTTPS
      */
-    private static _getHttpsOptions;
+    static "__#1@#getHttpsOptions"(): object;
     /**
-     * Genreate Socket config options
+     * Genreate Socket config options.
      *
-     * @return {object}
-     * @private
+     * @return {SocketConfigOptions} Returns processed settings
      */
-    private static _getOptions;
+    static "__#1@#getOptions"(): SocketConfigOptions;
 }
+/**
+ * Created on 27/07/23
+ */
+export type Application = import('./application.mjs').default;
+/**
+ * Represents the configuration options for a socket connection. This object includes
+ * all necessary settings required to establish and manage a socket connection within
+ * the application. The settings are derived and processed from the application's configuration.
+ */
+export type SocketConfigOptions = {
+    /**
+     * - Indicates if the socket server is enabled.
+     */
+    enabled?: boolean;
+    /**
+     * - The port number on which the socket server should listen.
+     */
+    port?: number;
+    /**
+     * - The mode of execution for the socket server.
+     */
+    mode?: 'standalone' | 'http-server' | 'standalone-http' | 'standalone-https' | 'standalone-http2';
+    /**
+     * - SSL/TLS keys for https and http2 modes.
+     */
+    keys?: {
+        cert: string;
+        key: string;
+    };
+    /**
+     * - CORS configuration settings.
+     */
+    cors?: {
+        origin: string;
+    };
+    /**
+     * - Allowed transport methods for the socket server.
+     */
+    transports?: Array<string>;
+};
+import { Server } from 'socket.io';
 //# sourceMappingURL=socket-server.d.mts.map

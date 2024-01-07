@@ -1,5 +1,5 @@
 /**
- *
+ * Manages and schedules jobs for execution.
  */
 export default class JobManager {
     /**
@@ -7,65 +7,66 @@ export default class JobManager {
      * The jobs are stored in key-value pairs, where each key is a unique hash generated
      * for the job and the value is the job's details.
      *
-     * @typedef {Object.<string, Job>} staticJobs
+     * @type {JobDict} Holds all managed jobs, keyed by their unique UUID.
      */
-    static jobs: {};
-    static jobSetupAndTeadDownFunctions: any[];
+    static jobs: JobDict;
+    /**
+     * Used for setting up or tearing down jobs. Each object in the array specifies a function to be
+     * executed during the setup or teardown phase of a job, along with the scope (application, app,
+     * and controller names) to which the function applies. This allows the system to know which functions
+     * to execute for each job based on its scope.
+     *
+     * @type {JobSetupAndTeardownFunction[]} A list of functions and their associated scope information
+     */
+    static jobSetupAndTeadDownFunctions: JobSetupAndTeardownFunction[];
     static events: EventEmitter;
     /**
-     * Load Manager
-     * (Loads jobs and workers)
+     * Loads and initializes jobs and workers from the provided application context.
      *
-     * @param                  application
-     * @return {Promise<void>}
+     * @param  {Application}   application  - The application context to load jobs from.
+     * @return {Promise<void>}              Resolves when all jobs and workers are loaded.
      */
-    static load(application: any): Promise<void>;
+    static load(application: Application): Promise<void>;
     /**
      * Initializes the Job Manager. This involves setting up the worker environment
      * and starting the job schedules.
      *
-     * @param  {import('../application.mjs').Application} application  - The application context within which the job manager operates.
+     * @param  {Application}   application  - The application context within which the job manager operates.
      *
-     * @return {Promise<void>}                                         A promise that resolves when the Job Manager has been initialized.
-     * @static
+     * @return {Promise<void>}              A promise that resolves when the Job Manager has been initialized.
      */
-    static run(application: any): Promise<void>;
+    static run(application: Application): Promise<void>;
     /**
-     * Defines startup functions for jobs belonging to the specified application, app and controller.
-     * If null defines for all jobs.
+     * Registers a function to run during job setup for specified application components.
      *
-     * @param jobSetupFunction
-     * @param applicationName
-     * @param appName
-     * @param controllerName
+     * @param {Function} jobSetupFunction  - The function to run during job setup.
+     * @param {string}   applicationName   - The name of the application to scope the setup function to.
+     * @param {string}   appName           - The name of the app to scope the setup function to.
+     * @param {string}   controllerName    - The name of the controller to scope the setup function to.
      */
-    static setSetupFunction(jobSetupFunction: any, applicationName: any, appName: any, controllerName: any): void;
+    static setSetupFunction(jobSetupFunction: Function, applicationName: string, appName: string, controllerName: string): void;
     /**
-     * Defines teardown functions to the specified application, app and controller.
-     * If null defines for all jobs.
+     * Registers a function to run during job teardown for specified application components.
      *
-     * Persistent jobs, will only run in case of error
-     *
-     * @param jobTeardownFunction
-     * @param applicationName
-     * @param appName
-     * @param controllerName
+     * @param {Function} jobTeardownFunction  - The function to run during job teardown.
+     * @param {string}   applicationName      - The name of the application to scope the teardown function to.
+     * @param {string}   appName              - The name of the app to scope the teardown function to.
+     * @param {string}   controllerName       - The name of the controller to scope the teardown function to.
      */
-    static setTeardownFunction(jobTeardownFunction: any, applicationName: any, appName: any, controllerName: any): void;
+    static setTeardownFunction(jobTeardownFunction: Function, applicationName: string, appName: string, controllerName: string): void;
     /**
-     * Add a new job
+     * Adds a new job to the manager.
      *
-     * @param {Job} job
+     * @param {Job} job  - The job to add.
      */
     static addJob(job: Job): void;
     /**
-     * Checks if job is active
+     * Checks if a job is active based on application, app, and controller settings.
      *
-     * @param  {Controller} controller
-     * @return                          boolean
-     * @private
+     * @param  {JobsController} controller  - The controller the job belongs to.
+     * @return {boolean}                    True if the job is enabled; false otherwise.
      */
-    private static _isJobEnabled;
+    static "__#2@#isJobEnabled"(controller: JobsController): boolean;
     /**
      * Retrieves a Job instance from worker attributes. This involves searching through
      * the static job collection and returning the job that matches the given attributes.
@@ -76,81 +77,136 @@ export default class JobManager {
      * @param  {string} name             - The name of the job.
      *
      * @return {Job}                     The job instance that matches the given attributes.
-     * @static
      */
     static getJob(applicationName: string, appName: string, controllerName: string, name: string): Job;
     /**
-     * Retrieves a Job instance by uuid
+     * Retrieves a Job instance by its UUID.
      *
-     * @param  {string} uuid
-     * @return {Job}          The job instance that matches the given attributes.
+     * This method looks up a job in the stored jobs collection using the provided UUID. If a job with the given
+     * UUID exists, it returns the corresponding Job instance. This is useful for operations where you have a job's
+     * UUID and need to retrieve its full details or interact with the job object.
+     *
+     * @param  {string} uuid  - The UUID of the job to retrieve.
+     * @return {Job}          The Job instance that corresponds to the provided UUID, or undefined if no such job exists.
      */
     static getJobByUUID(uuid: string): Job;
     /**
-     * Returns information about jobs for monitoring
+     * Returns information about all managed jobs for monitoring purposes. This method collects
+     * data about each job and its associated workers, including their states and configurations.
+     * It's particularly useful for understanding the system's current operational status and for
+     * debugging or monitoring purposes.
      *
-     * TODO: Assume apenas um worker por job, se tiver mais de um pega ultimo necessario fazer tratativa
+     * Note: Currently, this method assumes there's only one worker per job. If there are multiple
+     * workers for a job, it will only consider the last one. Further development is needed to
+     * handle multiple workers per job adequately.
      *
-     * @return {{}}
+     * TODO: Handle multiple workers per job appropriately.
+     *
+     * @return {JobDict} An object containing detailed information about each job. The keys
+     *                   are the job UUIDs, and the values are objects containing job details and worker information.
      */
-    static getJobsInformation(): {};
+    static getJobsInformation(): JobDict;
     /**
-     * Configures setup and teardown functions for all system jobs according to application, app and controller
+     * Configures setup and teardown functions for all system jobs according to application, app and controller.
      *
-     * @private
      */
-    private static _configureSetupAndTeardownFunctions;
+    static "__#2@#configureSetupAndTeardownFunctions"(): void;
     /**
-     * Filter list of setup and teardown functions for specific job
+     * Filters the list of setup and teardown functions to find those that are applicable to a specific job.
+     * It checks the job's application name, app name, and controller name against each setup and teardown
+     * function's intended scope. Only functions that match or have no specified scope for these parameters
+     * are considered applicable and returned.
      *
-     * @param        job
-     * @return {*[]}
-     * @private
+     * This method is used internally to associate the correct setup and teardown functions with each job
+     * based on its scope. It's essential for ensuring that jobs are initialized and cleaned up correctly
+     * according to their specific requirements and the system's configuration.
+     *
+     * @param  {Job}                                job  - The job to filter setup and teardown functions for.
+     * @return {Array<JobSetupAndTeardownFunction>}      An array of setup and teardown functions applicable to the given job.
      */
-    private static _filterFunctiontoJob;
+    static "__#2@#filterFunctiontoJob"(job: Job): Array<JobSetupAndTeardownFunction>;
     /**
      * Creates workers for all the jobs that have been scheduled. Each job is assigned a worker
      * that will be responsible for executing the job as per its schedule.
      *
-     * @static
-     * @private
+     *
      */
-    private static _createScheduledWorkers;
+    static "__#2@#createScheduledWorkers"(): void;
     /**
      * Loads the job and worker details from the user-defined application context.
      * This involves scanning through all the controllers and extracting the job details.
      *
-     * @param  {import('../application.mjs').Application} application  - The application context within which to find the jobs.
+     * @param  {Application}   application  - The application context within which to find the jobs.
      *
-     * @return {Promise<void>}                                         A promise that resolves when all jobs and workers have been loaded.
-     * @static
-     * @private
+     * @return {Promise<void>}              A promise that resolves when all jobs and workers have been loaded.
      */
-    /**
-     *
-     * @param {import('../application.mjs').default} application
-     */
-    static _loadJobsAndWorkersFromController(application: import('../application.mjs').default): Promise<void>;
+    static "__#2@#loadJobsAndWorkersFromController"(application: Application): Promise<void>;
     /**
      * Starts all the scheduled jobs. This involves initiating the execution of each job
      * as per its predefined schedule.
      *
      * @return {Promise<void>} A promise that resolves when all scheduled jobs have started execution.
-     * @static
-     * @private
      */
-    private static _startScheduleJob;
+    static "__#2@#startScheduleJob"(): Promise<void>;
     /**
      * Schedules a job to run at predefined intervals. This involves creating a cron job
      * that triggers the job execution as per its schedule.
      *
      * @param  {Job}           job  - The job object that needs to be scheduled.
      * @return {Promise<void>}      A promise that resolves when the job has been scheduled.
-     * @static
-     * @private
      */
-    private static _schedulingJob;
+    static "__#2@#schedulingJob"(job: Job): Promise<void>;
 }
+/**
+ * **Created on 07/06/2023**
+ */
+export type Application = import('../application.mjs').default;
+/**
+ * **Created on 07/06/2023**
+ */
+export type JobsController = import('./../controller/jobs.mjs').default;
+/**
+ * **Created on 07/06/2023**
+ */
+export type JobDict = {
+    [key: string]: Job;
+};
+/**
+ * A specialized function type for job setup or teardown functions. These functions are scoped to
+ * specific application components and have a type indicating whether they are for setup or teardown.
+ */
+export type JobFunction = Function;
+/**
+ * Represents a setup or teardown function along with its scope.
+ * This type is used for objects that define a function to run during job setup or teardown,
+ * and includes the scope (application, app, and controller names) to which the function applies.
+ */
+export type JobSetupAndTeardownFunction = {
+    /**
+     * - The function to run during job setup or teardown.
+     */
+    jobSetupFunction?: JobFunction;
+    /**
+     * - The function to run during job teardown.
+     */
+    jobTeardownFunction?: JobFunction;
+    /**
+     * - The name of the application to scope the setup or teardown function to.
+     */
+    applicationName: string;
+    /**
+     * - The name of the app to scope the setup or teardown function to.
+     */
+    appName: string;
+    /**
+     * - The name of the controller to scope the setup or teardown function to.
+     */
+    controllerName: string;
+    /**
+     * - The type of function, either setup or teardown, indicated by a constant like SETUP_FUNCTION or TEARDOWN_FUNCTION.
+     */
+    type: number;
+};
 import { EventEmitter } from 'node:events';
 import Job from './job.mjs';
 //# sourceMappingURL=job-manager.d.mts.map

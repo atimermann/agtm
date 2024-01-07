@@ -83,7 +83,7 @@ export default {
     this.logInfo(application)
 
     // Load initializers
-    for (const controller of application.getControllers('controller')) {
+    for (const controller of application.getControllers('core')) {
       try {
         await controller.setup()
       } catch (e) {
@@ -101,7 +101,9 @@ export default {
       await JobManager.run(application)
     }
 
-    if (Config.get('socket.enabled', 'boolean')) SocketServer.run(application)
+    if (Config.get('socket.enabled', 'boolean')) {
+      await SocketServer.run(application)
+    }
   },
 
   /**

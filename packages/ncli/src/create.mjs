@@ -26,6 +26,7 @@ import { spawn } from '@agtm/util/process'
 import semver from 'semver'
 import { paramCase } from 'change-case'
 
+// TODO: centralizar no Node-framework
 const CONTROLLER_TYPES = ['http', 'jobs', 'core', 'socket'];
 
 (async () => {

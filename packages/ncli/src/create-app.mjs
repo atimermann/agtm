@@ -19,6 +19,9 @@ import moment from 'moment'
 moment.locale('pt-br')
 const DIRNAME = __dirname(import.meta.url)
 
+// TODO: centralizar no Node-framework
+const CONTROLLER_TYPES = ['http', 'jobs', 'core', 'socket']
+
 ;(async () => {
   try {
     program
@@ -80,27 +83,31 @@ const DIRNAME = __dirname(import.meta.url)
     // Renomeia Diretório app
     /// /////////////////////////////////////////////////////////
 
-    console.log(`Criando app "${answers.app}"`)
-    await fs.move(
-      join(appPath, 'controllers', '__controller_template.mjs'),
-      join(appPath, 'controllers', controllerFileName)
-    )
-
-    /// /////////////////////////////////////////////////////////
-    // Altera Arquivos
-    /// /////////////////////////////////////////////////////////
-    console.log('Processando arquivos...')
-    const packageJson = await loadJson(join(rootPath, 'package.json'))
-
-    /// /// controllerFileName //////
-    await render(join(srcPath, 'apps', answers.app, 'controllers', controllerFileName), {
-      CREATED_DATE: moment().format('L'),
-      APP: answers.app.replace(/-/g, '_'),
-      AUTHOR: packageJson.author,
-      CONTROLLER_FILE_NAME: controllerFileName,
-      CONTROLLER_ROUTE_NAME: changeCase.paramCase(answers.controller),
-      CONTROLLER_NAME: changeCase.pascalCase(answers.controller)
-    })
+    // TODO: Configurar cada template para receber os nomes customizado (atualmente usa um padrão só)
+    // console.log(`Criando app "${answers.app}"`)
+    // for (const controllerType of CONTROLLER_TYPES) {
+    //   await fs.move(
+    //     join(appPath, controllerType, '__controller_template.mjs'),
+    //     join(appPath, controllerType, controllerFileName)
+    //   )
+    //
+    //   /// /////////////////////////////////////////////////////////
+    //   // Altera Arquivos
+    //   /// /////////////////////////////////////////////////////////
+    //   console.log('Processando arquivos...')
+    //   const packageJson = await loadJson(join(rootPath, 'package.json'))
+    //
+    //   /// /// controllerFileName //////
+    //
+    //   await render(join(srcPath, 'apps', answers.app, controllerType, controllerFileName), {
+    //     CREATED_DATE: moment().format('L'),
+    //     APP: answers.app.replace(/-/g, '_'),
+    //     AUTHOR: packageJson.author,
+    //     CONTROLLER_FILE_NAME: controllerFileName,
+    //     CONTROLLER_ROUTE_NAME: changeCase.paramCase(answers.controller),
+    //     CONTROLLER_NAME: changeCase.pascalCase(answers.controller)
+    //   })
+    // }
 
     const port = process.env.PORT || '<PORT>'// config.get('server.port')
 

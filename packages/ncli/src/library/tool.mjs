@@ -52,10 +52,6 @@ export async function validateProject (srcPath) {
   const applicationLoader = (await import(mainFilePath)).default
   const project = applicationLoader(Application)
 
-  if (!project.constructor._nodeFrameworkVersion) {
-    throw new Error('Invalid project: Project must be instance of @agtm/node-framework/application')
-  }
-
   const { name, path, applications, uuid } = project
 
   if (name === undefined || path === undefined || applications === undefined || uuid === undefined) {

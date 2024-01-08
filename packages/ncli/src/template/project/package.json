@@ -9,15 +9,15 @@
     "dev": "./scripts/dev.sh",
     "dev:debug": "node --inspect-brk --import ./esm-loader.mjs .",
     "monitor": "npx nf-monitor",
-    "update": "npm update @agtm/ncli @agtm/node-framework @agtm/ncli && npm list @agtm/node-framework @agtm/ncli @agtm/util",
     "build-pkg": "scripts/build-pkg.sh",
     "build-debug": "npx pkg -t node14-linux-x64 --out-path build .",
     "install-assets": "npx ncli install-assets",
     "create-app": "npx ncli create-app",
     "create-controller": "npx ncli create-controller",
-    "lint:test": "npx eslint src",
-    "lint": "npx eslint --fix src",
-    "test": "jest"
+    "lint": "npx eslint --ext .mjs,.js --fix . & npx tsc",
+    "lint:test": "npx eslint  --ext .mjs,.js . & npx tsc",
+    "test": "jest",
+    "audit": "npm audit --omit=dev"
   },
   "author": "{{PACKAGE_AUTHOR}}",
   "license": "ISC",
@@ -28,7 +28,6 @@
     "scripts": "src/apps/**/controllers/*.mjs",
     "assets": [
       "src",
-      "node_modules/config",
       "node_modules/figlet"
     ]
   },
@@ -42,12 +41,21 @@
     "nodemon": "^3.0.2",
     "@agtm/ncli": "^5.0.0",
     "@babel/preset-env": "^7.21.5",
+    "@types/node": "^20.10.6",
     "babel-jest": "^29.5.0",
     "babel-plugin-module-resolver": "^5.0.0",
-    "eslint": "^8.40.0",
+    "eslint": "^8.56.0",
     "eslint-config-standard": "^17.0.0",
+    "eslint-config-tjw-jsdoc": "^1.0.5",
     "eslint-plugin-jest": "^27.2.1",
+    "eslint-plugin-jsdoc": "^48.0.2",
+    "eslint-plugin-local": "^1.0.0",
     "jest": "^29.5.0",
-    "supertest": "^6.3.3"
+    "nodemon": "^3.0.2",
+    "supertest": "^6.3.3",
+    "eslint": "^8.56.0",
+    "eslint-config-tjw-jsdoc": "^1.0.5",
+    "eslint-plugin-jsdoc": "^48.0.2",
+    "typescript": "^5.3.3"
   }
 }

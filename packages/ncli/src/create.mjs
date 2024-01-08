@@ -24,8 +24,9 @@ import { render } from './library/tool.mjs'
 import { __dirname } from '@agtm/util'
 import { spawn } from '@agtm/util/process'
 import semver from 'semver'
+import { paramCase } from 'change-case'
 
-import { paramCase } from 'change-case';
+const CONTROLLER_TYPES = ['http', 'jobs', 'core', 'socket'];
 
 (async () => {
   try {
@@ -37,6 +38,22 @@ import { paramCase } from 'change-case';
     // Atualizar sempre que mudar a versão do node no PKG
     // Atualizar versão no pkg no script
     // const NPM_BUILD_COMMAND = 'npx pkg -t node14-linux-x64 --out-path build . && (cd build && mkdir -p config) && cp config/default.yaml build/config'
+
+    /// /////////////////////////////////////////////////////////
+    // Valida NODEJS Version
+    // Sempre atualizar com a ultima versão do node disponível no PKG e configurado no @agtm/node-framework
+    /// /////////////////////////////////////////////////////////
+
+    if (semver.lt(process.version, '20.0.0')) {
+      console.error('Required version of nodejs greater than 20')
+      process.exit(2)
+    }
+
+    // TODO: verificar ao atualizar o node-pkg
+    //  Verifique ultima versão disponível em ~/.pkg-cache. Teste novas versões
+    // if (semver.gtr(process.version, '20')) {
+    //   console.warn('WARN: If you wanted to compile a project using "node-pkg", remember that it will be compiled with the latest version available for "node-pkg", which is currently 18.5.0 LTS')
+    // }
 
     program
       .description('Cria um novo projeto pré configurado com o @agtm/Node Framework')
@@ -83,24 +100,6 @@ import { paramCase } from 'change-case';
       process.exit()
     }
 
-    /// /////////////////////////////////////////////////////////
-    // Valida NODEJS Version
-    // Sempre atualizar com a ultima versão do node disponível no PKG e configurado no @agtm/node-framework
-    /// /////////////////////////////////////////////////////////
-    console.log(`NodeJs Version: ${process.version}`)
-
-    // TODO TESTAR
-
-    if (semver.lt(process.version, '18.5.0')) {
-      console.error('Required version of nodejs greater than 18.5.0')
-      process.exit(2)
-    }
-
-    // Verifique ultima versão disponível em ~/.pkg-cache. Teste novas versões
-    if (semver.gtr(process.version, '18.5.0')) {
-      console.warn('WARN: If you wanted to compile a project using "node-pkg", remember that it will be compiled with the latest version available for "node-pkg", which is currently 18.5.0 LTS')
-    }
-
     // --------------------------------------------------------
     // Cria diretório
     // --------------------------------------------------------
@@ -119,7 +118,7 @@ import { paramCase } from 'change-case';
     /// /////////////////////////////////////////////////////////
     // Copia Template
     /// /////////////////////////////////////////////////////////
-    console.log(`Criando projeto em ${rootPath}`)
+    console.log(`Creating project in ${rootPath}`)
     await fs.copy(templatePath, rootPath)
     // TODO: NÃO ESTÁ COPIANDO ARQUIVOS ocultos .env e .gitignore)
     // Utilizar outra lib ex https://www.npmjs.com/package/ncp
@@ -157,26 +156,32 @@ import { paramCase } from 'change-case';
     })
 
     /// /// helloWorld.mjs //////
-    await render(join(srcPath, 'apps', '__app_template', 'controllers', 'helloWorld.mjs'), {
-      CREATED_DATE: moment().format('L'), APP: answers.app, AUTHOR: `${answers.author} <${answers.mail}>`
-    })
+    for (const controllerType of CONTROLLER_TYPES) {
+      await render(join(srcPath, 'apps', '__app_template', controllerType, 'hello-world.mjs'), {
+        CREATED_DATE: moment().format('L'), APP: answers.app, AUTHOR: `${answers.author} <${answers.mail}>`
+      })
+    }
 
     /// /////////////////////////////////////////////////////////
     // Renomeia Diretório app
     /// /////////////////////////////////////////////////////////
 
-    console.log(`Criando app "${answers.app}"`)
+    console.log(`Creating app "${answers.app}"...`)
     await fs.move(join(srcPath, 'apps', '__app_template'), join(srcPath, 'apps', answers.app))
 
+    console.log('Configuring project...')
+    console.log('Installing modules...')
     await spawn(`cd "${projectFolderName}" && npm i`)
+    console.log('Installing Node Framework...')
     await spawn(`cd "${projectFolderName}" && npm i @agtm/node-framework @agtm/util`)
+    console.log('Installing Node NCLI...')
     await spawn(`cd "${projectFolderName}" && npm i -d @agtm/ncli`)
 
     console.log('\n------------------------------------')
-    console.log('Projeto criado com sucesso!')
+    console.log('Project created successfully!')
     console.log(`\tcd ${projectFolderName}`)
-    console.log('\nCarregue os assets com: \n\tnpm run install-assets')
-    console.log('\nEm seguida:\n\tnpm run dev')
+    console.log('\nLoad the assets with: \n\tnpm run install-assets')
+    console.log('\nThen:\n\tnpm run dev')
     // console.log('\nPara gerar binário:\n\tnpm run build')
     console.log('------------------------------------\n\n')
   } catch (e) {

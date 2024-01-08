@@ -1,12 +1,18 @@
 root: true
 parserOptions:
-    ecmaVersion: latest
+  ecmaVersion: latest
 env:
-    browser: false
-    node: true
+  browser: false
+  node: true
+  jest: true
 extends:
-    - standard
+  - standard
+  - tjw-jsdoc
+plugins:
+  - local
 rules:
-    quotes:
-        - error
-        - single
+  quotes:
+    - error
+    - single
+  "local/import-require-node-prefix": "warn"
+  "local/no-underscore-method": "warn"

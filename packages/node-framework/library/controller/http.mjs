@@ -1,9 +1,16 @@
 /**
  * Created on 28/07/23
  *
- * library/controller/http-mixin.mjs
+ * @file library/controller/http.mjs
+ * Defines the HttpController class, which extends the functionalities of the BaseController
+ * to handle HTTP-specific tasks and routes within the framework.
  *
  * @author André Timermann <andre@timermann.com.br>
+ *
+ *  @typedef {import('express')} Express - Importing the Express module for type definitions.
+ *  @typedef {import('express-serve-static-core').Router} ExpressRouter - Importing the Router type from Express.
+ *  @typedef {import('express').Request} ExpressRequest - Importing the Request type from Express.
+ *  @typedef {import('express').Response} ExpressResponse - Importing the Response type from Express.
  */
 
 import path from 'node:path'
@@ -21,10 +28,9 @@ const paths = {}
  */
 export default class HttpController extends BaseController {
   /**
-   * Objeto Router Express
-   * Definido em http-server, não alterar
+   * The Express Router object. Defined in the http-server, it should not be modified directly.
    *
-   * @type {{}}
+   * @type {ExpressRouter}
    */
   router = undefined
 
@@ -55,7 +61,7 @@ export default class HttpController extends BaseController {
    * @param {...any} args
    */
   all (...args) {
-    this._processRestMethod('all', ...args)
+    this.#processRestMethod('all', ...args)
   }
 
   /**
@@ -63,7 +69,7 @@ export default class HttpController extends BaseController {
    * @param {...any} args
    */
   use (...args) {
-    this._processRestMethod('use', ...args)
+    this.#processRestMethod('use', ...args)
   }
 
   /**
@@ -71,7 +77,7 @@ export default class HttpController extends BaseController {
    * @param {...any} args
    */
   post (...args) {
-    this._processRestMethod('post', ...args)
+    this.#processRestMethod('post', ...args)
   }
 
   /**
@@ -79,7 +85,7 @@ export default class HttpController extends BaseController {
    * @param {...any} args
    */
   get (...args) {
-    this._processRestMethod('get', ...args)
+    this.#processRestMethod('get', ...args)
   }
 
   /**
@@ -87,7 +93,7 @@ export default class HttpController extends BaseController {
    * @param {...any} args
    */
   put (...args) {
-    this._processRestMethod('put', ...args)
+    this.#processRestMethod('put', ...args)
   }
 
   /**
@@ -95,7 +101,7 @@ export default class HttpController extends BaseController {
    * @param {...any} args
    */
   delete (...args) {
-    this._processRestMethod('delete', ...args)
+    this.#processRestMethod('delete', ...args)
   }
 
   /**
@@ -103,26 +109,22 @@ export default class HttpController extends BaseController {
    * @param {...any} args
    */
   patch (...args) {
-    this._processRestMethod('patch', ...args)
+    this.#processRestMethod('patch', ...args)
   }
 
   /**
-   * Asynchronous function designed to handle the responses of the Express.js framework.
-   * Executes a callback function that defines the API, handles potential errors, and sends appropriate HTTP responses.
+   * Asynchronously handles the responses of the Express.js framework. Executes the provided callback
+   * function that defines the API, handles potential errors, and sends appropriate HTTP responses.
    *
    * @async
-   * @function
-   * @param  {Function}      lastCallback  - The callback function that handles the HTTP request and generates a response.
-   *                                       This function is expected to be asynchronous and take in Express's request and
-   *                                       response objects, along with any additional arguments.
-   * @param  {object}        request       - The Express.js Request object, which contains all the information about the incoming
-   *                                       HTTP request, such as headers, query parameters, and body.
-   * @param  {object}        response      - The Express.js Response object, used to formulate and send an HTTP response to the client.
-   * @param  {...any}        args          - Additional arguments that the `lastCallback` function may require.
-   * @return {Promise<void>}               A Promise that resolves when the response has been sent. If an error occurs in the callback,
-   *                                       the Promise rejects with the error, and an error response is sent to the client.
-   * @throws Will throw an error if the `lastCallback` function throws an error. The error is also logged to the console
-   *         and to a logger, including the error message and stack trace.
+   * @param  {Function}        lastCallback  - The callback function handling the HTTP request and generating a response.
+   *                                         It's expected to be asynchronous and take in Express's request and
+   *                                         response objects, along with any additional arguments.
+   * @param  {ExpressRequest}  request       - The Express.js Request object containing details about the incoming HTTP request.
+   * @param  {ExpressResponse} response      - The Express.js Response object used to send an HTTP response to the client.
+   * @param  {...any}          args          - Additional arguments that the `lastCallback` function may require.
+   * @return {Promise<void>}                 - Resolves when the response has been sent. If an error occurs in the callback,
+   *                                         it rejects with the error and sends an error response to the client.
    */
   async responseHandler (lastCallback, request, response, ...args) {
     try {
@@ -137,7 +139,7 @@ export default class HttpController extends BaseController {
 
   /**
    * Standardized error handling of the API, can be extended by the user to standardize or select errors that
-   * will be displayed
+   * will be displayed.
    *
    * @param                                                                       err
    * @return {Promise<{errorInfo: {error: boolean, message: *}, status: number}>}
@@ -155,7 +157,7 @@ export default class HttpController extends BaseController {
   /**
    * TODO: migrar para ser executado em route  this.pre(<function>)
    *
-   * Abstract method for Pre Middleware creation
+   * Abstract method for Pre Middleware creation.
    */
   async pre () {
     logger.debug(`Pre Middleware not implemented in ${this.completeIndentification}.`)
@@ -163,14 +165,14 @@ export default class HttpController extends BaseController {
 
   /**
    * TODO: migrar para ser executado em route  this.pos(<function>)
-   * Abstract method for Post Middleware creation
+   * Abstract method for Post Middleware creation.
    */
   async pos () {
     logger.debug(`Post Middleware not implemented in ${this.completeIndentification}.`)
   }
 
   /**
-   * Abstract Router method, used to configure Routes
+   * Abstract Router method, used to configure Routes.
    */
   async setup () {
     logger.debug(`No route configured in ${this.completeIndentification}.`)
@@ -187,17 +189,15 @@ export default class HttpController extends BaseController {
    * 'put', 'delete', 'patch' and internally translates them into a route creation call
    * using Express's router.
    *
-   * @private
-   * @function
-   * @param  {string} httpMethod  - The HTTP method to be processed.
-   * @param  {...any} args        - An array of arguments for the method, which include callbacks
-   *                              defined by the user to be used as middleware.
-   * @return {void}               - This method does not return a value.
+   * @param  {'all'|'use'|'post'|'get'|'put'|'delete'|'patch'} httpMethod  - The HTTP method to be processed.
+   * @param  {...any[]}                                        args        - An array of arguments for the method, which include callbacks
+   *                                                                       defined by the user to be used as middleware.
+   * @return {void}                                                        - This method does not return a value.
    *
    * @throws {TypeError} Throws an error if the first argument of the method (routePath)
    *                     is not a string, meaning it's a pathless method like 'use'.
    */
-  _processRestMethod (httpMethod, ...args) {
+  #processRestMethod (httpMethod, ...args) {
     // Gets last callback and modifies to handle returns
     const lastCallback = args.pop()
 
@@ -225,7 +225,7 @@ export default class HttpController extends BaseController {
   }
 
   /**
-   * Logs information about the request such as execution time
+   * Logs information about the request such as execution time.
    *
    * @param startTimeMeasure  {number}  Timestamp of the beginning of this request's execution
    * @param args              {array}   Arguments sent to responseHandler
@@ -240,7 +240,7 @@ export default class HttpController extends BaseController {
   }
 
   /**
-   * Validates defined url
+   * Validates defined url.
    *
    * @param method
    * @param methodPath
@@ -288,7 +288,7 @@ export default class HttpController extends BaseController {
   }
 
   /**
-   * Permite Carregar View de outra aplicação/app
+   * Permite Carregar View de outra aplicação/app.
    *
    * @param                  applicationName  {string}  Nome da aplicação
    * @param                  appName          {string}  Nome do app onde o template está
@@ -313,7 +313,7 @@ export default class HttpController extends BaseController {
   }
 
   /**
-   * Renderiza uma View
+   * Renderiza uma View.
    *
    * @param                  viewPath  {string}  Caminho da View
    * @param                  locals    {object}  Váraveis disponíveis no template e configurações diversas
@@ -332,7 +332,7 @@ export default class HttpController extends BaseController {
     locals.helpers = {
 
       /**
-       * Retorna o caminho completo do  Asset passando apenas o nome do arquivo
+       * Retorna o caminho completo do  Asset passando apenas o nome do arquivo.
        * Baseado no app atual.
        *
        * Ex: imagem.png é convertido para static/[ApplicationName]/[AppName]/imagem.png

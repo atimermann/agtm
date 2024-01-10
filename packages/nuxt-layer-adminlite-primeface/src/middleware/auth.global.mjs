@@ -8,25 +8,35 @@
  *
  */
 
-import { defineNuxtRouteMiddleware, useAppConfig, navigateTo /* useAsyncData */ } from '#imports'
+import { defineNuxtRouteMiddleware, useAppConfig, navigateTo, useRouter } from '#imports'
 import { useAuthStore } from '../stores/auth.mjs'
 
-export default defineNuxtRouteMiddleware(async (to, from) => {
+export default defineNuxtRouteMiddleware(async (to, from, x) => {
   const appConfig = useAppConfig()
 
   if (!appConfig.template.login) {
     throw new Error('"appConfig.template.login" attribute not defined. Check the "app.config.ts" file')
   }
-
   if (!appConfig.template.login.enable && to.path === '/login') {
     return navigateTo({ path: '/' })
   }
 
   if (appConfig.template.login.enable) {
-    const authStore = useAuthStore()
+    if (to.meta.auth === undefined) {
+      const routes = useRouter().getRoutes()
+      const routeExists = routes.some(route => route.path === to.path || route.name === to.name)
+      if (!routeExists) return
 
-    if (to.path !== '/login' && !authStore.authenticated) {
-      return navigateTo({ path: '/login' })
+      throw new Error('Attribute "auth" is mandatory in definePageMeta, must be "true" or "false"')
+    }
+
+    if (to.meta.auth) {
+      const authStore = useAuthStore()
+
+      if (to.path !== '/login' && !authStore.authenticated) {
+        sessionStorage.setItem('redirectAfterLogin', to.fullPath)
+        return navigateTo({ path: '/login' })
+      }
     }
   }
 

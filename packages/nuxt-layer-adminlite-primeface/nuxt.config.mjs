@@ -8,6 +8,22 @@ const currentDir = dirname(fileURLToPath(import.meta.url))
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
+  $development: {
+    devtools: {
+      enabled: true,
+      timeline: {
+        enabled: true
+      }
+    },
+    vite: {
+      server: {
+        fs: {
+          strict: false
+        }
+      }
+    }
+  },
+  ssr: false,
   srcDir: 'src',
   app: {
     head: {
@@ -52,7 +68,7 @@ export default defineNuxtConfig({
 
   ],
   build: {
-    transpile: ['primevue']
+    transpile: ['primevue', 'pinia-plugin-persistedstate']
   },
   vite: {
     resolve: {

@@ -14,7 +14,7 @@ export default {
         },
         {
           title: 'Sair',
-          link: '/login',
+          link: '/logout',
           iconClasses: [
             'pi',
             'pi-sign-out'

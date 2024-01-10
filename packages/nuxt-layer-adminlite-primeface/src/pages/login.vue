@@ -101,7 +101,9 @@ async function login () {
   const auth = await AuthStore.login(usarname.value, password.value)
 
   if (auth.auth) {
-    navigateTo()
+    const redirectPath = sessionStorage.getItem('redirectAfterLogin') || '/'
+    sessionStorage.removeItem('redirectAfterLogin')
+    navigateTo(redirectPath)
   } else {
     toast.add({ severity: 'error', summary: 'Atenção', detail: auth.message, life: 3000 })
     usarname.value = ''
@@ -110,6 +112,7 @@ async function login () {
 }
 
 definePageMeta({
-  layout: 'guest'
+  layout: 'guest',
+  auth: false
 })
 </script>

@@ -40,16 +40,10 @@ npm i @agtm/nuxt-layer-adminlte-primeface
 #   - https://github.com/vuejs/pinia/issues/1542#issuecomment-1238820465
 npm i -f pinia @pinia/nuxt
 npm i @pinia-plugin-persistedstate/nuxt
-```
-
-Instale o primevue no seu projeto para poder utilizar componentes primevue que não foram importado no
-nuxt-layer-adminlte-primeface:
-
-```bash
+# Instale o primevue no seu projeto para poder utilizar componentes primevue que não foram importado no
+# nuxt-layer-adminlte-primeface:
 npm i primefaces
 ```
-
-
 
 ## Configuração
 
@@ -57,24 +51,40 @@ No arquivo nuxt.config.js, adicione a camada no array buildModules:
 
 ```javascript
 defineNuxtConfig({
+  // `ssr: false` desativa o Server Side Rendering, fazendo com que o Nuxt gere uma aplicação cliente-servidor tradicional
+  ssr: false,
+  // `srcDir: 'src'` define o diretório de origem dos arquivos do projeto. 'src' é uma pasta personalizada para seus arquivos Nuxt
+  // Obrigatório
+  srcDir: 'src',
+  // `extends` é usado para estender a configuração com predefinições de terceiros ou plugins. Aqui, está estendendo com `@agtm/nuxt-layer-adminlte-primeface`
+  extends: ['@agtm/nuxt-layer-adminlte-primeface'],
+  // `$development` é um objeto de configuração específico para o ambiente de desenvolvimento
   $development: {
+    // `devtools` habilita ferramentas de desenvolvimento para depuração e análise de desempenho
     devtools: {
+      // `enabled: true` ativa as ferramentas de desenvolvimento
       enabled: true,
       timeline: {
+        // `enabled: true` ativa a linha do tempo nas ferramentas de desenvolvimento para visualizar eventos e desempenho
         enabled: true
       }
     },
+    // `vite` configura o servidor de desenvolvimento Vite utilizado pelo Nuxt
     vite: {
       server: {
         fs: {
+          // `strict: false` desabilita as restrições de sistema de arquivos do Vite, permitindo carregar arquivos fora da raiz do projeto
+          // Removido em produção
           strict: false
         }
       }
     }
   },
-  ssr: false,
-  srcDir: 'src', // Obrigatório
-  extends: '@agtm/nuxt-layer-adminlte-primeface'
+  // `build` configura opções específicas para o processo de construção do projeto
+  build: {
+    // `transpile` é uma lista de dependências que devem ser transpiladas pelo Babel. Utilizado para bibliotecas que não são compatíveis por padrão
+    transpile: ['primevue', 'pinia-plugin-persistedstate']
+  }
 })
 ```
 
@@ -102,7 +112,6 @@ app.config
 Este template inclui um arquivo `app.vue` com o seguinte conteúdo:
 
 ```vue
-
 <template>
   <NuxtLayout/>
 </template>

@@ -30,7 +30,7 @@
         <slot name="footer">
           <!-- TODO: Estudar uma forma do usuário poder inserir um componente aqui, sem ser apenas texto-->
           <div class="flex justify-content-end">
-            {{ template.version || 'Nuxt Admin' }}
+            {{ runtimeConfig.public.version || 'Nuxt Admin' }}
           </div>
         </slot>
       </footer>
@@ -57,6 +57,7 @@ import MainSidebar from '../components/admin/MainSidebar.vue'
 import ContentHeader from '../components/admin/ContentHeader.vue'
 
 const { template } = useAppConfig()
+const runtimeConfig = useRuntimeConfig()
 
 const colapsedMenu = ref(false)
 

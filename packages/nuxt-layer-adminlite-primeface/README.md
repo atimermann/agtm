@@ -42,10 +42,10 @@ npm i -f pinia @pinia/nuxt
 npm i @pinia-plugin-persistedstate/nuxt
 # Instale o primevue no seu projeto para poder utilizar componentes primevue que não foram importado no
 # nuxt-layer-adminlte-primeface:
-npm i primefaces
+npm i primevue
 ```
 
-## Configuração
+### Configuração
 
 No arquivo nuxt.config.js, adicione a camada no array buildModules:
 
@@ -94,8 +94,9 @@ projeto, então crie a pasta src e jogue os diretótrios assets, pages, public p
 **Notas**
 * Vite.server.fs.strict = true permite que o vite acesse arquivos fora do diretório src, por exemplo ao utilizar npm link. [Rererência aqui](https://vitejs.dev/config/server-options.html#server-fs-allow)
 
-Para personalizar o template você pode customizar o layout (veja próximo tópico) e através de configuração no
-app.config
+## Configurando seu projeto (Importante)
+
+Para customizar seu template, habilitar funcionalidades acesse a configuração:
 
 [Consulte aqui refêrencia completa do app.config](./docs/config.md)
 
@@ -162,6 +163,12 @@ Foi desenvolvido alguns componentes baseado no AdmiLte não vinculado ao PrimeVu
 ### NfCard
 
 [Documentação aqui](./docs/components/nf-card.md)
+
+# Módulos
+
+## Autenticação e Autorização
+
+[Documentação aqui](./docs/modules/auth.md)
 
 # Desenvolvimento
 

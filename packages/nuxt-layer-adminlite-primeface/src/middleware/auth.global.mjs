@@ -17,11 +17,11 @@ export default defineNuxtRouteMiddleware(async (to, from, x) => {
   if (!appConfig.template.login) {
     throw new Error('"appConfig.template.login" attribute not defined. Check the "app.config.ts" file')
   }
-  if (!appConfig.template.login.enable && to.path === '/login') {
+  if (!appConfig.template.login.enabled && to.path === '/login') {
     return navigateTo({ path: '/' })
   }
 
-  if (appConfig.template.login.enable) {
+  if (appConfig.template.login.enabled) {
     if (to.meta.auth === undefined) {
       const routes = useRouter().getRoutes()
       const routeExists = routes.some(route => route.path === to.path || route.name === to.name)

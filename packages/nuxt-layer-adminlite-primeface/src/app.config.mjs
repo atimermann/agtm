@@ -2,7 +2,7 @@
 export default {
   template: {
     login: {
-      enable: false
+      enabled: false
     },
     logoPath: 'DEFAULT',
     logoLabel: 'AdminLte 3',

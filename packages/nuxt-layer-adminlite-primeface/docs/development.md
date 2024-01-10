@@ -7,19 +7,53 @@ unificar dois templates amplamente apreciados - AdminLTE3 e PrimeFace, por meio 
 abordagem integrada e visualmente atrativa para a construção de interfaces. Utilizamos o MJS disponível na versão do
 NodeJS.
 
-## Configuração obrigatória antes de publicar nova versão
+[//]: # (# &#40;## Configuração obrigatória antes de publicar nova versão&#41; &#40;usado pelo release, revisar procedimento&#41;)
 
-Criar arquivo .env com seguinte conteudo:
+[//]: # ()
 
-```dotenv
-CI=true
-GH_TOKEN=ghp_<TOKEN_GIT_HUB>
-NPM_TOKEN=npm_<TOKEN_NPM>
+[//]: # (Criar arquivo .env com seguinte conteudo:)
+
+[//]: # ()
+
+[//]: # (```dotenv)
+
+[//]: # (CI=true)
+
+[//]: # (GH_TOKEN=ghp_<TOKEN_GIT_HUB>)
+
+[//]: # (NPM_TOKEN=npm_<TOKEN_NPM>)
+
+[//]: # (```)
+
+## Configuração Inicial
+
+### Dependencias adicionais:
+
+Necessário instalar dependencias adicionais  (verifique se outros pacotes são necessários)
+
 ```
+  npm i -D @agtm/nuxt-tools  nuxt-lodash
+  ncli-agtm-link   
+```
+
+### linkando
+
+Para desenvolver o template em conjunto com o projeto é necessário linkar o layer com seu projeto, para isso você pode
+usar o seguinte comandos: 
+
+ ```
+ncli-agtm-link
+ncli-agtm-ls  
+ ```
+
+
+
 
 ## Configuração Global
 
 A configuração global do template, que é herdada por seu projeto, está localizada no seguinte arquivo:
+
+**TODO:** Na verdade não herda, necessário reconfigurar, verificar
 
     ```nuxt.config.mjs```
 

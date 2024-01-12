@@ -7,6 +7,7 @@
   "scripts": {
     "start": "NODE_ENV=production node .",
     "dev": "./scripts/dev.sh",
+    "job": "node --loader esm-module-alias/loader --no-warnings src/run.mjs job",
     "dev:debug": "node --inspect-brk --import ./esm-loader.mjs .",
     "monitor": "npx nf-monitor",
     "build-pkg": "scripts/build-pkg.sh",
@@ -21,8 +22,8 @@
   },
   "author": "{{PACKAGE_AUTHOR}}",
   "license": "ISC",
-  "_moduleAliases": {
-    "~": "src"
+  "aliases": {
+    "~"      : "src"
   },
   "pkg": {
     "scripts": "src/apps/**/controllers/*.mjs",

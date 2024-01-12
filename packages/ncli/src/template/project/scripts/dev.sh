@@ -1,7 +1,7 @@
 #!/bin/bash
 
 while true; do
-  nodemon -V --import=./esm-loader.mjs .
+  nodemon -V --loader esm-module-alias/loader --no-warnings  .
   exit_code=$?
   if [ $exit_code -ne 12 ]; then
     break
@@ -9,3 +9,4 @@ while true; do
   echo "Restarting application..."
   sleep 2
 done
+

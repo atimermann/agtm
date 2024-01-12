@@ -43,7 +43,7 @@ export default class HelloWorldController extends HttpController {
   /**
    * Post Middleware.
    */
-  pos () {
+  async pos () {
     setTimeout(() => {
       logger.info(`Seu novo projeto está online! Acesse pela url: http://localhost:${Config.get('httpServer.port')}`)
     }, 2000)
@@ -52,7 +52,7 @@ export default class HelloWorldController extends HttpController {
   /**
    * Route Configuration.
    */
-  setup () {
+  async setup () {
     this.get('/', async (request, response) => {
       // partials e cache são atributos especiais que permitem configurar o modelo
       const renderedPage = await this.view('helloWorld.html', {

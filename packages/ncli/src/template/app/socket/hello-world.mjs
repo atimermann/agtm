@@ -20,7 +20,7 @@ export default class HelloWorldController extends SocketController {
   /**
    * Sockets.
    */
-  setup () {
+  async setup () {
     this.namespace('/my-namespace').on('connection', socket => {
       socket.emit('newData', { nane: 'João' })
     })

@@ -7,19 +7,34 @@
  *
  * @author André Timermann <andre@timermann.com.br>
  *
- *  @typedef {import('express')} Express - Importing the Express module for type definitions.
- *  @typedef {import('express').Router} ExpressRouter - Importing the Router type from Express.
- *  @typedef {import('express').Request} ExpressRequest - Importing the Request type from Express.
- *  @typedef {import('express').Response} ExpressResponse - Importing the Response type from Express.
- *  @typedef {import('express')} ExpressPathParams
+ * @typedef {'all'|'use'|'post'|'get'|'put'|'delete'|'patch'} MethodType
  *
- *  @typedef {(string|RegExp|Array<string|RegExp>)} PathArgument
+ * @typedef {import('express')} Express - Importing the Express module for type definitions.
+ * @typedef {import('express').Router} ExpressRouter - Importing the Router type from Express.
+ * @typedef {import('express').Request} ExpressRequest - Importing the Request type from Express.
+ * @typedef {import('express').Response} ExpressResponse - Importing the Response type from Express.
+ * @typedef {import('express')} ExpressPathParams
  *
- *  @typedef {import('express').RequestHandler} RequestHandler
- *  @typedef {import('express').ErrorRequestHandler} ErrorHandler
+ * @typedef {(string|RegExp|Array<string|RegExp>)} PathArgument
  *
- *  @typedef {RequestHandler} Handler
- *  @typedef {Handler | Handler[]} HandlerArgument
+ * @typedef {import('express').RequestHandler} RequestHandler
+ * @typedef {import('express').ErrorRequestHandler} ErrorHandler
+ *
+ * @typedef {RequestHandler} Handler
+ * @typedef {Handler | Handler[]} HandlerArgument
+ *
+ * @typedef {object} RouteInfo
+ * @property {string}    method     - The HTTP method of the route (e.g., 'GET', 'POST').
+ * @property {string}    path       - The path of the route.
+ * @property {string}    app        - The name of the application where the route is defined.
+ *
+ * @typedef {object} ErrorInfo
+ * @property {boolean}   error      - Indicator of an error occurrence.
+ * @property {string}    message    - Descriptive error message.
+ *
+ * @typedef {object} ErrorResponse
+ * @property {ErrorInfo} errorInfo  - Object containing error details.
+ * @property {number}    status     - HTTP status code associated with the error.
  */
 import path from 'node:path'
 
@@ -27,12 +42,22 @@ import createLogger from '../../library/logger.mjs'
 import { performance } from 'node:perf_hooks'
 import BaseController from './base-controller.mjs'
 import consolidate from 'consolidate'
-const logger = createLogger('Controller')
 
+const logger = createLogger('BaseController')
+
+/**
+ * Used to store and manage the defined routes in the application.
+ * It acts as a registry for all routes, indexed by a unique hash composed of the HTTP method
+ * and the route path. This registry ensures that each route is unique and prevents duplication
+ * across the application. The structure typically includes details like the HTTP method,
+ * the full path of the route, and the name of the application where the route is defined.
+ *
+ * @type {{[key: string]: RouteInfo}}
+ */
 const paths = {}
 
 /**
- *
+ * HttpController Class
  */
 export default class HttpController extends BaseController {
   /**
@@ -159,11 +184,12 @@ export default class HttpController extends BaseController {
   }
 
   /**
-   * Standardized error handling of the API, can be extended by the user to standardize or select errors that
+   * Standardized error handling of the API. It can be extended by the user to standardize or select errors that
    * will be displayed.
    *
-   * @param                                                                       err
-   * @return {Promise<{errorInfo: {error: boolean, message: *}, status: number}>}
+   * @param  {Error}                  err  - The error object to be handled.
+   *
+   * @return {Promise<ErrorResponse>}      An object containing error information and the HTTP status code.
    */
   async errorHandler (err) {
     return {
@@ -210,10 +236,10 @@ export default class HttpController extends BaseController {
    * 'put', 'delete', 'patch' and internally translates them into a route creation call
    * using Express's router.
    *
-   * @param  {'all'|'use'|'post'|'get'|'put'|'delete'|'patch'} httpMethod  - The HTTP method to be processed.
-   * @param  {any[]}                                           args        - Rest of arguments
+   * @param  {MethodType} httpMethod  - The HTTP method to be processed.
+   * @param  {any[]}      args        - Rest of arguments
    *
-   * @return {void}                                                        - This method does not return a value.
+   * @return {void}                   - This method does not return a value.
    *
    * @throws {TypeError} Throws an error if the first argument of the method (routePath)
    *                     is not a string, meaning it's a pathless method like 'use'.
@@ -227,7 +253,7 @@ export default class HttpController extends BaseController {
       args.push(async (...args) => {
         const startTimeMeasure = performance.now()
         await this.responseHandler(lastCallback, ...args)
-        this._logRequestInfo(startTimeMeasure, args)
+        this.#logRequestInfo(startTimeMeasure, args)
       })
     } else {
       args.push(lastCallback)
@@ -238,7 +264,7 @@ export default class HttpController extends BaseController {
     // Validates if the path has already been used in another controller, if args[0] is not a string it is a pathless
     // method like use
     if (typeof routePath === 'string') {
-      this._validatePath(httpMethod, routePath)
+      this.#validatePath(httpMethod, routePath)
     }
 
     // finally creates route
@@ -248,12 +274,10 @@ export default class HttpController extends BaseController {
   /**
    * Logs information about the request such as execution time.
    *
-   * @param startTimeMeasure  {number}  Timestamp of the beginning of this request's execution
-   * @param args              {array}   Arguments sent to responseHandler
-   *
-   * @private
+   * @param {number} startTimeMeasure  Timestamp of the beginning of this request's execution
+   * @param {any[]}  args              Arguments sent to responseHandler
    */
-  _logRequestInfo (startTimeMeasure, args) {
+  #logRequestInfo (startTimeMeasure, args) {
     const durationMeasure = performance.now() - startTimeMeasure
     const [request, response] = args
 
@@ -263,19 +287,26 @@ export default class HttpController extends BaseController {
   /**
    * Validates defined url.
    *
-   * @param method
-   * @param methodPath
-   * @private
+   * @param {MethodType} method      Method Http
+   * @param {string}     methodPath  Represents the path for the current route.
    */
-  _validatePath (method, methodPath) {
+  #validatePath (method, methodPath) {
     if (typeof methodPath !== 'string') throw new TypeError(`path must be String! Type: ${typeof methodPath}`)
 
+    /**
+     * Represents the base path for the current route.
+     *
+     * @type {string}
+     */
     const basePath = this.path
       ? this.path
       : ''
 
     logger.debug(`Validating Route in ${this.appName}: ${method}: ${path.join(basePath, methodPath)}`)
 
+    /**
+     * @type {string} - hash created from the combination of method, basePath and methodPath for uniqueness validation
+     */
     const h = [method, basePath, methodPath].toString()
 
     if (paths[h]) {
@@ -290,34 +321,34 @@ export default class HttpController extends BaseController {
   }
 
   /**
-   * Renderiza um template usando a biblioteca Consolidate. (Usada pelo express internamente)
+   * Renders a template using the Consolidate library (internally used by Express).
+   * We use the library directly for greater control over the loaded directory.
    *
-   * Usanmos a bilioteca diretamente para ter mais controle sobre o diretório carregado
+   * @see Consolidate.js: https://github.com/tj/consolidate.js
+   * @see Handlebars: http://handlebarsjs.com/
    *
-   * Reference: https://github.com/tj/consolidate.js
-   * Reference: http://handlebarsjs.com/
+   * @param  {string}        templatePath  - The path of the template to be loaded.
+   * @param  {object}        locals        - Variables available in the template and various configurations.
+   * @param  {string}        [engine]      - The template engine to be used for rendering.
    *
-   * @param                  templatePath  {string}  Template a ser carregado
-   * @param                  locals        {object}  Váraveis disponíveis no template e configurações diversas
-   * @param                  engine        {string}  Engine de template a ser renderizado
-   *
-   * @return {Promise<void>}
+   * @return {Promise<void>}               - A promise that resolves when the view rendering is complete.
    */
   async view (templatePath, locals = {}, engine = 'handlebars') {
     const viewPath = path.join(this.appPath, 'views', templatePath)
-    return this._renderView(viewPath, locals, engine)
+    return this.#renderView(viewPath, locals, engine)
   }
 
   /**
-   * Permite Carregar View de outra aplicação/app.
+   * Loads a view template from another application/app.
    *
-   * @param                  applicationName  {string}  Nome da aplicação
-   * @param                  appName          {string}  Nome do app onde o template está
-   * @param                  templatePath     {string}  Template a ser carregado
-   * @param                  locals           {object}  Váraveis disponíveis no template e configurações diversas
-   * @param                  engine           {string}  Engine de template a ser renderizado
+   * @param  {string}        applicationName  - The name of the application to load from.
+   * @param  {string}        appName          - The name of the app where the template is located.
+   * @param  {string}        templatePath     - The path of the template to be loaded.
+   * @param  {object}        [locals]         - Variables available in the template and various configurations.
+   * @param  {string}        [engine]         - The template engine to be used for rendering.
    *
-   * @return {Promise<void>}
+   * @return {Promise<void>}                  - A promise that resolves when the view rendering is complete.
+   * @throws {Error} - Throws an error if the specified application or app is not found.
    */
   async remoteView (applicationName, appName, templatePath, locals = {}, engine = 'handlebars') {
     if (!this.applicationsPath[applicationName]) {
@@ -330,7 +361,7 @@ export default class HttpController extends BaseController {
 
     const viewPath = path.join(this.applicationsPath[applicationName][appName], 'views', templatePath)
 
-    return this._renderView(viewPath, locals, engine)
+    return this.#renderView(viewPath, locals, engine)
   }
 
   /**
@@ -341,9 +372,8 @@ export default class HttpController extends BaseController {
    * @param                  engine    {string}  Engine de template a ser renderizado
    *
    * @return {Promise<void>}
-   * @private
    */
-  async _renderView (viewPath, locals, engine) {
+  async #renderView (viewPath, locals, engine) {
     const templateEngine = consolidate[engine]
 
     /// //////////////////////////////////////////////////////////////////////////////////////////////////////

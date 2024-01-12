@@ -1,5 +1,5 @@
 /**
- *
+ * HttpController Class
  */
 export default class HttpController extends BaseController {
     /**
@@ -88,19 +88,14 @@ export default class HttpController extends BaseController {
      */
     responseHandler(lastCallback: Function, request: ExpressRequest, response: ExpressResponse, ...args: any[]): Promise<void>;
     /**
-     * Standardized error handling of the API, can be extended by the user to standardize or select errors that
+     * Standardized error handling of the API. It can be extended by the user to standardize or select errors that
      * will be displayed.
      *
-     * @param                                                                       err
-     * @return {Promise<{errorInfo: {error: boolean, message: *}, status: number}>}
+     * @param  {Error}                  err  - The error object to be handled.
+     *
+     * @return {Promise<ErrorResponse>}      An object containing error information and the HTTP status code.
      */
-    errorHandler(err: any): Promise<{
-        errorInfo: {
-            error: boolean;
-            message: any;
-        };
-        status: number;
-    }>;
+    errorHandler(err: Error): Promise<ErrorResponse>;
     /**
      * TODO: migrar para ser executado em route  this.pre(<function>)
      *
@@ -117,62 +112,38 @@ export default class HttpController extends BaseController {
      */
     setup(): Promise<void>;
     /**
-     * Logs information about the request such as execution time.
+     * Renders a template using the Consolidate library (internally used by Express).
+     * We use the library directly for greater control over the loaded directory.
      *
-     * @param startTimeMeasure  {number}  Timestamp of the beginning of this request's execution
-     * @param args              {array}   Arguments sent to responseHandler
+     * @see Consolidate.js: https://github.com/tj/consolidate.js
+     * @see Handlebars: http://handlebarsjs.com/
      *
-     * @private
-     */
-    private _logRequestInfo;
-    /**
-     * Validates defined url.
+     * @param  {string}        templatePath  - The path of the template to be loaded.
+     * @param  {object}        locals        - Variables available in the template and various configurations.
+     * @param  {string}        [engine]      - The template engine to be used for rendering.
      *
-     * @param method
-     * @param methodPath
-     * @private
-     */
-    private _validatePath;
-    /**
-     * Renderiza um template usando a biblioteca Consolidate. (Usada pelo express internamente)
-     *
-     * Usanmos a bilioteca diretamente para ter mais controle sobre o diretório carregado
-     *
-     * Reference: https://github.com/tj/consolidate.js
-     * Reference: http://handlebarsjs.com/
-     *
-     * @param                  templatePath  {string}  Template a ser carregado
-     * @param                  locals        {object}  Váraveis disponíveis no template e configurações diversas
-     * @param                  engine        {string}  Engine de template a ser renderizado
-     *
-     * @return {Promise<void>}
+     * @return {Promise<void>}               - A promise that resolves when the view rendering is complete.
      */
     view(templatePath: string, locals?: object, engine?: string): Promise<void>;
     /**
-     * Permite Carregar View de outra aplicação/app.
+     * Loads a view template from another application/app.
      *
-     * @param                  applicationName  {string}  Nome da aplicação
-     * @param                  appName          {string}  Nome do app onde o template está
-     * @param                  templatePath     {string}  Template a ser carregado
-     * @param                  locals           {object}  Váraveis disponíveis no template e configurações diversas
-     * @param                  engine           {string}  Engine de template a ser renderizado
+     * @param  {string}        applicationName  - The name of the application to load from.
+     * @param  {string}        appName          - The name of the app where the template is located.
+     * @param  {string}        templatePath     - The path of the template to be loaded.
+     * @param  {object}        [locals]         - Variables available in the template and various configurations.
+     * @param  {string}        [engine]         - The template engine to be used for rendering.
      *
-     * @return {Promise<void>}
+     * @return {Promise<void>}                  - A promise that resolves when the view rendering is complete.
+     * @throws {Error} - Throws an error if the specified application or app is not found.
      */
     remoteView(applicationName: string, appName: string, templatePath: string, locals?: object, engine?: string): Promise<void>;
-    /**
-     * Renderiza uma View.
-     *
-     * @param                  viewPath  {string}  Caminho da View
-     * @param                  locals    {object}  Váraveis disponíveis no template e configurações diversas
-     * @param                  engine    {string}  Engine de template a ser renderizado
-     *
-     * @return {Promise<void>}
-     * @private
-     */
-    private _renderView;
     #private;
 }
+/**
+ * Created on 28/07/23
+ */
+export type MethodType = 'all' | 'use' | 'post' | 'get' | 'put' | 'delete' | 'patch';
 /**
  * - Importing the Express module for type definitions.
  */
@@ -213,5 +184,48 @@ export type Handler = RequestHandler;
  * Created on 28/07/23
  */
 export type HandlerArgument = Handler | Handler[];
+/**
+ * Created on 28/07/23
+ */
+export type RouteInfo = {
+    /**
+     * - The HTTP method of the route (e.g., 'GET', 'POST').
+     */
+    method: string;
+    /**
+     * - The path of the route.
+     */
+    path: string;
+    /**
+     * - The name of the application where the route is defined.
+     */
+    app: string;
+};
+/**
+ * Created on 28/07/23
+ */
+export type ErrorInfo = {
+    /**
+     * - Indicator of an error occurrence.
+     */
+    error: boolean;
+    /**
+     * - Descriptive error message.
+     */
+    message: string;
+};
+/**
+ * Created on 28/07/23
+ */
+export type ErrorResponse = {
+    /**
+     * - Object containing error details.
+     */
+    errorInfo: ErrorInfo;
+    /**
+     * - HTTP status code associated with the error.
+     */
+    status: number;
+};
 import BaseController from './base-controller.mjs';
 //# sourceMappingURL=http.d.mts.map

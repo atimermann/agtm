@@ -14,6 +14,7 @@
  *  https://expressjs.com/en/advanced/best-practice-security.html
  *
  *  @typedef {import('./application.mjs').default} Application
+ *  @typedef {import('./controller/base-controller.mjs').default[]} BaseController
  */
 
 import express from 'express'
@@ -273,12 +274,15 @@ export default {
    * @private
    */
   async _loadApplications (app, application) {
+    /**
+     * @type {BaseController}
+     */
     const controllers = []
 
     /**
      * Arvore de caminho das aplicações
      *
-     * @type {{}}
+     * @type {{[key: string]: string}}
      */
     const applicationPathTree = {}
 

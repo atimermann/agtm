@@ -40,4 +40,10 @@ export default _default;
  * src/library/kernel.js
  */
 export type Application = import('./application.mjs').default;
+/**
+ * **Created on 13/11/18**
+ *
+ * src/library/kernel.js
+ */
+export type BaseController = import('./controller/base-controller.mjs').default[];
 //# sourceMappingURL=http-server.d.mts.map

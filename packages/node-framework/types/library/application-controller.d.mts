@@ -37,18 +37,18 @@ export default class ApplicationController {
     /**
      * Returns all controllers of the specified app.
      *
-     * @param  {string}                     appsPath  Physical path of the directory where the apps of this application are located
+     * @param  {string}                         appsPath  Physical path of the directory where the apps of this application are located
      *
-     * @return {Promise<Array<Controller>>}           List of already instantiated controllers
+     * @return {Promise<Array<BaseController>>}           List of already instantiated controllers
      * @private
      */
     private static _getControllersInstanceByApps;
     /**
      * Loads and returns all controllers defined in the 'Controllers' directory.
      *
-     * @param  {string}                     controllersPath  Directory where the controllers are located
+     * @param  {string}                         controllersPath  Directory where the controllers are located
      *
-     * @return {Promise<Array<Controller>>}                  List of already instantiated controllers
+     * @return {Promise<Array<BaseController>>}                  List of already instantiated controllers
      * @private
      */
     private static _getControllersInstanceByControllers;

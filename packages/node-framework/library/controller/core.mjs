@@ -8,7 +8,7 @@
 
 import createLogger from '../../library/logger.mjs'
 import BaseController from './base-controller.mjs'
-const logger = createLogger('Controller')
+const logger = createLogger('BaseController')
 
 /**
  *

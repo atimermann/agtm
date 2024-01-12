@@ -86,8 +86,9 @@ export default class BaseController {
   /**
    * Physical path of the application where this app is located.
    * Defined in the controllerController, do not modify.
+   * TODO: Definir tipo correto entender como funciona arvore applicationPath Tree
    *
-   * @type {string}
+   * @type {object}
    */
   applicationsPath = undefined
 

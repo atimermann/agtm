@@ -16,7 +16,7 @@ import Worker from '../jobs/worker.mjs'
 import WorkerManager from '../jobs/worker-manager.mjs'
 import BaseController from './base-controller.mjs'
 
-const logger = createLogger('Controller')
+const logger = createLogger('BaseController')
 
 /**
  * Controller responsible for managing jobs and workers.

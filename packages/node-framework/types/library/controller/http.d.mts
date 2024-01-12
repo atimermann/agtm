@@ -3,12 +3,11 @@
  */
 export default class HttpController extends BaseController {
     /**
-     * Objeto Router Express
-     * Definido em http-server, não alterar
+     * The Express Router object. Defined in the http-server, it should not be modified directly.
      *
-     * @type {{}}
+     * @type {ExpressRouter}
      */
-    router: {};
+    router: ExpressRouter;
     /**
      * Base path of the application, ex: /api/v1/clients
      * Works as a prefix, not requiring to always put the complete route
@@ -26,62 +25,71 @@ export default class HttpController extends BaseController {
      */
     staticBaseUrl: string;
     /**
+     * All Route.
      *
-     * @param {...any} args
+     * @param {string} path      - The path for the POST request.
+     * @param {...any} handlers  - A series of numbers (handlers).
      */
-    all(...args: any[]): void;
+    all(path: string, ...handlers: any[]): void;
     /**
+     * Defines a route for HTTP POST requests.
      *
-     * @param {...any} args
+     * @param {HandlerArgument[]} handlers  - A series of numbers (handlers).
      */
-    use(...args: any[]): void;
+    use(...handlers: HandlerArgument[]): void;
     /**
+     * Defines a route for HTTP POST requests.
      *
-     * @param {...any} args
+     * @param {string}            path      - The path for the POST request.
+     * @param {HandlerArgument[]} handlers  - A series of numbers (handlers).
      */
-    post(...args: any[]): void;
+    post(path: string, ...handlers: HandlerArgument[]): void;
     /**
+     * Defines a route for HTTP GET requests.
      *
-     * @param {...any} args
+     * @param {string}            path      - The path for the POST request.
+     * @param {HandlerArgument[]} handlers  - A series of numbers (handlers).
      */
-    get(...args: any[]): void;
+    get(path: string, ...handlers: HandlerArgument[]): void;
     /**
+     * Defines a route for HTTP PUT requests.
      *
-     * @param {...any} args
+     * @param {string}            path      - The path for the POST request.
+     * @param {HandlerArgument[]} handlers  - A series of numbers (handlers).
      */
-    put(...args: any[]): void;
+    put(path: string, ...handlers: HandlerArgument[]): void;
     /**
+     * Defines a route for HTTP DELETE requests.
      *
-     * @param {...any} args
+     * @param {string}            path      - The path for the POST request.
+     * @param {HandlerArgument[]} handlers  - A series of numbers (handlers).
      */
-    delete(...args: any[]): void;
+    delete(path: string, ...handlers: HandlerArgument[]): void;
     /**
+     * Defines a route for HTTP PATCH requests.
      *
-     * @param {...any} args
+     * @param {string}            path      - The path for the POST request.
+     * @param {HandlerArgument[]} handlers  - A series of numbers (handlers).
      */
-    patch(...args: any[]): void;
+    patch(path: string, ...handlers: HandlerArgument[]): void;
     /**
-     * Asynchronous function designed to handle the responses of the Express.js framework.
-     * Executes a callback function that defines the API, handles potential errors, and sends appropriate HTTP responses.
+     * Asynchronously handles the responses of the Express.js framework. Executes the provided callback
+     * function that defines the API, handles potential errors, and sends appropriate HTTP responses.
      *
      * @async
-     * @function
-     * @param  {Function}      lastCallback  - The callback function that handles the HTTP request and generates a response.
-     *                                       This function is expected to be asynchronous and take in Express's request and
-     *                                       response objects, along with any additional arguments.
-     * @param  {object}        request       - The Express.js Request object, which contains all the information about the incoming
-     *                                       HTTP request, such as headers, query parameters, and body.
-     * @param  {object}        response      - The Express.js Response object, used to formulate and send an HTTP response to the client.
-     * @param  {...any}        args          - Additional arguments that the `lastCallback` function may require.
-     * @return {Promise<void>}               A Promise that resolves when the response has been sent. If an error occurs in the callback,
-     *                                       the Promise rejects with the error, and an error response is sent to the client.
-     * @throws Will throw an error if the `lastCallback` function throws an error. The error is also logged to the console
-     *         and to a logger, including the error message and stack trace.
+     * @param  {Function}        lastCallback  - The callback function handling the HTTP request and generating a response.
+     *                                         It's expected to be asynchronous and take in Express's request and
+     *                                         response objects, along with any additional arguments.
+     * @param  {ExpressRequest}  request       - The Express.js Request object containing details about the incoming HTTP request.
+     * @param  {ExpressResponse} response      - The Express.js Response object used to send an HTTP response to the client.
+     * @param  {...any}          args          - Additional arguments that the `lastCallback` function may require.
+     * @return {Promise<void>}                 - Resolves when the response has been sent. If an error occurs in the callback,
+     *                                         it rejects with the error and sends an error response to the client.
      */
-    responseHandler(lastCallback: Function, request: object, response: object, ...args: any[]): Promise<void>;
+    responseHandler(lastCallback: Function, request: ExpressRequest, response: ExpressResponse, ...args: any[]): Promise<void>;
     /**
      * Standardized error handling of the API, can be extended by the user to standardize or select errors that
-     * will be displayed
+     * will be displayed.
      *
      * @param                                                                       err
      * @return {Promise<{errorInfo: {error: boolean, message: *}, status: number}>}
@@ -96,42 +104,20 @@ export default class HttpController extends BaseController {
     /**
      * TODO: migrar para ser executado em route  this.pre(<function>)
      *
-     * Abstract method for Pre Middleware creation
+     * Abstract method for Pre Middleware creation.
      */
     pre(): Promise<void>;
     /**
      * TODO: migrar para ser executado em route  this.pos(<function>)
-     * Abstract method for Post Middleware creation
+     * Abstract method for Post Middleware creation.
      */
     pos(): Promise<void>;
     /**
-     * Abstract Router method, used to configure Routes
+     * Abstract Router method, used to configure Routes.
      */
     setup(): Promise<void>;
     /**
-     * TODO: Refactoring
-     *
-     * A private method designed to process HTTP methods (GET, POST, etc.) used by the user.
-     * It works by intercepting these methods and injecting a middleware-like functionality
-     * that allows performance measurement and request logging.
-     *
-     * This method enables the user to use HTTP methods such as 'all', 'use', 'post', 'get',
-     * 'put', 'delete', 'patch' and internally translates them into a route creation call
-     * using Express's router.
-     *
-     * @private
-     * @function
-     * @param  {string} httpMethod  - The HTTP method to be processed.
-     * @param  {...any} args        - An array of arguments for the method, which include callbacks
-     *                              defined by the user to be used as middleware.
-     * @return {void}               - This method does not return a value.
-     *
-     * @throws {TypeError} Throws an error if the first argument of the method (routePath)
-     *                     is not a string, meaning it's a pathless method like 'use'.
-     */
-    private _processRestMethod;
-    /**
-     * Logs information about the request such as execution time
+     * Logs information about the request such as execution time.
      *
      * @param startTimeMeasure  {number}  Timestamp of the beginning of this request's execution
      * @param args              {array}   Arguments sent to responseHandler
@@ -140,7 +126,7 @@ export default class HttpController extends BaseController {
      */
     private _logRequestInfo;
     /**
-     * Validates defined url
+     * Validates defined url.
      *
      * @param method
      * @param methodPath
@@ -163,7 +149,7 @@ export default class HttpController extends BaseController {
      */
     view(templatePath: string, locals?: object, engine?: string): Promise<void>;
     /**
-     * Permite Carregar View de outra aplicação/app
+     * Permite Carregar View de outra aplicação/app.
      *
      * @param                  applicationName  {string}  Nome da aplicação
      * @param                  appName          {string}  Nome do app onde o template está
@@ -175,7 +161,7 @@ export default class HttpController extends BaseController {
      */
     remoteView(applicationName: string, appName: string, templatePath: string, locals?: object, engine?: string): Promise<void>;
     /**
-     * Renderiza uma View
+     * Renderiza uma View.
      *
      * @param                  viewPath  {string}  Caminho da View
      * @param                  locals    {object}  Váraveis disponíveis no template e configurações diversas
@@ -185,6 +171,47 @@ export default class HttpController extends BaseController {
      * @private
      */
     private _renderView;
+    #private;
 }
+/**
+ * - Importing the Express module for type definitions.
+ */
+export type Express = typeof import("express");
+/**
+ * - Importing the Router type from Express.
+ */
+export type ExpressRouter = import('express').Router;
+/**
+ * - Importing the Request type from Express.
+ */
+export type ExpressRequest = import('express').Request;
+/**
+ * - Importing the Response type from Express.
+ */
+export type ExpressResponse = import('express').Response;
+/**
+ * Created on 28/07/23
+ */
+export type ExpressPathParams = typeof import("express");
+/**
+ * Created on 28/07/23
+ */
+export type PathArgument = (string | RegExp | Array<string | RegExp>);
+/**
+ * Created on 28/07/23
+ */
+export type RequestHandler = import('express').RequestHandler;
+/**
+ * Created on 28/07/23
+ */
+export type ErrorHandler = import('express').ErrorRequestHandler;
+/**
+ * Created on 28/07/23
+ */
+export type Handler = RequestHandler;
+/**
+ * Created on 28/07/23
+ */
+export type HandlerArgument = Handler | Handler[];
 import BaseController from './base-controller.mjs';
 //# sourceMappingURL=http.d.mts.map

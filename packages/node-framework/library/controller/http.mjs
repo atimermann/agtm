@@ -8,11 +8,19 @@
  * @author André Timermann <andre@timermann.com.br>
  *
  *  @typedef {import('express')} Express - Importing the Express module for type definitions.
- *  @typedef {import('express-serve-static-core').Router} ExpressRouter - Importing the Router type from Express.
+ *  @typedef {import('express').Router} ExpressRouter - Importing the Router type from Express.
  *  @typedef {import('express').Request} ExpressRequest - Importing the Request type from Express.
  *  @typedef {import('express').Response} ExpressResponse - Importing the Response type from Express.
+ *  @typedef {import('express')} ExpressPathParams
+ *
+ *  @typedef {(string|RegExp|Array<string|RegExp>)} PathArgument
+ *
+ *  @typedef {import('express').RequestHandler} RequestHandler
+ *  @typedef {import('express').ErrorRequestHandler} ErrorHandler
+ *
+ *  @typedef {RequestHandler} Handler
+ *  @typedef {Handler | Handler[]} HandlerArgument
  */
-
 import path from 'node:path'
 
 import createLogger from '../../library/logger.mjs'
@@ -57,59 +65,72 @@ export default class HttpController extends BaseController {
   // Other methods can be accessed using this.app (object that refers to express instance used in the application)
   // -------------------------------------------------------------------------------------------------------------------
   /**
+   * All Route.
    *
-   * @param {...any} args
+   * @param {string} path      - The path for the POST request.
+   * @param {...any} handlers  - A series of numbers (handlers).
    */
-  all (...args) {
-    this.#processRestMethod('all', ...args)
+  all (path, ...handlers) {
+    this.#processRestMethod('all', ...[path, ...handlers])
   }
 
   /**
+   * Defines a route for HTTP POST requests.
    *
-   * @param {...any} args
+   * @param {HandlerArgument[]} handlers  - A series of numbers (handlers).
    */
-  use (...args) {
-    this.#processRestMethod('use', ...args)
+  use (...handlers) {
+    this.#processRestMethod('use', ...handlers)
   }
 
   /**
+   * Defines a route for HTTP POST requests.
    *
-   * @param {...any} args
+   * @param {string}            path      - The path for the POST request.
+   * @param {HandlerArgument[]} handlers  - A series of numbers (handlers).
    */
-  post (...args) {
-    this.#processRestMethod('post', ...args)
+  post (path, ...handlers) {
+    this.#processRestMethod('post', ...[path, ...handlers])
   }
 
   /**
+   * Defines a route for HTTP GET requests.
    *
-   * @param {...any} args
+   * @param {string}            path      - The path for the POST request.
+   * @param {HandlerArgument[]} handlers  - A series of numbers (handlers).
    */
-  get (...args) {
-    this.#processRestMethod('get', ...args)
+  get (path, ...handlers) {
+    this.#processRestMethod('get', ...[path, ...handlers])
   }
 
   /**
+   * Defines a route for HTTP PUT requests.
    *
-   * @param {...any} args
+   * @param {string}            path      - The path for the POST request.
+   * @param {HandlerArgument[]} handlers  - A series of numbers (handlers).
    */
-  put (...args) {
-    this.#processRestMethod('put', ...args)
+  put (path, ...handlers) {
+    this.#processRestMethod('put', ...[path, ...handlers])
   }
 
   /**
+   * Defines a route for HTTP DELETE requests.
    *
-   * @param {...any} args
+   * @param {string}            path      - The path for the POST request.
+   * @param {HandlerArgument[]} handlers  - A series of numbers (handlers).
    */
-  delete (...args) {
-    this.#processRestMethod('delete', ...args)
+  delete (path, ...handlers) {
+    this.#processRestMethod('delete', ...[path, ...handlers])
   }
 
   /**
+   * Defines a route for HTTP PATCH requests.
    *
-   * @param {...any} args
+   * @param {string}            path      - The path for the POST request.
+   * @param {HandlerArgument[]} handlers  - A series of numbers (handlers).
    */
-  patch (...args) {
-    this.#processRestMethod('patch', ...args)
+  patch (path, ...handlers) {
+    this.#processRestMethod('patch', ...[path, ...handlers])
   }
 
   /**
@@ -190,8 +211,8 @@ export default class HttpController extends BaseController {
    * using Express's router.
    *
    * @param  {'all'|'use'|'post'|'get'|'put'|'delete'|'patch'} httpMethod  - The HTTP method to be processed.
-   * @param  {...any[]}                                        args        - An array of arguments for the method, which include callbacks
-   *                                                                       defined by the user to be used as middleware.
+   * @param  {any[]}                                           args        - Rest of arguments
+   *
    * @return {void}                                                        - This method does not return a value.
    *
    * @throws {TypeError} Throws an error if the first argument of the method (routePath)

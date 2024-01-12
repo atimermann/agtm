@@ -1,9 +1,17 @@
 /**
  * Created on 06/07/2023
  *
- * /config.mjs
+ * @file
+ * Unified configuration handler that loads and merges settings from .env files, environment variables, and YAML
+ * configurations, providing a single point of access for application settings.
  *
  * @author André Timermann <andre@timermann.com.br>
+ *
+ * Represents a configuration object where keys are strings.
+ * @typedef {{ [key: string]: ConfigValue }} ConfigType
+ *
+ * Represents a value in the configuration object.
+ * @typedef {number | boolean | string | Array<any> | { [key: string]: ConfigValue }} ConfigValue
  */
 
 import { config as dotenvConfig } from 'dotenv'
@@ -30,7 +38,7 @@ dotenvConfig()
  * and YAML files with prioritization among them.
  */
 export default class Config {
-  /** @type {object} The merged configuration object. */
+  /** @type {ConfigType} The merged configuration object. */
   static config = {}
 
   /**
@@ -61,18 +69,19 @@ export default class Config {
 
     // Merge defaultYaml, envYaml, process.env, and .env
     this.config =
-        defaultsDeep(
-          this._processEnvVars(),
-          this._transformToLowerKeys(this.yamlConfig)
-        )
+      defaultsDeep(
+        this.#processEnvVars(),
+        this.#transformToLowerKeys(this.yamlConfig)
+      )
   }
 
   /**
-   * Returns configuration exclusively from yaml (ignores ENV) and keeps case
+   * Returns a configuration value exclusively from YAML, ignoring environment variables and keeping the original case.
    *
-   * @param      key   The configuration key.
-   * @param      type  The expected type of the configuration value.
-   * @return {*}
+   * @param  {string}                              key     - The configuration key.
+   * @param  {"number"|"boolean"|"string"|"array"} [type]  - The expected type of the configuration value.
+   *                                                       Can be 'number', 'boolean', 'string', or 'array'.
+   * @return {*}                                           The configuration value, casted to the specified type if provided.
    */
   static getYaml (key, type) {
     return this.get(key, type, true)
@@ -81,12 +90,13 @@ export default class Config {
   /**
    * Get a configuration value by its key.
    *
-   * @param  {string}  key       - The configuration key.
-   * @param  {string}  [type]    - The expected type of the configuration value: number, boolean, string, array
-   * @param  {boolean} yamlOnly  - Force load configuration from yaml configuration without losing case
+   * @param  {string}                              key         - The configuration key.
+   * @param  {"number"|"boolean"|"string"|"array"} [type]      - The expected type of the configuration value.
+   *                                                           Can be 'number', 'boolean', 'string', or 'array'.
+   * @param  {boolean}                             [yamlOnly]  - If true, forces the configuration to be loaded from the YAML file only.
    *
-   * @throws Will throw an error if the configuration key is not found.
-   * @return {*}                 The configuration value.
+   * @throws Will throw an error if the configuration key is not found or if the value type does not match the expected type.
+   * @return {*}                                               The configuration value, casted to the specified type if provided.
    */
   static get (key, type, yamlOnly = false) {
     const parts = yamlOnly
@@ -139,28 +149,30 @@ export default class Config {
    * @param  {*}       obj  - The value to check.
    * @return {boolean}      Returns true if the value is a plain object, else false.
    */
-  static _isPlainObject (obj) {
+  static #isPlainObject (obj) {
     return Object.prototype.toString.call(obj) === '[object Object]'
   }
 
   /**
-   * Processa e disponibiliza váriaveis de ambiente para uso em envs
+   * Processes and provides access to environment variables.
+   * Environment variables prefixed with 'NF_' override corresponding configuration settings.
    *
    * @example
-   *  Config.get('envs.node.env')
-   *  Atalho para process.env.NODE_ENV
+   *  Config.get('envs.node.env') // Shortcut for process.env.NODE_ENV
    *
-   *  Se variavel de ambiente for prefixada com NF_, substitui configuração
+   * @example
+   *  // NF_SOCKET_MODE overrides socket.mode in configuration
+   *  NF_SOCKET_MODE
    *
-   *  @example
-   *    NF_SOCKET_MODE substitui socket.mode
-   *
-   * @return object
-   * @private
+   * @return {ConfigType} Processed environment variables as a nested configuration object.
    */
-  static _processEnvVars () {
+  static #processEnvVars () {
     // Environment variables must have the NF prefix to replace application variables
     // Selects environment variables with NF_ prefix
+
+    /**
+     * @type {ConfigType}
+     */
     const nfProcessEnv = {}
     for (const key of Object.keys(process.env)) {
       if (key.substring(0, 3) === 'NF_') {
@@ -168,10 +180,10 @@ export default class Config {
       }
     }
 
-    const envVars = this._transformToLowerKeys(this._envToNestedObject(nfProcessEnv))
+    const envVars = this.#transformToLowerKeys(this.#envToNestedObject(nfProcessEnv))
 
     // Processes environment variables (protects application)
-    envVars.envs = this._transformToLowerKeys(this._envToNestedObject(process.env))
+    envVars.envs = this.#transformToLowerKeys(this.#envToNestedObject(process.env))
 
     return envVars
   }
@@ -182,7 +194,7 @@ export default class Config {
    * @param  {object} env  - The environment object.
    * @return {object}      The nested configuration object.
    */
-  static _envToNestedObject (env) {
+  static #envToNestedObject (env) {
     const result = {}
 
     for (const key in env) {
@@ -192,7 +204,7 @@ export default class Config {
 
       let current = result
       for (const part of parts) {
-        if (current[part] !== undefined && !this._isPlainObject(current[part])) {
+        if (current[part] !== undefined && !this.#isPlainObject(current[part])) {
           current[part] = { __value: current[part] }
         } else if (!(part in current)) {
           current[part] = {}
@@ -210,17 +222,15 @@ export default class Config {
    * Transforms all keys of an object to lowercase.
    * If the object contains nested objects, the keys of those objects will also be transformed.
    *
-   * @param  {object} obj  - The object whose keys should be transformed.
-   * @return {object}      A new object with all keys transformed to lowercase.
-   *
-   * @private
+   * @param  {ConfigType} obj  - The object whose keys should be transformed.
+   * @return {ConfigType}      A new object with all keys transformed to lowercase.
    */
-  static _transformToLowerKeys (obj) {
+  static #transformToLowerKeys (obj) {
     return transform(obj, (result, value, key) => {
       const newKey = toLower(key)
 
       result[newKey] = isPlainObject(value)
-        ? this._transformToLowerKeys(value)
+        ? this.#transformToLowerKeys(value)
         : value
     })
   }

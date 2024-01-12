@@ -5,71 +5,81 @@
  * and YAML files with prioritization among them.
  */
 export default class Config {
-    /** @type {object} The merged configuration object. */
-    static config: object;
+    /** @type {ConfigType} The merged configuration object. */
+    static config: ConfigType;
     /**
      * Initialize the configuration object by loading and merging
      * configurations from various sources.
      */
     static init(): void;
     /**
-     * Returns configuration exclusively from yaml (ignores ENV) and keeps case
+     * Returns a configuration value exclusively from YAML, ignoring environment variables and keeping the original case.
      *
-     * @param      key   The configuration key.
-     * @param      type  The expected type of the configuration value.
-     * @return {*}
+     * @param  {string}                              key     - The configuration key.
+     * @param  {"number"|"boolean"|"string"|"array"} [type]  - The expected type of the configuration value.
+     *                                                       Can be 'number', 'boolean', 'string', or 'array'.
+     * @return {*}                                           The configuration value, casted to the specified type if provided.
      */
-    static getYaml(key: any, type: any): any;
+    static getYaml(key: string, type?: "number" | "boolean" | "string" | "array"): any;
     /**
      * Get a configuration value by its key.
      *
-     * @param  {string}  key       - The configuration key.
-     * @param  {string}  [type]    - The expected type of the configuration value: number, boolean, string, array
-     * @param  {boolean} yamlOnly  - Force load configuration from yaml configuration without losing case
+     * @param  {string}                              key         - The configuration key.
+     * @param  {"number"|"boolean"|"string"|"array"} [type]      - The expected type of the configuration value.
+     *                                                           Can be 'number', 'boolean', 'string', or 'array'.
+     * @param  {boolean}                             [yamlOnly]  - If true, forces the configuration to be loaded from the YAML file only.
      *
-     * @throws Will throw an error if the configuration key is not found.
-     * @return {*}                 The configuration value.
+     * @throws Will throw an error if the configuration key is not found or if the value type does not match the expected type.
+     * @return {*}                                               The configuration value, casted to the specified type if provided.
      */
-    static get(key: string, type?: string, yamlOnly?: boolean): any;
+    static get(key: string, type?: "number" | "boolean" | "string" | "array", yamlOnly?: boolean): any;
     /**
      * Check if a value is a plain object.
      *
      * @param  {*}       obj  - The value to check.
      * @return {boolean}      Returns true if the value is a plain object, else false.
      */
-    static _isPlainObject(obj: any): boolean;
+    static "__#1@#isPlainObject"(obj: any): boolean;
     /**
-     * Processa e disponibiliza váriaveis de ambiente para uso em envs
+     * Processes and provides access to environment variables.
+     * Environment variables prefixed with 'NF_' override corresponding configuration settings.
      *
      * @example
-     *  Config.get('envs.node.env')
-     *  Atalho para process.env.NODE_ENV
+     *  Config.get('envs.node.env') // Shortcut for process.env.NODE_ENV
      *
-     *  Se variavel de ambiente for prefixada com NF_, substitui configuração
+     * @example
+     *  // NF_SOCKET_MODE overrides socket.mode in configuration
+     *  NF_SOCKET_MODE
      *
-     *  @example
-     *    NF_SOCKET_MODE substitui socket.mode
-     *
-     * @return object
-     * @private
+     * @return {ConfigType} Processed environment variables as a nested configuration object.
      */
-    private static _processEnvVars;
+    static "__#1@#processEnvVars"(): ConfigType;
     /**
      * Convert an environment object into a nested configuration object.
      *
      * @param  {object} env  - The environment object.
      * @return {object}      The nested configuration object.
      */
-    static _envToNestedObject(env: object): object;
+    static "__#1@#envToNestedObject"(env: object): object;
     /**
      * Transforms all keys of an object to lowercase.
      * If the object contains nested objects, the keys of those objects will also be transformed.
      *
-     * @param  {object} obj  - The object whose keys should be transformed.
-     * @return {object}      A new object with all keys transformed to lowercase.
-     *
-     * @private
+     * @param  {ConfigType} obj  - The object whose keys should be transformed.
+     * @return {ConfigType}      A new object with all keys transformed to lowercase.
      */
-    private static _transformToLowerKeys;
+    static "__#1@#transformToLowerKeys"(obj: ConfigType): ConfigType;
 }
+/**
+ * Represents a value in the configuration object.
+ */
+export type ConfigType = {
+    [key: string]: ConfigValue;
+};
+/**
+ * Created on 06/07/2023
+ */
+export type ConfigValue = string | number | boolean | any[] | {
+    [key: string]: ConfigValue;
+};
 //# sourceMappingURL=config.d.mts.map

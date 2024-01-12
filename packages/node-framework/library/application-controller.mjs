@@ -42,6 +42,15 @@ export default class ApplicationController {
   }
 
   /**
+   * Returns the available controller types.
+   *
+   * @return {Array<string>} List of available controller types
+   */
+  static get controllerTypes () {
+    return Object.keys(this.controllerMap)
+  }
+
+  /**
    * Verifica se controller é instancia da classe type.
    *
    * @param  {BaseController} controller

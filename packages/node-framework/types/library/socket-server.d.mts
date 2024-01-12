@@ -48,13 +48,13 @@ export default class SocketServer {
      *
      * @static
      */
-    static "__#1@#loadConfiguration"(): void;
+    static "__#2@#loadConfiguration"(): void;
     /**
      * Loads Applications.
      *
      * @param {Application} application  Information about the Application
      */
-    static "__#1@#loadApplications"(application: Application): Promise<void>;
+    static "__#2@#loadApplications"(application: Application): Promise<void>;
     /**
      * Configures an existing Express HTTP Server for use with socket.io.
      *
@@ -68,41 +68,41 @@ export default class SocketServer {
      * @static
      * @return {Server} - The newly created Socket Server
      */
-    static "__#1@#createStandaloneServer"(): Server;
+    static "__#2@#createStandaloneServer"(): Server;
     /**
      * Creates a standalone HTTP Socket Server.
      *
      * @static
      * @return {Server} - The newly created Socket Server
      */
-    static "__#1@#createStandaloneHttpServer"(): Server;
+    static "__#2@#createStandaloneHttpServer"(): Server;
     /**
      * Creates a standalone HTTPS Socket Server.
      *
      * @static
      * @return {Server} - The newly created Socket Server
      */
-    static "__#1@#createStandaloneHttpsServer"(): Server;
+    static "__#2@#createStandaloneHttpsServer"(): Server;
     /**
      * Creates a standalone HTTP2 Socket Server.
      *
      * @static
      * @return {Server} - The newly created Socket Server
      */
-    static "__#1@#createStandaloneHttp2Server"(): Server;
+    static "__#2@#createStandaloneHttp2Server"(): Server;
     /**
      * Gets HTTPS options for creating a secure server.
      *
      * @static
      * @return {object} - An object containing the key and cert for HTTPS
      */
-    static "__#1@#getHttpsOptions"(): object;
+    static "__#2@#getHttpsOptions"(): object;
     /**
      * Genreate Socket config options.
      *
      * @return {SocketConfigOptions} Returns processed settings
      */
-    static "__#1@#getOptions"(): SocketConfigOptions;
+    static "__#2@#getOptions"(): SocketConfigOptions;
 }
 /**
  * Created on 27/07/23

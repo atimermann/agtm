@@ -13,6 +13,12 @@ export default class ApplicationController {
         [key: string]: typeof BaseController;
     };
     /**
+     * Returns the available controller types.
+     *
+     * @return {Array<string>} List of available controller types
+     */
+    static get controllerTypes(): string[];
+    /**
      * Verifica se controller é instancia da classe type.
      *
      * @param  {BaseController} controller

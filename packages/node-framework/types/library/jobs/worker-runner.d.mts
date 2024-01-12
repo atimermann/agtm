@@ -1,5 +1,6 @@
 /**
- *
+ * Class responsible for managing the execution of jobs in a separate process. It orchestrates
+ * the job lifecycle, including setup, execution, and teardown.
  */
 export default class WorkerRunner {
     /**
@@ -19,7 +20,7 @@ export default class WorkerRunner {
      * This method is execution of a worker in a separate process.
      * It loads all jobs and executes the specific job that matches the command-line arguments.
      *
-     * @param  {import('../application.mjs').Application} application  - The application context.
+     * @param  {Application}   application  - The application context.
      *
      * @throws Will throw an error if the specific job could not be found.
      *
@@ -27,10 +28,11 @@ export default class WorkerRunner {
      *
      * @static
      */
-    static run(application: any): Promise<void>;
+    static run(application: Application): Promise<void>;
     /**
+     * End process by executing tearDown functions.
      *
-     * @param exitCode
+     * @param {number} exitCode  Exit code
      */
     static exitProcess(exitCode?: number): Promise<void>;
     /**
@@ -44,21 +46,23 @@ export default class WorkerRunner {
      *
      * @static
      */
-    static _createProcessListeners(job: Job): void;
+    static "__#4@#createProcessListeners"(job: Job): void;
     /**
-     * Finish process
+     * Terminates the job execution process.
+     * This method executes the teardown functions of the job and then exits the process with a specified exit code.
      *
-     * @param  {Job}           job       - The Job in execution
-     * @param                  exitCode
+     * @param  {Job}           job         - The job currently in execution.
+     * @param  {number}        [exitCode]  - The exit code used to terminate the process. Defaults to 0.
      * @return {Promise<void>}
-     * @private
      */
-    private static _exitProcess;
+    static "__#4@#exitProcess"(job: Job, exitCode?: number): Promise<void>;
 }
 /**
  * **Created on 07/06/2023**
- *
- * library/worker-manager.mjs
  */
 export type Job = import('./job.mjs').default;
+/**
+ * **Created on 07/06/2023**
+ */
+export type Application = import('../application.mjs').default;
 //# sourceMappingURL=worker-runner.d.mts.map

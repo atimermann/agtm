@@ -1,20 +1,22 @@
 /**
  * **Created on 07/06/2023**
  *
- * library/worker-manager.mjs
- *
  * @author André Timermann <andre@timermann.com.br>
  *
- * Class responsible for execution in a separate process.
+ * @file
+ * Class responsible for managing the execution of jobs in a separate process. It orchestrates
+ * the job lifecycle, including setup, execution, and teardown.
  *
  * @typedef {import('./job.mjs').default} Job
+ * @typedef {import('../application.mjs').default} Application
  */
 
 import { logger } from '../../index.mjs'
 import JobManager from './job-manager.mjs'
 
 /**
- *
+ * Class responsible for managing the execution of jobs in a separate process. It orchestrates
+ * the job lifecycle, including setup, execution, and teardown.
  */
 export default class WorkerRunner {
   /**
@@ -23,7 +25,7 @@ export default class WorkerRunner {
    * @type {Job}
    * @static
    */
-  static job = {}
+  static job = undefined
 
   /**
    * Pid of parent process
@@ -36,7 +38,7 @@ export default class WorkerRunner {
    * This method is execution of a worker in a separate process.
    * It loads all jobs and executes the specific job that matches the command-line arguments.
    *
-   * @param  {import('../application.mjs').Application} application  - The application context.
+   * @param  {Application}   application  - The application context.
    *
    * @throws Will throw an error if the specific job could not be found.
    *
@@ -58,7 +60,7 @@ export default class WorkerRunner {
       jobName
     )
 
-    this._createProcessListeners(this.job)
+    this.#createProcessListeners(this.job)
 
     for (const setupFunction of this.job.setupFunctions) {
       logger.info(`Running job setup from "${this.job.name}" `)
@@ -87,14 +89,18 @@ export default class WorkerRunner {
         process.exit(5)
       }
     }
+
+    logger.info(`Process closed! PID: ${process.pid}`)
+    process.exit(0)
   }
 
   /**
+   * End process by executing tearDown functions.
    *
-   * @param exitCode
+   * @param {number} exitCode  Exit code
    */
   static async exitProcess (exitCode = 0) {
-    await this._exitProcess(this.job, exitCode)
+    await this.#exitProcess(this.job, exitCode)
   }
 
   /**
@@ -108,15 +114,15 @@ export default class WorkerRunner {
    *
    * @static
    */
-  static _createProcessListeners (job) {
+  static #createProcessListeners (job) {
     process.once('SIGINT', async () => {
-      await this._exitProcess(job)
+      await this.#exitProcess(job)
     })
 
     // Close if disconnected from parent
     process.on('disconnect', async () => {
       logger.error('Parent disconnected. Closing...')
-      await this._exitProcess(job)
+      await this.#exitProcess(job)
     })
 
     // check if parent is active
@@ -127,20 +133,20 @@ export default class WorkerRunner {
         process.kill(this.parentPid, 0)
       } catch (err) {
         logger.error('Parent disconnected. Closing...')
-        await this._exitProcess(this.job)
+        await this.#exitProcess(this.job)
       }
     }, 10000) // Check every second
   }
 
   /**
-   * Finish process
+   * Terminates the job execution process.
+   * This method executes the teardown functions of the job and then exits the process with a specified exit code.
    *
-   * @param  {Job}           job       - The Job in execution
-   * @param                  exitCode
+   * @param  {Job}           job         - The job currently in execution.
+   * @param  {number}        [exitCode]  - The exit code used to terminate the process. Defaults to 0.
    * @return {Promise<void>}
-   * @private
    */
-  static async _exitProcess (job, exitCode = 0) {
+  static async #exitProcess (job, exitCode = 0) {
     try {
       for (const teardownFunction of job.teardownFunctions) {
         logger.info(`Running job teardown on ERROR from  "${this.job.name}" `)

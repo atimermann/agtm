@@ -5,16 +5,13 @@ projeto e codificação, utilizando tecnologias já disponíveis.
 
 ## Instalação
 
-Para facilitar execução de tarefas repetitivas temos uma ferramenta de linha de comando chamada ncli, que pode ser
-chamada pelo comando agtm
-
-Instale com o seguinte comando:
+Instale a ferramenta linha de comando ncli:
 
 ```bash
 $ npm i -g @agtm/ncli
 ```
 
-Podemos criar um novo projeto à partir de um template já configurado usando o comando:
+Podemos agora criar um novo projeto à partir de um template já configurado usando o comando:
 
 ```bash
 $ ncli-create
@@ -57,8 +54,15 @@ Agora, no seu navegador acesso a url:
 
 http://localhost:3001
 
-Você deverá ver algo como isto
+Você deverá ver algo como isto:
+
 ![Screen01](./docs/img/image001.png)
+
+
+## Executando Jobs
+
+TODO: Documentar como executar jobs e linkar para documentação de jobs
+
 
 ## Entendendo o Framework
 

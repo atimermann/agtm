@@ -8,7 +8,7 @@
     "start": "NODE_ENV=production node .",
     "dev": "./scripts/dev.sh",
     "job": "node --loader esm-module-alias/loader --no-warnings src/run.mjs job",
-    "dev:debug": "node --inspect-brk --import ./esm-loader.mjs .",
+    "dev:debug": "node --inspect-brk --loader esm-module-alias/loader --no-warnings  .",
     "monitor": "npx nf-monitor",
     "build-pkg": "scripts/build-pkg.sh",
     "build-debug": "npx pkg -t node14-linux-x64 --out-path build .",
@@ -18,7 +18,11 @@
     "lint": "npx eslint --ext .mjs,.js --fix . & npx tsc",
     "lint:test": "npx eslint  --ext .mjs,.js . & npx tsc",
     "test": "jest",
-    "audit": "npm audit --omit=dev"
+    "audit": "npm audit --omit=dev",
+    "docker:build:patch": "./scripts/build-image.sh patch",
+    "docker:build:minor": "./scripts/build-image.sh minor",
+    "docker:build:major": "./scripts/build-image.sh major",
+    "docker:build:prod": "./scripts/build-image.sh prod"
   },
   "author": "{{PACKAGE_AUTHOR}}",
   "license": "ISC",

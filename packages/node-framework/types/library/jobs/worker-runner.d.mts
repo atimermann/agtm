@@ -17,10 +17,18 @@ export default class WorkerRunner {
      */
     static parentPid: any;
     /**
+     * Enables parent process monitoring, if the parent dies, this job is terminated
+     * Prevents many processes from being started without control by locking the machine in case of a problem
+     *
+     * @type {boolean}
+     */
+    static checkParent: boolean;
+    /**
      * This method is execution of a worker in a separate process.
      * It loads all jobs and executes the specific job that matches the command-line arguments.
      *
      * @param  {Application}   application  - The application context.
+     * @param  {boolean}       checkParent  - Monitor connection to parent process, terminates if connection is lost
      *
      * @throws Will throw an error if the specific job could not be found.
      *
@@ -28,7 +36,7 @@ export default class WorkerRunner {
      *
      * @static
      */
-    static run(application: Application): Promise<void>;
+    static run(application: Application, checkParent: boolean): Promise<void>;
     /**
      * End process by executing tearDown functions.
      *
@@ -46,7 +54,11 @@ export default class WorkerRunner {
      *
      * @static
      */
-    static "__#4@#createProcessListeners"(job: Job): void;
+    static "__#6@#createProcessListeners"(job: Job): void;
+    /**
+     * Start monitoring parent process.
+     */
+    static "__#6@#checkParent"(): void;
     /**
      * Terminates the job execution process.
      * This method executes the teardown functions of the job and then exits the process with a specified exit code.
@@ -55,7 +67,7 @@ export default class WorkerRunner {
      * @param  {number}        [exitCode]  - The exit code used to terminate the process. Defaults to 0.
      * @return {Promise<void>}
      */
-    static "__#4@#exitProcess"(job: Job, exitCode?: number): Promise<void>;
+    static "__#6@#exitProcess"(job: Job, exitCode?: number): Promise<void>;
 }
 /**
  * **Created on 07/06/2023**

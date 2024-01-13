@@ -35,10 +35,19 @@ export default class WorkerRunner {
   static parentPid = undefined
 
   /**
+   * Enables parent process monitoring, if the parent dies, this job is terminated
+   * Prevents many processes from being started without control by locking the machine in case of a problem
+   *
+   * @type {boolean}
+   */
+  static checkParent = false
+
+  /**
    * This method is execution of a worker in a separate process.
    * It loads all jobs and executes the specific job that matches the command-line arguments.
    *
    * @param  {Application}   application  - The application context.
+   * @param  {boolean}       checkParent  - Monitor connection to parent process, terminates if connection is lost
    *
    * @throws Will throw an error if the specific job could not be found.
    *
@@ -46,8 +55,9 @@ export default class WorkerRunner {
    *
    * @static
    */
-  static async run (application) {
+  static async run (application, checkParent) {
     this.parentPid = process.ppid
+    this.checkParent = checkParent
 
     const [, , , applicationName, appName, controllerName, jobName] = process.argv
 
@@ -126,13 +136,22 @@ export default class WorkerRunner {
     })
 
     // check if parent is active
+    if (this.checkParent) {
+      this.#checkParent()
+    }
+  }
+
+  /**
+   * Start monitoring parent process.
+   */
+  static #checkParent () {
     setInterval(async () => {
       try {
-        logger.debug('Check parent...')
+        logger.debug(`Check parent PID: "${this.parentPid}"...`)
         // Transmit a neutral signal (0) to verify if the parent responds
         process.kill(this.parentPid, 0)
       } catch (err) {
-        logger.error('Parent disconnected. Closing...')
+        logger.error(`Parent PID "${this.parentPid}" disconnected. Closing...`)
         await this.#exitProcess(this.job)
       }
     }, 10000) // Check every second

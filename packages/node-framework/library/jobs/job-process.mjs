@@ -1,4 +1,7 @@
 /**
+ * Create at 8/09/23
+ *
+ * @file
  * JobProcess class is responsible for handling the individual processes of a job.
  * Each instance of this class represents a running job process, encapsulating details such as
  * the process ID, its worker, runtime options, and state indicators (like whether it's running or being terminated).
@@ -10,9 +13,7 @@
  * @class
  * @augments EventEmitter
  *
- * @file library/jobs/job-process.mks.mjs
  * @author André Timermann <andre@timermann.com.br>
- * @created 08/09/23
  */
 import createLogger from '../logger.mjs'
 import { EventEmitter } from 'node:events'
@@ -61,16 +62,18 @@ export default class JobProcess extends EventEmitter {
 
   /**
    * Configuration options for process execution.
-   *
-   * @type {{silent: boolean}}
    */
   options = {
     /**
      * Silent Log
+     *
+     * @type {boolean}
      */
     silent: true,
     /**
      * Time to wait to kill the process
+     *
+     * @type {number}
      */
     killWaitTime: 5000
   }
@@ -81,6 +84,13 @@ export default class JobProcess extends EventEmitter {
    * @type {JobProcessChild}
    */
   childProcess
+
+  /**
+   * Unique identification of the execution based on the date
+   *
+   * @type {string}
+   */
+  runId
 
   /**
    * Factory method to create a new JobProcess instance, set its properties, and initiate the process.
@@ -109,7 +119,7 @@ export default class JobProcess extends EventEmitter {
     logger.info(`Running process: Worker: "${this.worker.name}" Job: "${this.worker.job.name}" Process: "#${this.instance}"}`)
 
     const args = [
-      'job',
+      'job-check',
       this.worker.job.applicationName,
       this.worker.job.appName,
       this.worker.job.controllerName,
@@ -178,7 +188,7 @@ export default class JobProcess extends EventEmitter {
       return
     }
     if (this.running || (this.childProcess && this.childProcess.process.connected)) {
-      await this._killAndRun()
+      await this.#killAndRun()
     } else {
       this.run()
     }
@@ -216,9 +226,8 @@ export default class JobProcess extends EventEmitter {
    * between each signal to allow for graceful termination.
    *
    * @async
-   * @private
    */
-  async _killAndRun () {
+  async #killAndRun () {
     this.killing = true
 
     logger.warn(`Killing job: "${this.worker.job.name}" Worker:"${this.worker.name}" Instance: "#${this.instance}"`)

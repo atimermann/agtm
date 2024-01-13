@@ -1,23 +1,28 @@
 /**
- *
+ * Represents a child process specifically for handling a job.
+ * This class extends EventEmitter to emit custom events related to the job process lifecycle.
+ * It manages the creation, monitoring, and termination of a Node.js child process used to execute a job.
  */
 export default class JobProcessChild extends EventEmitter {
     /**
+     * Factory method to create a new JobProcessChild instance. Initializes the child process using the Node.js fork method.
      *
-     * @param modulePath
-     * @param args
-     * @param options
-     * @param runId
+     * @param  {string}          modulePath  - The module path to run in the child process.
+     * @param  {string[]}        args        - Arguments to pass to the child process.
+     * @param  {ForkOptions}     options     - Fork options.
+     * @param  {string}          runId       - Unique identifier for the job run.
+     *
+     * @return {JobProcessChild}             The created JobProcessChild instance.
      */
-    static create(modulePath: any, args: any, options: any, runId: any): JobProcessChild;
+    static create(modulePath: string, args: string[], options: ForkOptions, runId: string): JobProcessChild;
     /**
      * The child process instance created by the Node.js fork method.
      *
-     * @type {import('child_process').ChildProcess}
+     * @type {ChildProcess}
      */
-    process: import('child_process').ChildProcess;
+    process: ChildProcess;
     /**
-     * process pid
+     * The process identifier (PID) of the child process.
      *
      * @type {number}
      */
@@ -35,55 +40,49 @@ export default class JobProcessChild extends EventEmitter {
      */
     runId: string;
     /**
-     * Process start time
+     * Timestamp indicating when the process was started.
      *
      * @type {Date}
      */
     startAt: Date;
     /**
-     * The UNIX signal that was triggered when the process was terminated, e.g., SIGINT.
+     * The UNIX signal that resulted in the termination of the process, e.g., SIGINT.
      *
      * @type {string}
      */
     exitSignal: string;
     /**
-     * The exit code of the UNIX process. Any code other than 0 indicates an error.
+     * The exit code of the process. A non-zero code indicates an error or abnormal termination.
      *
      * @type {number}
      */
     exitCode: number;
     /**
-     * If this process is dead
+     * Indicates whether the process has been terminated.
      *
      * @type {boolean}
      */
     killed: boolean;
     /**
-     *
+     * Sets up event listeners for the child process's standard output, standard error, and exit events.
      */
     setupEvents(): void;
     running: boolean;
     /**
-     * Finaliza processo e remove todos os eventos
+     * Terminates the process and cleans up event listeners. Logs warning messages with exit details.
      */
     exit(): void;
     /**
-     * Try to kill the process
+     * Attempts to terminate the child process. It sends different termination signals progressively
+     * and waits for a specified time between signals to allow for graceful shutdown.
      *
-     * @param                  killWaitTime
+     * @param  {number}        killWaitTime  - The time in milliseconds to wait after sending each kill signal.
      * @return {Promise<void>}
      */
-    kill(killWaitTime: any): Promise<void>;
-    /**
-     * Sends a specified kill signal to the child process and waits for a set period (defined by killWaitTime)
-     * before returning to allow for potential process cleanup.
-     *
-     * @param {NodeJS.Signals} signal        - The UNIX signal to send to the process (SIGINT, SIGTERM, or SIGKILL).
-     * @param {number}         killWaitTime  - Time in milliseconds to wait for the process to die
-     * @async
-     * @private
-     */
-    private _sendKill;
+    kill(killWaitTime: number): Promise<void>;
+    #private;
 }
+export type ForkOptions = import('child_process').ForkOptions;
+export type ChildProcess = import('child_process').ChildProcess;
 import { EventEmitter } from 'node:events';
 //# sourceMappingURL=job-process-child.d.mts.map

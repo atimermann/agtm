@@ -44,11 +44,20 @@ export default class JobProcess extends EventEmitter {
     running: boolean;
     /**
      * Configuration options for process execution.
-     *
-     * @type {{silent: boolean}}
      */
     options: {
+        /**
+         * Silent Log
+         *
+         * @type {boolean}
+         */
         silent: boolean;
+        /**
+         * Time to wait to kill the process
+         *
+         * @type {number}
+         */
+        killWaitTime: number;
     };
     /**
      * Classe que representa o processo em execução
@@ -56,6 +65,12 @@ export default class JobProcess extends EventEmitter {
      * @type {JobProcessChild}
      */
     childProcess: JobProcessChild;
+    /**
+     * Unique identification of the execution based on the date
+     *
+     * @type {string}
+     */
+    runId: string;
     /**
      * Initiates the process. Configures and starts a child process using the node.js fork method.
      * Logs the initiation details including the worker name, job name, and process ID.
@@ -74,22 +89,10 @@ export default class JobProcess extends EventEmitter {
      *
      */
     checkHealth(): void;
-    /**
-     * Handle the process termination and subsequent restart.
-     * It sequentially sends SIGINT, SIGTERM, and SIGKILL signals to the process with a pause
-     * between each signal to allow for graceful termination.
-     *
-     * @async
-     * @private
-     */
-    private _killAndRun;
+    #private;
 }
 /**
- * JobProcess class is responsible for handling the individual processes of a job.
- * Each instance of this class represents a running job process, encapsulating details such as
- * the process ID, its worker, runtime options, and state indicators (like whether it's running or being terminated).
- *
- * This class extends EventEmitter to allow monitoring and reacting to different states of the job process through various events.
+ * Create at 8/09/23
  */
 export type Worker = import('./worker.mjs').default;
 import { EventEmitter } from 'node:events';

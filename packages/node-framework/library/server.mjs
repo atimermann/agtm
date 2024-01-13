@@ -47,10 +47,19 @@ export default {
         throw new TypeError('application must be instance of Application')
       }
 
-      if (process.argv[2] === 'job') {
+      /**
+       * The command passed to the server via command-line arguments.
+       * This variable determines the mode in which the server operates.
+       * It affects the initialization and running of various server components.
+       *
+       * @type {string}
+       */
+      const command = process.argv[2]
+
+      if (['job', 'job-check'].includes(command)) {
         if (Config.get('jobManager.enabled', 'boolean')) {
           await application.init(['jobs']) // Loads only job-type controllers
-          await WorkerRunner.run(application)
+          await WorkerRunner.run(application, command === 'job-check')
         } else {
           // noinspection ExceptionCaughtLocallyJS
           throw new Error('jobManager disabled')

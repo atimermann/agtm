@@ -73,7 +73,7 @@ export default class Application {
   /**
    * A unique identifier for the application
    */
-  uuid = Date.now() + '-' + Math.random().toString(36).substr(2, 9)
+  uuid = Date.now() + '-' + Math.random().toString(36).substring(2, 11)
 
   /**
    * indicates that application has already been initialized
@@ -169,10 +169,12 @@ export default class Application {
 
   /**
    * Initializes application, no longer allows loading subapplication.
+   *
+   * @param {string[]} [controllersType]  List of controller types to load
    */
-  async init () {
+  async init (controllersType) {
     logger.info(`Initializing application "${this.name}"...`)
-    this.controllers = await ApplicationController.getControllersInstances(this.applications)
+    this.controllers = await ApplicationController.getControllersInstances(this.applications, controllersType)
 
     if (this.controllers.length === 0) {
       throw new Error('No controller loaded')

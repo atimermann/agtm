@@ -69,10 +69,12 @@ export default class ApplicationController {
   /**
    * Returns all controllers of the current application and sets attributes about the current application.
    *
-   * @param  {Array<Application>}             applications  - Array of application objects to process
-   * @return {Promise<Array<BaseController>>}               A promise that resolves to an array of controller instances
+   * @param  {Array<Application>}             applications       - Array of application objects to process
+   * @param  {string[]}                       [controllersType]  - List of controller types to load
+   *
+   * @return {Promise<Array<BaseController>>}                    A promise that resolves to an array of controller instances
    */
-  static async getControllersInstances (applications) {
+  static async getControllersInstances (applications, controllersType) {
     const controllersInstances = []
 
     for (const application of applications) {
@@ -80,7 +82,7 @@ export default class ApplicationController {
 
       await this.checkAppsDirectoryExist(application)
 
-      for (const controllerInstance of await this._getControllersInstanceByApps(application.appsPath)) {
+      for (const controllerInstance of await this.#getControllersInstanceByApps(application.appsPath, controllersType)) {
         // Defines application attributes to the controller
         controllerInstance.applicationName = application.name
         controllerInstance.applicationPath = application.path
@@ -96,12 +98,12 @@ export default class ApplicationController {
   /**
    * Returns all controllers of the specified app.
    *
-   * @param  {string}                         appsPath  Physical path of the directory where the apps of this application are located
+   * @param  {string}                         appsPath           Physical path of the directory where the apps of this application are located
+   * @param  {string[]}                       [controllersType]  - List of controller types to load
    *
-   * @return {Promise<Array<BaseController>>}           List of already instantiated controllers
-   * @private
+   * @return {Promise<Array<BaseController>>}                    List of already instantiated controllers
    */
-  static async _getControllersInstanceByApps (appsPath) {
+  static async #getControllersInstanceByApps (appsPath, controllersType) {
     const controllersInstances = []
 
     for (const appName of await readdir(appsPath)) {
@@ -110,15 +112,17 @@ export default class ApplicationController {
       const appPath = path.join(appsPath, appName)
 
       for (const controllerDirectory of Object.keys(this.controllerMap)) {
-        const controllersPath = path.join(appsPath, appName, controllerDirectory)
-        if (await this.exists(controllersPath)) {
-          for (const controllerInstance of await this._getControllersInstanceByControllers(controllersPath)) {
-            // Defines app attributes to the Controller
-            controllerInstance.appName = appName
-            controllerInstance.appPath = appPath
-            controllerInstance.controllerType = controllerDirectory
+        if (!controllersType || controllersType.includes(controllerDirectory)) {
+          const controllersPath = path.join(appsPath, appName, controllerDirectory)
+          if (await this.exists(controllersPath)) {
+            for (const controllerInstance of await this.#getControllersInstanceByControllers(controllersPath)) {
+              // Defines app attributes to the Controller
+              controllerInstance.appName = appName
+              controllerInstance.appPath = appPath
+              controllerInstance.controllerType = controllerDirectory
 
-            controllersInstances.push(controllerInstance)
+              controllersInstances.push(controllerInstance)
+            }
           }
         }
       }
@@ -133,9 +137,8 @@ export default class ApplicationController {
    * @param  {string}                         controllersPath  Directory where the controllers are located
    *
    * @return {Promise<Array<BaseController>>}                  List of already instantiated controllers
-   * @private
    */
-  static async _getControllersInstanceByControllers (controllersPath) {
+  static async #getControllersInstanceByControllers (controllersPath) {
     const controllersInstances = []
 
     for (const controllerName of await readdir(controllersPath)) {

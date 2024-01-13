@@ -47,16 +47,16 @@ export default {
         throw new TypeError('application must be instance of Application')
       }
 
-      await application.init()
-
       if (process.argv[2] === 'job') {
         if (Config.get('jobManager.enabled', 'boolean')) {
+          await application.init(['jobs']) // Loads only job-type controllers
           await WorkerRunner.run(application)
         } else {
           // noinspection ExceptionCaughtLocallyJS
           throw new Error('jobManager disabled')
         }
       } else {
+        await application.init()
         await this.initServer(application)
       }
     } catch (error) {
@@ -81,7 +81,6 @@ export default {
     }
 
     this.logInfo(application)
-
     // Load initializers
     for (const controller of application.getControllers('core')) {
       try {

@@ -63,8 +63,10 @@ export default class Application {
     loadApplication(applicationLoader: (ApplicationClass: typeof Application) => Application): void;
     /**
      * Initializes application, no longer allows loading subapplication.
+     *
+     * @param {string[]} [controllersType]  List of controller types to load
      */
-    init(): Promise<void>;
+    init(controllersType?: string[]): Promise<void>;
     /**
      * @overload
      * @param  {'jobs'}                type  - Controller type specified as 'jobs'.

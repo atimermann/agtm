@@ -30,28 +30,29 @@ export default class ApplicationController {
     /**
      * Returns all controllers of the current application and sets attributes about the current application.
      *
-     * @param  {Array<Application>}             applications  - Array of application objects to process
-     * @return {Promise<Array<BaseController>>}               A promise that resolves to an array of controller instances
+     * @param  {Array<Application>}             applications       - Array of application objects to process
+     * @param  {string[]}                       [controllersType]  - List of controller types to load
+     *
+     * @return {Promise<Array<BaseController>>}                    A promise that resolves to an array of controller instances
      */
-    static getControllersInstances(applications: Array<Application>): Promise<Array<BaseController>>;
+    static getControllersInstances(applications: Array<Application>, controllersType?: string[]): Promise<Array<BaseController>>;
     /**
      * Returns all controllers of the specified app.
      *
-     * @param  {string}                         appsPath  Physical path of the directory where the apps of this application are located
+     * @param  {string}                         appsPath           Physical path of the directory where the apps of this application are located
+     * @param  {string[]}                       [controllersType]  - List of controller types to load
      *
-     * @return {Promise<Array<BaseController>>}           List of already instantiated controllers
-     * @private
+     * @return {Promise<Array<BaseController>>}                    List of already instantiated controllers
      */
-    private static _getControllersInstanceByApps;
+    static "__#6@#getControllersInstanceByApps"(appsPath: string, controllersType?: string[]): Promise<Array<BaseController>>;
     /**
      * Loads and returns all controllers defined in the 'Controllers' directory.
      *
      * @param  {string}                         controllersPath  Directory where the controllers are located
      *
      * @return {Promise<Array<BaseController>>}                  List of already instantiated controllers
-     * @private
      */
-    private static _getControllersInstanceByControllers;
+    static "__#6@#getControllersInstanceByControllers"(controllersPath: string): Promise<Array<BaseController>>;
     /**
      * Checks if the directory for the given application exists.
      *

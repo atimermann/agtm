@@ -34,6 +34,8 @@ BUGS - URGENT
 ************************************************************************************************************************
 JOBS
 ************************************************************************************************************************
+
+- Verificar (substituir, ou integrar) https://www.npmjs.com/package/bree
 - Mudar atributo id para instance (pois ele representa a instancia do jobprocess e não um id unico)
 - Verificar se processLog envia erros tb ou só no processError (os dois deve enviar)
 

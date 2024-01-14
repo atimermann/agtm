@@ -100,8 +100,7 @@ export default class WorkerRunner {
       }
     }
 
-    logger.info(`Process closed! PID: ${process.pid}`)
-    process.exit(0)
+    // Do not terminate the process if it reaches this point.
   }
 
   /**

@@ -81,5 +81,15 @@ export default defineNuxtConfig({
     '@agtm/nuxt-tools',
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt'
-  ]
+  ],
+  runtimeConfig: {
+    public: {
+      template: {
+        version: null,
+        auth: {
+          url: null
+        }
+      }
+    }
+  }
 })

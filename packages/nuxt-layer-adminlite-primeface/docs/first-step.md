@@ -58,6 +58,8 @@ Então você precisa definir o container que deseja em cada página, por exemplo
 compomente mais utilizado no projeto. Difere do Card do PrimeVue que tem um propósito diferente. veja mais
 em [NfCards](./components/nf-card.md)
 
+
+
 ## Componentes PrimeVue
 
 Deve ser importado diretamente no componente onde será usado.
@@ -90,5 +92,72 @@ Exemplo:
   [...]
 
 </script>
+
+```
+
+
+## Exemplo completo:
+
+```vue
+
+<template>
+  <div class="container-fluid">
+    <div class="grid">
+      <div class="col-6">
+        <NfCard>
+          <template #title>
+            New Nuxt 3 Page - summarizer
+          </template>
+          <template #content>
+            summarizer
+          </template>
+          <template #footer>
+            Footer
+          </template>
+        </NfCard>
+      </div>
+      <div class="col-6">
+        <div class="text-center p-3 border-round-sm bg-primary font-bold">
+          My Div
+        </div>
+      </div>
+      <div class="col-8">
+        <DataTable :value="products" table-style="min-width: 50rem" show-gridlines>
+          <Column field="code" header="Code"/>
+          <Column field="name" header="Name"/>
+          <Column field="category" header="Category"/>
+          <Column field="quantity" header="Quantity"/>
+        </DataTable>
+      </div>
+      <div class="col-3">
+        <a href="https://primeflex.org/gridsystem">Documentation</a>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+
+  import DataTable from 'primevue/datatable'
+  import Column from 'primevue/column'
+  import {definePageMeta, ref} from '#imports'
+
+  definePageMeta({
+    layout: 'admin',
+    title: 'New Nuxt 3 Page - Summarizer',
+    auth: true
+  })
+
+  const products = ref([{
+    code: '#1',
+    name: 'Name',
+    category: 'Category',
+    quantity: 10
+  }])
+
+</script>
+
+<style scoped>
+</style>
 
 ```

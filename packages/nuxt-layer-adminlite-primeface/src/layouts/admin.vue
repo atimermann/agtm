@@ -30,7 +30,7 @@
         <slot name="footer">
           <!-- TODO: Estudar uma forma do usuário poder inserir um componente aqui, sem ser apenas texto-->
           <div class="flex justify-content-end">
-            {{ runtimeConfig.public.version || 'Nuxt Admin' }}
+            {{ runtimeConfig.public.template.version || 'Nuxt Admin' }}
           </div>
         </slot>
       </footer>

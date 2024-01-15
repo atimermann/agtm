@@ -14,7 +14,9 @@ Também podem ser utilizadas para carregar dados sensíveis como chaves de segur
 
 Configurações são definidas no arquivo nuxt.config.js usando as propriedades runtimeConfig.
 
-**IMPORTANTE:** Configurações pré-definida do nuxtLayerAdmin estão localizadas em **runtimeConfig.public.template**
+**IMPORTANTE:** 
+* Configurações pré-definida do nuxtLayerAdmin estão localizadas em **runtimeConfig.public.template**
+* Toda alteração no runtimeConfig exige reinicio da aplicação para que as alterações sejam aplicadas
 
 **Exemplo:**
 
@@ -48,14 +50,14 @@ export default defineNuxtConfig({
 
 # AppConfig
 
-São parametros fixos de configuração do template e do projeto que nunca se altera depois do projeto ser compilado
+São parametros fixos do template e do projeto que nunca se alteram depois do projeto ser compilado.
 
 Enquanto o runtimeConfig é ideal para informações que podem variar e precisam ser seguras, o appConfig é mais voltado
 para a configuração estática e estrutural do aplicativo.
 
-Você pode criar um arquivo app.config.mjs ou configurar no app.vue (depende de sua necessidade)
+Você dev criar um arquivo app.config.mjs ou configurar no app.vue (depende de sua necessidade)
 
-Para configurar o template crie um arquivo app.config.ts(mjs, cjs, js) na raiz do projeto:
+Crie um arquivo app.config.ts(mjs, cjs, js) na raiz do projeto:
 
 **exemplo:**
 app.config.mjs
@@ -86,7 +88,7 @@ const filePath = (await import('~/assets/adminlte/img/user1-128x128.jpg')).defau
 Ao utilizar o método import, o nuxt irá injetar automaticamente o arquivo no bundle gerado, e irá retornar o caminho
 desse arquivo, utilize await pois é um métoco assincrono e dafault para converter para ESM (com CJS não é necessário).
 
-Este método, não funciona no app.config, pois não é processado pelo Vite, para resolver este problema você pode
+Este método, não funciona no app.config, pois não é processado pelo Vite, para contornar este problema você deve
 configurar o template da seguinte forma:
 
 Crie um arquivo **app.vue** na raiz da aplicação:
@@ -113,8 +115,17 @@ src/app.vue:
   }
 
 </script>
-
 ```
+
+**MUITO IMPORTANTE:** 
+
+* Neste caso você deve criar obrigatóriamente dois arquivos de configuração:
+  * app.config.mjs e app.vue
+* app.vue carrega apenas parametros dinamicos como uma imagem ou outro valor dinamico
+* app.vue é carregado DEPOIS da inicialização do template, portanto algumas configurações importantes serão ignoradas,
+  como por exemplo login.enabled que é utilizado internamente em um middleware.
+* Enquanto não é possivel carregar template no app.config.mjs, alguns atributos são perdidos em app.vue. tome cuidado
+* Pesquisar uma forma de contornar isso
 
 ## Refêrencia de configurações internas do Nuxt Layer Admin
 
@@ -141,15 +152,16 @@ src/app.vue:
 | iconClasses | Icone para esta entrada do menu    | Array             |        | [ 'pi', 'pi-home'] |
 | subItems    | Lista de Submenu (Máximo 2 níveis) | Array de MenuItem |        |                    |
 
-
 # Acessando configurações
 
 Para acessar configurações do tipo runtimeConfig em seu projeto utilize useRuntimeConfig.
 
 **Exemplo:**
+
 ```vue
+
 <script setup>
-    const runtimeConfig = useRuntimeConfig()    
+  const runtimeConfig = useRuntimeConfig()
 </script>
 
 <template>
@@ -163,9 +175,11 @@ Para acessar configurações do tipo appConfig em seu projeto utilize
 **Exemplo:**
 
 ```vue
+
 <script setup>
-  import { useAppConfig } from '#imports'
-  const { template } = useAppConfig()  
+  import {useAppConfig} from '#imports'
+
+  const {template} = useAppConfig()
 </script>
 
 <template>

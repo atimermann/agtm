@@ -12,7 +12,7 @@
  */
 
 import { defineStore } from 'pinia'
-import { useFetch } from '#imports'
+import { useFetch, useRuntimeConfig } from '#imports'
 import { jwtDecode } from 'jwt-decode'
 
 export const useAuthStore = defineStore('auth', {
@@ -25,7 +25,17 @@ export const useAuthStore = defineStore('auth', {
   },
   actions: {
     async login (username, password) {
-      const { data, error } = await useFetch('http://localhost:3001/authenticate', {
+      const runtimeConfig = useRuntimeConfig()
+      const authUrl = runtimeConfig.public.template.auth.url
+
+      if (!authUrl) {
+        return {
+          auth: false,
+          message: 'Authentication server URL not defined!  The URL for the authentication server is missing or not set in the configuration. Please define the \'NUXT_PUBLIC_TEMPLATE_AUTH_URL\' in the configuration settings to proceed.'
+        }
+      }
+
+      const { data, error } = await useFetch(authUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -47,7 +57,9 @@ export const useAuthStore = defineStore('auth', {
 
         return {
           auth: false,
-          message: error.value.data.message
+          message: error.value.data
+            ? error.value.data.message()
+            : error.value.message
         }
       }
     },

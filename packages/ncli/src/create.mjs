@@ -184,7 +184,10 @@ const CONTROLLER_TYPES = ['http', 'jobs', 'core', 'socket'];
     console.log('\nLoad the assets with: \n\tnpm run install-assets')
     console.log('\nThen:\n\tnpm run dev\n')
     // console.log('\nPara gerar binário:\n\tnpm run build')
-    console.log('\nTo run a job directly from the terminal, run:\n\tnpm run job Teste main hello-world "My Job"\n')
+    console.log(`
+To run a job directly from the terminal, run:
+\tnpm run job "${projectFolderName}" main hello-world "My Job"
+`)
     console.log('------------------------------------\n\n')
   } catch (e) {
     console.error(e.message)

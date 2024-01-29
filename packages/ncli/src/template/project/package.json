@@ -5,9 +5,10 @@
   "description": "{{PACKAGE_DESCRIPTION}}",
   "main": "{{PACKAGE_MAIN}}",
   "scripts": {
-    "start": "NODE_ENV=production node .",
+    "start": "node --loader esm-module-alias/loader --no-warnings .",
     "dev": "./scripts/dev.sh",
     "job": "node --loader esm-module-alias/loader --no-warnings src/run.mjs job",
+    "prod": "NODE_ENV=production node --loader esm-module-alias/loader --no-warnings .",
     "dev:debug": "node --inspect-brk --loader esm-module-alias/loader --no-warnings  .",
     "monitor": "npx nf-monitor",
     "build-pkg": "scripts/build-pkg.sh",
@@ -44,7 +45,6 @@
   },
   "devDependencies": {
     "nodemon": "^3.0.2",
-    "@agtm/ncli": "^5.0.0",
     "@babel/preset-env": "^7.21.5",
     "@types/node": "^20.10.6",
     "babel-jest": "^29.5.0",

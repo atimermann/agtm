@@ -194,12 +194,26 @@ export default class JobManager {
     if (!job) {
       const availableJobs = ['Available jobs:']
       for (const [, jobElement] of Object.entries(this.jobs)) {
-        availableJobs.push(`- ${jobElement.applicationName} ${jobElement.appName} ${jobElement.controllerName} ${jobElement.name}`)
+        availableJobs.push(`- ${this.#quoteIfNeeded(jobElement.applicationName)} ${this.#quoteIfNeeded(jobElement.appName)} ${this.#quoteIfNeeded(jobElement.controllerName)} ${this.#quoteIfNeeded(jobElement.name)}`)
       }
       throw new Error(`Job "${name}" does not exist in the Application "${applicationName}", App: "${appName}", Controller: "${controllerName}"\n${availableJobs.join('\n')}`)
     }
 
     return job
+  }
+
+  /**
+   * Wraps a string in double quotes if it contains spaces or special characters,
+   * escaping any internal double quotes. Useful for shell command preparation.
+   *
+   * @param  {string} str  - String to potentially quote.
+   * @return {string}      - Quoted string with escaped double quotes, or original string if no quoting needed.
+   */
+  static #quoteIfNeeded (str) {
+    if (/[\s"']/.test(str)) {
+      return `"${str.replace(/"/g, '\\"')}"`
+    }
+    return str
   }
 
   /**

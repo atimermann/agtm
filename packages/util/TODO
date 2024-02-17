@@ -1,0 +1,2 @@
+* Melhorar organização das funções, está bagunçado e dificil de encontrar, utilizar padrão avançado de exportação do ESM no package.json
+* URGENTE: Documentar todas as funções

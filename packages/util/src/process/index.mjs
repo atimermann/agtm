@@ -84,3 +84,37 @@ export async function spawn (commandText, env = {}, quiet = false) {
     })
   })
 }
+
+/**
+ * Iteratively Spawn
+ * Runs spawn iteratively, to be used in scripts for user interaction.
+ *
+ * @param commandText
+ * @param env
+ * @return {Promise<unknown>}
+ */
+export async function iSpawn (commandText, env = {}) {
+  return new Promise((resolve, reject) => {
+    const [command, args] = parseCommand(commandText)
+    const stdout = ''
+    const stderr = ''
+
+    const pHandler = processSpawn(
+      command,
+      args,
+      { stdio: 'inherit', shell: true, env: Object.assign({}, process.env, env) }
+    )
+
+    pHandler.on('error', (error) => {
+      reject(error)
+    })
+
+    pHandler.on('close', (code) => {
+      if (code === 0) {
+        resolve({ code, stdout, stderr })
+      } else {
+        reject(new Error(`Closed unexpectedly ${code}`))
+      }
+    })
+  })
+}

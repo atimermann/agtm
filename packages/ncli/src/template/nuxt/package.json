@@ -1,0 +1,38 @@
+{
+  "name": "{{PACKAGE_NAME}}",
+  "version": "0.0.1",
+  "description": "{{PACKAGE_DESCRIPTION}}",
+  "private": true,
+  "type": "module",
+  "author": "{{PACKAGE_AUTHOR}}",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev --no-clear --port=3030",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "cleanup": "nuxt cleanup",
+    "test": "nuxi test",
+    "deploy-patch": "npm version patch && git push && git push --tags",
+    "deploy-minor": "npm version minor && git push && git push --tags",
+    "deploy-major": "npm version major && git push && git push --tags",
+    "lint": "eslint --fix src",
+    "lint:test": "eslint src",
+    "docker:build:patch": "./scripts/build-image.sh patch",
+    "docker:build:minor": "./scripts/build-image.sh minor",
+    "docker:build:major": "./scripts/build-image.sh major",
+    "docker:build:prod": "./scripts/build-image.sh prod",
+    "docker:run": "./scripts/docker-tool.sh run",
+    "docker:exec": "./scripts/docker-tool.sh exec"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "nuxt": "{{PACKAGE_NUXT_VERSION}}",
+    "vue": "{{PACKAGE_VUE_VERSION}}",
+    "vue-router": "{{PACKAGE_VUE_ROUTER_VERSION}}"
+  }
+}
+
+

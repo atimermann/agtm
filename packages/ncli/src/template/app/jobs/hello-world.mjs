@@ -19,24 +19,27 @@ export default class HelloWorldJobs extends JobsController {
    *
    */
   async setup () {
-
-
     logger.info('Configuring your project...')
 
-    this.createJob('JOB SCHEDULE', '*/10 * * * * *', async () => {
+    this.createJob('Scheduled Job', '*/10 * * * * *', async () => {
       logger.info('Sleep 2min...')
     })
 
-    this.createJob('JOB NOW', 'now', async () => {
+    this.createJob('One-Time Job', 'now', async () => {
       logger.info('Execute one time')
+      this.exit(1)
     })
 
-    this.createJob('JOB CONTINUOS', null, async () => {
+    this.createJob('Continuous Job', null, async () => {
       logger.info('Starting Worker...')
     })
 
-    this.createWorkers('WORKER', 'JOB CONTINUOS', {
+    this.createWorkers('Worker', 'Continuous Job', {
       concurrency: 3
+    })
+
+    this.createJob('My Job', null, async () => {
+      logger.info('My Job OK')
     })
   }
 }

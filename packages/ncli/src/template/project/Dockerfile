@@ -11,5 +11,5 @@ COPY config* ./
 RUN npm run install-assets
 
 # If you wish to execute a default command, or leave it commented to be defined at runtime
-#CMD [ "npm", "run", "job", "main_datafrost_server", "main", "textLoader", "test" ]
+#CMD [ "npm", "run", "job", "appName", "main", "textLoader", "test" ]
 #CMD [ "npm", "start"]

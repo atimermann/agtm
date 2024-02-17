@@ -22,7 +22,5 @@ export default class HelloWorldController extends CoreController {
   async setup () {
     logger.info('Configuring your project...')
     logger.info(`Timezone: ${Config.get('httpServer.timezone')}`)
-
-    console.log('===================>', this.applicationName)
   }
 }

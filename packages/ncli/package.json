@@ -1,6 +1,6 @@
 {
   "name": "@agtm/ncli",
-  "version": "8.2.1",
+  "version": "8.2.2",
   "description": "Conjuntos de scripts para auxiliar no desenvolvimento de projetos node.",
   "type": "module",
   "bin": {
@@ -10,6 +10,7 @@
     "ncli-agtm-update": "src/agtm-update.mjs",
     "ncli-agtm-link": "src/agtm-link.mjs",
     "ncli-create-app": "src/create-app.mjs",
+    "ncli-create-nuxt": "src/create-nuxt.mjs",
     "ncli-create-controller": "src/create-controller.mjs",
     "ncli-install-assets": "src/install-assets.mjs"
   },

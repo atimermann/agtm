@@ -21,6 +21,7 @@ import { join } from 'node:path'
     .command('create-app', 'Cria novo app baseado no template.')
     .command('create-controller', 'Cria novo controller.')
     .command('install-assets', 'Copia assets (arquivos estáticos) das apps para pasta public ou servidor CDN.')
+    .command('create-nuxt', 'Cria novo projeto nuxt com nuxt-layer-adminlte-primeface')
 
   program.on('--help', function () {
     console.log('\nDescrição:')

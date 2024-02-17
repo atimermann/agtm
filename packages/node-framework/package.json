@@ -1,6 +1,6 @@
 {
   "name": "@agtm/node-framework",
-  "version": "8.2.5",
+  "version": "8.2.6",
   "description": "Framework nodejs baseado no ExpressJs",
   "types": "./types/index.d.mts",
   "bin": {

@@ -3,7 +3,7 @@
  *
  * index.mjs
  *
- * @file Main entry point for the DataFrost server application, handling imports and exports of core functionalities.
+ * @file Main entry point for the Server application, handling imports and exports of core functionalities.
  * @author André Timermann <andre@timermann.com.br>
  */
 

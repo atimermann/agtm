@@ -24,3 +24,4 @@ rules:
       multiline:
         max: 1
   "local/import-require-node-prefix": "warn"
+  "local/no-underscore-method": "warn"

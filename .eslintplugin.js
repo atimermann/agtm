@@ -30,5 +30,31 @@ exports.rules = {
         }
       }
     })
+  },
+  'no-underscore-method': {
+    meta: {
+      type: 'suggestion',
+      docs: {
+        description: 'suggest using # instead of _ for private methods',
+        category: 'Best Practices',
+        recommended: false
+      },
+      schema: []
+    },
+    create: function(context) {
+      return {
+        MethodDefinition(node) {
+          if (node.key.name.startsWith('_') && !node.key.name.startsWith('__')) {
+            context.report({
+              node: node,
+              message: 'Replace \'_{{methodName}}\' with \'#{{methodName}}\' to denote a private method.',
+              data: {
+                methodName: node.key.name.substring(1) // remove the underscore
+              }
+            });
+          }
+        }
+      };
+    }
   }
 }

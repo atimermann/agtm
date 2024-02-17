@@ -69,6 +69,10 @@ defineNuxtConfig({
         enabled: true
       }
     },
+    imports: {
+      // Disable auto-imports for better code traceability
+      autoImport: false
+    },    
     // `vite` configura o servidor de desenvolvimento Vite utilizado pelo Nuxt
     vite: {
       server: {

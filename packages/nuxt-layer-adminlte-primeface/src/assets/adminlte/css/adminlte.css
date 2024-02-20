@@ -12678,9 +12678,9 @@ body:not(.layout-fixed) .main-sidebar .sidebar {
   right: 2.2rem;
 }
 
-.nav-sidebar .menu-open > .nav-treeview {
-  display: block;
-}
+/*.nav-sidebar .menu-open > .nav-treeview {*/
+/*  display: block;*/
+/*}*/
 
 .nav-sidebar .menu-open > .nav-link svg.right,
 .nav-sidebar .menu-open > .nav-link i.right,
@@ -12711,7 +12711,7 @@ body:not(.layout-fixed) .main-sidebar .sidebar {
 }
 
 .nav-sidebar .nav-treeview {
-  display: none;
+  /*display: none; - Controlado pelo Vue, dá prolema animação*/
   list-style: none;
   padding: 0;
 }

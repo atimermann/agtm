@@ -2,23 +2,24 @@
   <div class="control-sidebar-slide-open sidebar-mini" :class="{'sidebar-collapse': colapsedMenu}">
     <div class="wrapper">
       <!-- Navbar -->
-      <TopNavbar>
-        <RightNavbarLinks>
+
+      <AdminTopNavbar>
+        <AdminRightNavbarLinks>
           <!-- Include other right navbar items like search, messages, notifications, etc. -->
-        </RightNavbarLinks>
-      </TopNavbar>
+        </AdminRightNavbarLinks>
+      </AdminTopNavbar>
       <!-- /.navbar -->
 
       <!-- Main Sidebar Container -->
-      <MainSidebar>
+      <AdminMainSidebar>
         <!--      <SidebarSearch />-->
-        <side-bar-menu />
-      </MainSidebar>
+        <AdminSideBarMenu />
+      </AdminMainSidebar>
 
       <!-- Content Wrapper. Contains page content -->
       <div class="content-wrapper">
         <!-- Content Header (Page header) -->
-        <ContentHeader />
+        <AdminContentHeader />
         <!-- Main content -->
         <section class="content">
           <nuxtPage />
@@ -45,16 +46,8 @@
 // TODO: Puxar as classes dessa maneira e salvar em utils
 // TODO: Configuração em parametros app.config.ts
 // TODO: Documentar tudo aqui e no zim (De preferencia criar cheatChet)
-// import {MenuItem, SubMenuItem} from '@agtm/nuxt-layer-adminlte-primevue'
 
 import { useAppConfig, ref, provide, useRuntimeConfig } from '#imports'
-
-import SideBarMenu from '../components/admin/SideBarMenu.vue'
-import TopNavbar from '../components/admin/TopNavbar.vue'
-import RightNavbarLinks from '../components/admin/RightNavbarLinks.vue'
-import MainSidebar from '../components/admin/MainSidebar.vue'
-// import SidebarSearch from '../components/admin/SidebarSearch.vue'
-import ContentHeader from '../components/admin/ContentHeader.vue'
 
 const { template } = useAppConfig()
 const runtimeConfig = useRuntimeConfig()

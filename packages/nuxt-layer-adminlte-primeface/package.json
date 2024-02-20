@@ -45,7 +45,8 @@
     "pinia": "^2.1.7",
     "primeflex": "^3.3.0",
     "primeicons": "^6.0.1",
-    "primevue": "^3.46.0"
+    "primevue": "^3.46.0",
+    "vue-slide-up-down": "^3.0.0"
   },
   "devDependencies": {
     "dotenv-cli": "^7.3.0",

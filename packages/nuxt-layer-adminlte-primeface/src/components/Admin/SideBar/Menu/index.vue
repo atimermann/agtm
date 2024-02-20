@@ -1,69 +1,45 @@
 <template>
   <nav class="mt-2">
-    <ul
-      class="nav nav-pills nav-sidebar flex-column"
-    >
-      <li
+    <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
+      <AdminSideBarMenuItem
         v-for="(item, index) in template.menu.items"
         :key="index"
-        class="nav-item"
-        :class="{ 'menu-open': item.isOpen }"
-      >
-        <nuxt-link
-          :href="item.link"
-          class="nav-link"
-          :class="{ active: item.active }"
-          @click.prevent="toggleSubMenu(item)"
-        >
-          <i v-if="item.iconClasses" :class="['nav-icon', ...item.iconClasses]" />
-          <p>
-            {{ item.title }}
-            <i v-if="item.subItems" class="right fas fa-angle-left" />
-            <span v-if="item.badge" :class="['badge', ...item.badgeClasses]">{{ item.badge }}</span>
-          </p>
-        </nuxt-link>
-        <template v-if="item.subItems">
-          <transition name="slide-fade">
-            <ul v-show="item.isOpen" class="nav nav-treeview pl-3 nav-link">
-              <li v-for="(subItem, subIndex) in item.subItems" :key="subIndex" class="nav-item">
-                <nuxt-link :href="subItem.link" class="nav-link" :class="{ active: subItem.active }">
-                  <i :class="['nav-icon', ...subItem.iconClasses]" />
-                  <p>{{ subItem.title }}</p>
-                </nuxt-link>
-              </li>
-            </ul>
-          </transition>
-        </template>
-      </li>
+        :menu-item="item"
+        @open="closeMenu(template.menu.items, index)"
+        @open-submenu="closeMenu"
+      />
     </ul>
   </nav>
 </template>
 
 <script setup>
 
-import { useAppConfig } from '#imports'
+import { useAppConfig, ref } from '#imports'
 
 /*
-TODO: Implementar active corretamente para exibir o menu ativo
-    Implementar menu perfil no lado direito superior
-    Implementar configuração de menu
+TODO:
+ * [OK] Implementar active corretamente para exibir o menu ativo
+ * Implementar menu perfil no lado direito superior
+ * Implementar configuração de menu
 */
 
 const { template } = useAppConfig()
 
-function closeAllMenus () {
-  template.menu.items.forEach((item) => {
-    item.isOpen = false
+/**
+ * Opening a menu item closes all others
+ *
+ * @param {object}  menu    Menu in which all items will be closed
+ * @param {number} exceptIndex  Closes all menu items except the one you just opened
+ */
+function closeMenu (menu, exceptIndex) {
+  menu.forEach((item, index) => {
+    if (exceptIndex !== undefined && exceptIndex !== index) {
+      item.isOpen = false
+      if (item.subItems && item.subItems.length > 0) {
+        closeMenu(item.subItems)
+      }
+    }
   })
-}
-
-function toggleSubMenu (item) {
-  if (item.isOpen) {
-    item.isOpen = false
-  } else {
-    closeAllMenus()
-    item.isOpen = true
-  }
 }
 
 // const x = [
@@ -355,25 +331,5 @@ function toggleSubMenu (item) {
 
 </script>
 
-<style>
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-    transition: all 0.2s ease;
-}
-
-.slide-fade-enter-from {
-    transform-origin: top left;
-    transform: scale(0);
-    opacity: 0;
-}
-
-.slide-fade-leave-to {
-    transform-origin: top left;
-    transform: scale(0);
-    opacity: 0;
-}
-
-.nav-link {
-  cursor: pointer;
-}
+<style scoped>
 </style>

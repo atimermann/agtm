@@ -25,8 +25,8 @@ try {
   /// //////////////////// /////////// VERIFICAÇÂO DE INCOMPATIBILIDADE ////////////////////////////////////////////////
   const npmVersion = (await spawn('npm --version', undefined, true)).stdout.split('\n')[0]
 
+  console.log(`Versão do NUXT: ${npmVersion}`)
   if (semver.gte(npmVersion, '10.4.0')) {
-    console.log(`Versão do NUXT: ${npmVersion}`)
     console.log('Nuxt incompátivel com npm versão 10.4.0. Faça downgrade para versão 10.3.0: \n\n\tnpm install -g npm@10.3\n')
     console.log('Se estiver utilizando uma versão superior a "1.4.0", tente instalar o nuxt diretamente ' +
       'com "npx nuxi@latest initl". Se o npm install funcionar, altere aqui para bloquear apenas a versão 1.4 e ' +
@@ -35,6 +35,10 @@ try {
     process.exit(1)
   }
   /// //////////////////// /////////// VERIFICAÇÂO DE INCOMPATIBILIDADE ////////////////////////////////////////////////
+
+
+  console.log(`Script testado com Nuxt versão nuxi@3.10.2. Se der problema e estiver com pressa utilize essa versão!`)
+
 
   const questions = [
     {
@@ -74,6 +78,7 @@ try {
   console.log('Configuring project...')
   console.log('--------------------------------------------------------------------------------------------------------')
   await unlink(join(rootPath, 'app.vue'))
+  await unlink(join(rootPath, 'public'))
 
   const entries = await readdir(templateNuxtPath, { withFileTypes: true })
   for (const entry of entries) {

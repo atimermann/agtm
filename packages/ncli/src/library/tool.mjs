@@ -2,21 +2,23 @@
  * **Created on 11/12/18**
  *
  * library/tool.js
+ *
  * @author André Timermann <andre@timermann.com.br>
  *
  *   Conjunto de funções auxiliares
- *
  */
 import { dirname, join } from 'node:path'
 import fs from 'fs-extra'
 import packageJsonFinder from 'find-package-json'
+import { readFile, writeFile } from 'node:fs/promises'
 
 process.env.SUPPRESS_NO_CONFIG_WARNING = true
 process.env.LOGGER_CONSOLE_ENABLED = false
 
 /**
  * Procura pela raiz do projeto, procurando pelo pacjage.json
- * @returns {Promise<string>}
+ *
+ * @return {Promise<string>}
  */
 export async function findRootPath () {
   try {
@@ -30,9 +32,9 @@ export async function findRootPath () {
 /**
  * Valida se o projeto no diretório especificado é válido
  *
- * @param srcPath {string}  Diretório raiz do projeto (onde se encontra o package.json)
+ * @param            srcPath  {string}  Diretório raiz do projeto (onde se encontra o package.json)
  *
- * @returns {boolean}
+ * @return {boolean}
  */
 export async function validateProject (srcPath) {
   const { Application } = await import('@agtm/node-framework')
@@ -62,10 +64,10 @@ export async function validateProject (srcPath) {
 /**
  * Abre um arquivo template, altera variaveis e salva novamente
  *
- * @param file    {string}  Arquivo à ser editado
- * @param locals  {object}  Dicionario com a lista de bustituição
+ * @param                  file    {string}  Arquivo à ser editado
+ * @param                  locals  {object}  Dicionario com a lista de bustituição
  *
- * @returns {Promise<void>}
+ * @return {Promise<void>}
  */
 export async function render (file, locals) {
   let content = (await fs.readFile(file)).toString()
@@ -75,4 +77,26 @@ export async function render (file, locals) {
   }
 
   await fs.writeFile(file, content)
+}
+
+/**
+ *
+ * @param packageJsonPath
+ * @param scriptsToAdd
+ */
+export async function addScriptToPackageJson (packageJsonPath, scriptsToAdd) {
+  try {
+    const data = await readFile(packageJsonPath, 'utf8')
+    const packageJson = JSON.parse(data)
+
+    packageJson.scripts = packageJson.scripts || {}
+
+    for (const [key, value] of Object.entries(scriptsToAdd)) {
+      packageJson.scripts[key] = value
+    }
+    const updatedPackageJson = JSON.stringify(packageJson, null, 2)
+    await writeFile(packageJsonPath, updatedPackageJson, 'utf8')
+  } catch (err) {
+    console.error('Erro ao modificar o package.json:', err)
+  }
 }

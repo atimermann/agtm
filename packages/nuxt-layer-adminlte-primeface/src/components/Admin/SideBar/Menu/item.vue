@@ -4,14 +4,14 @@
       :to="menuItem.link"
       class="nav-link"
       :class="{ active: menuItem.link === $route.path }"
-      @click.prevent="toggleMenuItem(menuItem)"
+      @click.prevent="admin.toggleMenuItem(menuItem.key)"
     >
       <span :style="spaceStyle" />
       <i v-if="menuItem.iconClasses" :class="['nav-icon', ...menuItem.iconClasses]" />
       <p>
         {{ menuItem.title }}
         <i v-if="menuItem.subItems" class="right pi pi-angle-left" />
-        <span v-if="menuItem.badge" class='right' :class="['badge', 'badge-danger']">{{ menuItem.badge }}</span>
+        <span v-if="menuItem.badge" class="right" :class="['badge', menuItem.badgeType]">{{ menuItem.badge }}</span>
       </p>
     </nuxt-link>
     <template v-if="menuItem.subItems">
@@ -22,7 +22,6 @@
             :key="index"
             :menu-item="item"
             :level="level+1"
-            @open="closeMenu(menuItem.subItems, index)"
           />
         </ul>
       </slide-up-down>
@@ -32,8 +31,8 @@
 
 <script setup>
 
-import { defineProps, defineEmits, computed } from 'vue'
-
+import { useAdminStore } from '@/stores/admin'
+import { defineProps, computed } from 'vue'
 // https://github.com/danieldiekmeier/vue-slide-up-down
 import SlideUpDown from 'vue-slide-up-down'
 
@@ -48,37 +47,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['open', 'openSubmenu'])
-
-/**
- * Change selected menu item
- *
- * Notifies the parent that this menu item has been opened
- * @param menuItem
- */
-function toggleMenuItem (menuItem) {
-  if (!menuItem.isOpen) {
-    emit('open', menuItem)
-  }
-  menuItem.isOpen = !menuItem.isOpen
-}
-
-/**
- * Opening a menu item closes all others
- *
- * @param {object}  menu    Menu in which all items will be closed
- * @param {number} exceptIndex  Closes all menu items except the one you just opened
- */
-function closeMenu (menu, exceptIndex) {
-  menu.forEach((item, index) => {
-    if (exceptIndex !== undefined && exceptIndex !== index) {
-      item.isOpen = false
-      if (item.subItems && item.subItems.length > 0) {
-        closeMenu(item.subItems)
-      }
-    }
-  })
-}
+const admin = useAdminStore()
 
 /**
  * Add indentation to submenus

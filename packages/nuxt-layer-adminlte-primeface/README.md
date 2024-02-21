@@ -1,108 +1,71 @@
 # Nuxt Layer AdminLTE + PrimeFace
 
-Este projeto é uma camada do Nuxt 3 (layer). ([Leia sobre layer aqui](https://nuxt.com/docs/guide/going-further/layers))
+Este projeto introduz uma camada (layer) para o Nuxt 3, desenvolvida para facilitar a integração do PrimeVue 3 e do
+AdminLTE 3 em aplicações web. Essa camada é projetada para ser facilmente incorporada em qualquer projeto Nuxt 3,
+oferecendo um template completo e funcional para a construção de interfaces de usuário ricas e painéis administrativos.
 
-Desenvolvida para facilitar a integração do [PrimeVue 3](https://primefaces.org/primevue/) e
-do [AdminLTE 3](https://adminlte.io/themes/v3/). Esta camada é
-projetada para ser facilmente adicionada a qualquer projeto Nuxt 3, fornecendo um template completo e funcional para
-construção de aplicações web.
+Para detalhes adicionais sobre o Nuxt 3, consulte a documentação oficial do Nuxt 3.
+([Leia sobre layer aqui](https://nuxt.com/docs/guide/going-further/layers))
 
-Você pode consultar a documentação oficial do Nuxt 3 [aqui](https://v3.nuxtjs.org/).
+## Principais Características
 
-O Admin LTE é baseada no Bootstrap, que já está incorporado ao css do Admin LTE. Portanto neste template temos acesso
-tanto a componentes de css do PrimeFlex quanto do bootstrap.
-
-## Requisitos
-
-Antes de prosseguir com a instalação desta camada, certifique-se de que seu projeto Nuxt 3 esteja configurado e
-funcionando corretamente. Caso ainda não tenha um projeto Nuxt 3, siga as instruções
-na [documentação oficial](https://nuxt.com/docs/getting-started/introduction) para criar um novo projeto.
+* Esta layer utiliza o template [AdminLTE 3](https://adminlte.io/themes/v3/) como base
+* Integrado com [PrimeVue 3](https://primefaces.org/primevue/) e PrimeGrid para montagem de layout e utilização de
+  componentes
 
 ## Instalação
 
-Primeiramente instale o nuxt3, mais detalhes em: https://nuxt.com/
-
-Requisitos:
-
-* Source dir deve estar configurado para src, veja mais detalhes em configuração abaixo
-
-Para instalar esta camada do Nuxt 3, siga os passos abaixo:
-
-1. Abra o terminal na raiz do seu projeto Nuxt 3.
-2. Execute o comando abaixo para instalar a camada via npm:
+Para iniciar um novo projeto já configurado com esta camada, siga os passos abaixo:
 
 ```bash
-npm i @agtm/nuxt-layer-adminlte-primeface
-
-# Dependencia do projeto, verificar se é necessário quando carregar este layer como dependencia em vez de "linkado"
-# usar -f defido a um bug do npm, verificar se já foi corrigido.  
-#   - https://stackoverflow.com/questions/74003458/cannot-find-module-pinia-dist-pinia-mjs-when-using-run-dev
-#   - https://github.com/vuejs/pinia/issues/1542#issuecomment-1238820465
-npm i -f pinia @pinia/nuxt
-npm i @pinia-plugin-persistedstate/nuxt
-# Instale o primevue no seu projeto para poder utilizar componentes primevue que não foram importado no
-# nuxt-layer-adminlte-primeface:
-npm i primevue
+  npm i -g @agtm/ncli   
+# Em seguida crie um novo projeto com o comando abaixo:
+  ncli create-nuxt  
 ```
 
-### Configuração
+**Este script irá:**
 
-No arquivo nuxt.config.js, adicione a camada no array buildModules:
-
-```javascript
-defineNuxtConfig({
-  // `ssr: false` desativa o Server Side Rendering, fazendo com que o Nuxt gere uma aplicação cliente-servidor tradicional
-  ssr: false,
-  // `srcDir: 'src'` define o diretório de origem dos arquivos do projeto. 'src' é uma pasta personalizada para seus arquivos Nuxt
-  // Obrigatório
-  srcDir: 'src',
-  // `extends` é usado para estender a configuração com predefinições de terceiros ou plugins. Aqui, está estendendo com `@agtm/nuxt-layer-adminlte-primeface`
-  extends: ['@agtm/nuxt-layer-adminlte-primeface'],
-  // `$development` é um objeto de configuração específico para o ambiente de desenvolvimento
-  $development: {
-    // `devtools` habilita ferramentas de desenvolvimento para depuração e análise de desempenho
-    devtools: {
-      // `enabled: true` ativa as ferramentas de desenvolvimento
-      enabled: true,
-      timeline: {
-        // `enabled: true` ativa a linha do tempo nas ferramentas de desenvolvimento para visualizar eventos e desempenho
-        enabled: true
-      }
-    },
-    imports: {
-      // Disable auto-imports for better code traceability
-      autoImport: false
-    },    
-    // `vite` configura o servidor de desenvolvimento Vite utilizado pelo Nuxt
-    vite: {
-      server: {
-        fs: {
-          // `strict: false` desabilita as restrições de sistema de arquivos do Vite, permitindo carregar arquivos fora da raiz do projeto
-          // Removido em produção
-          strict: false
-        }
-      }
-    }
-  },
-  // `build` configura opções específicas para o processo de construção do projeto
-  build: {
-    // `transpile` é uma lista de dependências que devem ser transpiladas pelo Babel. Utilizado para bibliotecas que não são compatíveis por padrão
-    transpile: ['primevue', 'pinia-plugin-persistedstate']
-  }
-})
-```
-
-**Importante:** Este template está pré-configurado para utilizar o diretório src para armazenas o código fonte do
-projeto, então crie a pasta src e jogue os diretótrios assets, pages, public para lá.
+* Instalar o Nuxt3.
+* Criar um novo projeto utilizando o script padrão do Nuxt.
+* Configurar o projeto com todos os requisitos e dependências necessários para rodar, incluindo Pinia, PrimeVue, entre
+  outros.
+* Configurar o diretório de fontes para src.
 
 **Notas**
-* Vite.server.fs.strict = true permite que o vite acesse arquivos fora do diretório src, por exemplo ao utilizar npm link. [Rererência aqui](https://vitejs.dev/config/server-options.html#server-fs-allow)
 
-## Configurando seu projeto (Importante)
+* Vite.server.fs.strict = true permite que o vite acesse arquivos fora do diretório src, por exemplo ao utilizar npm
+  link. [Rererência aqui](https://vitejs.dev/config/server-options.html#server-fs-allow)
+
+## Configurando seu projeto
 
 Para customizar seu template, habilitar funcionalidades acesse a configuração:
 
 [Consulte aqui refêrencia completa do app.config](./docs/config.md)
+
+## Interface de Controle de Aplicações do Painel Administrativo
+
+Este layer incorpora uma **Interface de Controle**, construída com o gerenciador de estados Pinia, para oferecer uma
+gestão centralizada de estados e configurações do painel administrativo. A API é projetada para oferecer controle
+programático sobre diversos aspectos da interface do usuário (UI) do painel, permitindo uma interação dinâmica e reativa
+com os componentes do painel.
+
+### Exemplo
+
+Através dessa interface de controle, os desenvolvedores têm acesso a um conjunto de métodos que permitem:
+
+* **Navegação Dinâmica:** Programaticamente ativar ou focar em um item de menu específico, facilitando a navegação
+  baseada em ações do usuário ou eventos do sistema.
+* **Indicadores de Notificação:** Definir contadores ou indicadores em itens de menu, útil para exibir a quantidade de
+  ações pendentes, como mensagens não lidas, diretamente na UI do painel.
+* **Gestão de Notificações:** Inserir mensagens na caixa de notificações do administrador, permitindo o envio de alertas
+  ou informações importantes para os usuários do painel. (Funcionalidade em desenvolvimento)
+
+### Documentação e Exemplos de Uso
+
+Para uma compreensão detalhada dos métodos disponíveis, parâmetros esperados, e exemplos de uso prático da API do painel
+administrativo, consulte a documentação técnica completa disponível em:
+
+[Documentação Interface de Controle](./docs/api.md)
 
 ## Desenvolvendo seu projeto em conjunto com o template
 
@@ -117,6 +80,7 @@ Para customizar seu template, habilitar funcionalidades acesse a configuração:
 Este template inclui um arquivo `app.vue` com o seguinte conteúdo:
 
 ```vue
+
 <template>
   <NuxtLayout/>
 </template>
@@ -195,7 +159,7 @@ Running `npm dev` will prepare and boot `playground` directory, which imports yo
 Start the development server on http://localhost:3000
 
 ```bash
-npm dev
+npm run dev
 ```
 
 Checkout the [deployment documentation](https://v3.nuxtjs.org/docs/deployment) for more information.

@@ -36,20 +36,19 @@ A estrutura básica do objeto que define o menu é a seguinte:
 {
   "title": "Dashboard",
   "iconClasses": ["pi", "pi-home"],
-  "link": "#",
-  "active": true,
+  "link": "/dashboard",
   "subItems": [
     {
       "title": "Dashboard v1",
       "iconClasses": ["pi", "pi-circle-on"],
-      "link": "../../index.html",
-      "active": false
+      "link": "/dashboard/v1"
     }
   ],
-  "badge": null,
-  "badgeClasses": null,
+  "badge": "4",
+  "badgeClasses": "warning",
   "isOpen": false
 }
+
 
 ```
 Como criar um novo item de menu

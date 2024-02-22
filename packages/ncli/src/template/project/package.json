@@ -23,7 +23,9 @@
     "docker:build:patch": "./scripts/build-image.sh patch",
     "docker:build:minor": "./scripts/build-image.sh minor",
     "docker:build:major": "./scripts/build-image.sh major",
-    "docker:build:prod": "./scripts/build-image.sh prod"
+    "docker:build:prod": "./scripts/build-image.sh prod",
+    "docker:run": "./scripts/docker.sh run",
+    "docker:shell": "./scripts/docker.sh shell"
   },
   "author": "{{PACKAGE_AUTHOR}}",
   "license": "ISC",

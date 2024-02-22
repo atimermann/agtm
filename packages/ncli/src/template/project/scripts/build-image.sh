@@ -9,6 +9,12 @@ else
     exit 1
 fi
 
+# Verify if BUILD_REGISTRY_ADDRESS is set
+if [ -z "$BUILD_REGISTRY_ADDRESS" ]; then
+    echo "Error: BUILD_REGISTRY_ADDRESS must be defined in .env"
+    exit 1
+fi
+
 # Check for correct number of arguments
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 [patch|minor|major|prod]"
@@ -36,25 +42,25 @@ else
     NEW_VERSION=dev-$(node -p "require('./package.json').version")
 fi
 
-MINOR_VERSION=$(echo $NEW_VERSION | cut -d '.' -f 1,2)
+MINOR_VERSION=$(echo "$NEW_VERSION" | cut -d '.' -f 1,2)
 
 # Step 2: Build the Docker image with the version tag
-docker build -t $BUILD_REGISTRY_ADDRESS/$BUILD_IMAGE_NAME:${NEW_VERSION} .
+docker build -t "$BUILD_REGISTRY_ADDRESS"/"$BUILD_IMAGE_NAME":"${NEW_VERSION}" .
 
 echo
 echo "Image generated successfully with version: ${NEW_VERSION}!"
 echo
 
 # Step 3: Push the image to the registry
-docker push $BUILD_REGISTRY_ADDRESS/$BUILD_IMAGE_NAME:${NEW_VERSION}
+docker push "$BUILD_REGISTRY_ADDRESS"/"$BUILD_IMAGE_NAME":"${NEW_VERSION}"
 
 
 # Step 4: Also create and push a 'dev' tag if not a production build
 if [ "$ARGUMENT" != "prod" ]; then
-  docker tag $BUILD_REGISTRY_ADDRESS/$BUILD_IMAGE_NAME:${NEW_VERSION} $BUILD_REGISTRY_ADDRESS/$BUILD_IMAGE_NAME:dev
-  docker push $BUILD_REGISTRY_ADDRESS/$BUILD_IMAGE_NAME:dev
+  docker tag "$BUILD_REGISTRY_ADDRESS"/"$BUILD_IMAGE_NAME":"${NEW_VERSION}" "$BUILD_REGISTRY_ADDRESS"/"$BUILD_IMAGE_NAME":dev
+  docker push "$BUILD_REGISTRY_ADDRESS"/"$BUILD_IMAGE_NAME":dev
 
 else
-  docker tag $BUILD_REGISTRY_ADDRESS/$BUILD_IMAGE_NAME:${NEW_VERSION} $BUILD_REGISTRY_ADDRESS/$BUILD_IMAGE_NAME:${MINOR_VERSION}
-  docker push $BUILD_REGISTRY_ADDRESS/$BUILD_IMAGE_NAME:${MINOR_VERSION}
+  docker tag "$BUILD_REGISTRY_ADDRESS"/"$BUILD_IMAGE_NAME":"${NEW_VERSION}" "$BUILD_REGISTRY_ADDRESS"/"$BUILD_IMAGE_NAME":"${MINOR_VERSION}"
+  docker push "$BUILD_REGISTRY_ADDRESS"/"$BUILD_IMAGE_NAME":"${MINOR_VERSION}"
 fi

@@ -291,18 +291,33 @@ program
           await copyFile(srcPath, destPath)
         }
       }
+
+      /// /// schema.prisma //////
+      await render(join(rootPath, 'prisma', 'schema.prisma'), {
+        PROVIDER: prismaAnswers.PRISMA_PROVIDER
+      })
+
       /// /////////////////////////////////////////////////////
       // Edit package.json
       /// /////////////////////////////////////////////////////
       console.log('Editing .package.json ...')
       const prismaScripts = {
+        prisma: 'DATABASE_URL=$(./scripts/generate-prisma-url.mjs) prisma',
         'prisma:migrate': 'DATABASE_URL=$(./scripts/generate-prisma-url.mjs) prisma migrate dev --name',
-        'prisma:generate': 'DATABASE_URL=$(./scripts/generate-prisma-url.mjs) prisma generate'
+        'prisma:generate': 'DATABASE_URL=$(./scripts/generate-prisma-url.mjs) prisma generate',
+        'prisma:status': 'DATABASE_URL=$(./scripts/generate-prisma-url.mjs) prisma migrate status'
+
       }
       await addScriptToPackageJson(join(rootPath, 'package.json'), prismaScripts)
 
       console.log('Installing Prisma and dotenv...')
       await spawn(`cd "${projectFolderName}" && npm i -D prisma dotenv`)
+
+      console.log('\n------------------------------------')
+      console.log('PRISMA\n')
+      console.log('\tYou must use "npm run prisma <command>" to run Prisma CLI commands.')
+      console.log('\tSome shortcuts have been added to npm run')
+      console.log('\n------------------------------------')
     }
 
     /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

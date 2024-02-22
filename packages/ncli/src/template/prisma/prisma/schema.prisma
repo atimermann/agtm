@@ -1,5 +1,9 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
-  provider = "postgresql"
+  provider = "{{PROVIDER}}"
   // Do not change, DATABASE_URL will be generated automatically
   url      = env("DATABASE_URL")
 }

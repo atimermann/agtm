@@ -2,8 +2,8 @@
  * **Created on 24/10/23**
  *
  * packages/ncli/src/library/agtm.mjs
- * @author André Timermann <andre@timermann.com.br>
  *
+ * @author André Timermann <andre@timermann.com.br>
  */
 
 import { join, resolve } from 'node:path'
@@ -22,7 +22,8 @@ await loadAgtmModulesInfo()
 /**
  * Returns information about @agtm modules
  *
- * @returns {Promise<*[]>}
+ * @param                 projectPackageJson
+ * @return {Promise<*[]>}
  */
 export async function getReport (projectPackageJson) {
   const modulesInfo = []
@@ -73,7 +74,7 @@ export async function getReport (projectPackageJson) {
 /**
  * Returns information about #@agtm modules
  *
- * @returns {Promise<*[]>}
+ * @return {Promise<*[]>}
  */
 export async function loadAgtmModulesInfo () {
   for (const moduleName of await readdir(agtmModulesDirectoryPath)) {
@@ -115,9 +116,9 @@ export async function loadAgtmModulesInfo () {
 /**
  * Check outdated version of nested dependencies
  *
- * @param moduleName
- * @param moduleInstalledInfo
- * @returns {Promise<*[]>}
+ * @param                 moduleName
+ * @param                 moduleInstalledInfo
+ * @return {Promise<*[]>}
  */
 async function checkModuleDependencies (moduleName, moduleInstalledInfo) {
   const deepReport = []
@@ -151,9 +152,9 @@ async function checkModuleDependencies (moduleName, moduleInstalledInfo) {
 /**
  * Checks if the @agtm module is installed in the current project
  *
- * @param projectPackageJson
- * @param moduleName
- * @returns {boolean}
+ * @param            projectPackageJson
+ * @param            moduleName
+ * @return {boolean}
  */
 function isAgtmModulesInstalled (projectPackageJson, moduleName) {
   try {
@@ -171,8 +172,9 @@ function isAgtmModulesInstalled (projectPackageJson, moduleName) {
 
 /**
  * Checks for changes to be committed in the module directory
- * @param modulePath
- * @returns {Promise<boolean>}
+ *
+ * @param                     modulePath
+ * @return {Promise<boolean>}
  */
 async function checkAgtmHasGitChangesToCommit (modulePath) {
   const git = simpleGit(modulePath)
@@ -213,6 +215,9 @@ async function getModulesInstalled (projectPackageJson) {
   return modulesList.dependencies
 }
 
+/**
+ *
+ */
 async function getLinkedModules () {
   const command = 'npm list --depth 5 --json --link'
 

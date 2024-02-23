@@ -9,7 +9,6 @@
  * Copia assets dos projetos para pasta public ou CDN
  *
  * TODO: Suporte a CDN (ver como foi implementado no controller do @agtm/node-framework)
- *
  */
 
 import { join, relative } from 'node:path'

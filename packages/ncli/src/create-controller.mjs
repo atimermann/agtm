@@ -3,8 +3,8 @@
  * **Created on 07/12/18**
  *
  * bin/sindri-create-controller
- * @author André Timermann <andre@timermann.com.br>
  *
+ * @author André Timermann <andre@timermann.com.br>
  */
 import program from 'commander'
 import { join } from 'node:path'

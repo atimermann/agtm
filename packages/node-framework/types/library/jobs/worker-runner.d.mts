@@ -54,11 +54,11 @@ export default class WorkerRunner {
      *
      * @static
      */
-    static "__#6@#createProcessListeners"(job: Job): void;
+    static "__#7@#createProcessListeners"(job: Job): void;
     /**
      * Start monitoring parent process.
      */
-    static "__#6@#checkParent"(): void;
+    static "__#7@#checkParent"(): void;
     /**
      * Terminates the job execution process.
      * This method executes the teardown functions of the job and then exits the process with a specified exit code.
@@ -67,7 +67,7 @@ export default class WorkerRunner {
      * @param  {number}        [exitCode]  - The exit code used to terminate the process. Defaults to 0.
      * @return {Promise<void>}
      */
-    static "__#6@#exitProcess"(job: Job, exitCode?: number): Promise<void>;
+    static "__#7@#exitProcess"(job: Job, exitCode?: number): Promise<void>;
 }
 /**
  * **Created on 07/06/2023**

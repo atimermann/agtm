@@ -178,7 +178,6 @@ export default class HttpController extends BaseController {
     } catch (err) {
       const { status, errorInfo } = await this.errorHandler(err)
       response.status(status).json(errorInfo)
-      console.error(err)
       logger.error(JSON.stringify({ message: err.message, stack: err.stack }))
     }
   }

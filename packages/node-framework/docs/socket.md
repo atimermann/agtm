@@ -4,27 +4,72 @@ REF: https://socket.io/docs/v4/server-socket-instance/
 
 
 Node framework adota o Socket.io para comunicação via websocket. Toda configuração é inicialização do servidor socket é abstraida pelo framework.
-Basta definir a configuração na seção socket
 
 Você pode implementar sua aplicação socket diretamente no controller com alguns métodos auxiliares.
 
-Para ter acesso ao objeto io do socket.io utilize this.io
-
-Exemplo:
+Exemplo básico:
 
 ```javascript
 
-export default class HelloWorldController extends Controller {
-  socket () {
-    this.namespace('/jobs').on('connection', socket => {
-      socket.emit('newData', { nane: 'André' })
+import {  SocketController } from '@agtm/node-framework'
+
+export default class HelloWorldController extends SocketController {
+
+  namespace = '/helloWorld'
+
+  async setup () {
+    this.on('create', async (data) => {      
+      return true
     })
-  }
+
+   
+    this.on('get', async (data) => {
+      return {data: 'new date'}
+    })
+
+  }  
 }
-
 ```
-Você também pode chamar this.io e pode chamar de qualquer parte do controller, mas é boa prática centralizar configuração socket no método socket
+* Ao definir a propriedade "namespace", internamente o controller cria um novo evento "onConnection" e executa os eventos configurados em setup()
+* Não é necessário realizar tratamento de erro com try catch, já é realizado internamente.
+* O retorn padrão é {success: false, data: "Erro ou dados"}
+* Não é necessário utilizar callback, o retorno é enviado de volta, por isso obrigatório criar função assincrona
 
+No cliente você pode ser conectar à api da seguinte maneira:
+
+```javascript
+#!/usr/bin/env node
+import { io as Client } from 'socket.io-client'
+
+// Configuração do cliente Socket.io para conectar ao servidor
+const clientSocket = Client('http://localhost:4001/hello-world')
+
+clientSocket.on('connect', async () => {
+  console.log(`Conectado com sucesso ao servidor Socket.io. SocketID: "${clientSocket.id}"`)
+
+  const data = { name: 'Electronics', description: 'Gadgets and more' }
+  clientSocket.emit('create', data, (response) => {
+    if (response.success) {
+      console.log('Criada com sucesso:', response.data)
+    } else {
+      console.error('Erro:', response.data)
+    }
+    clientSocket.close()
+  })
+})
+
+clientSocket.on('connect_error', (err) => {
+  console.error('Erro ao conectar ao servidor Socket.io:', err.message)
+  clientSocket.close()
+})
+```
+
+# Acesso direto
+
+Caso precisa de um controle maior da api, você tem acesso as seguintes propriedades:
+
+* **this.io**: Retorna objeto io
+* **this.nsp**: Retorna io.of (namespace já configurado)
 
 ## Eventos
 

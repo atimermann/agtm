@@ -34,6 +34,22 @@ export default class Config {
      */
     static get(key: string, type?: "number" | "boolean" | "string" | "array", yamlOnly?: boolean): any;
     /**
+     * Constructs a Data Source Name (DSN) string for database connection.
+     *
+     * This method dynamically constructs a DSN string based on the provided database configuration name.
+     * It encodes the username and password to ensure special characters are properly handled.
+     * The method also conditionally appends options to the DSN if they are provided.
+     *
+     * @param  {string} name  The base name of the database configuration keys.
+     *                        This name is used to retrieve specific parts of the database configuration
+     *                        such as provider, username, password, host, port, database name, and options.
+     * @return {string}       The constructed DSN string which can be used to connect to the database.
+     *                        The format of the returned DSN string is:
+     *                        `provider://username:password@host:port/database?options`
+     *                        where `options` are optional URL parameters.
+     */
+    static getDSN(name: string): string;
+    /**
      * Check if a value is a plain object.
      *
      * @param  {*}       obj  - The value to check.

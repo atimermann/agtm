@@ -66,7 +66,7 @@ export default class JobManager {
      * @param  {JobsController} controller  - The controller the job belongs to.
      * @return {boolean}                    True if the job is enabled; false otherwise.
      */
-    static "__#5@#isJobEnabled"(controller: JobsController): boolean;
+    static "__#6@#isJobEnabled"(controller: JobsController): boolean;
     /**
      * Retrieves a Job instance from worker attributes. This involves searching through
      * the static job collection and returning the job that matches the given attributes.
@@ -79,6 +79,14 @@ export default class JobManager {
      * @return {Job}                     The job instance that matches the given attributes.
      */
     static getJob(applicationName: string, appName: string, controllerName: string, name: string): Job;
+    /**
+     * Wraps a string in double quotes if it contains spaces or special characters,
+     * escaping any internal double quotes. Useful for shell command preparation.
+     *
+     * @param  {string} str  - String to potentially quote.
+     * @return {string}      - Quoted string with escaped double quotes, or original string if no quoting needed.
+     */
+    static "__#6@#quoteIfNeeded"(str: string): string;
     /**
      * Retrieves a Job instance by its UUID.
      *
@@ -110,7 +118,7 @@ export default class JobManager {
      * Configures setup and teardown functions for all system jobs according to application, app and controller.
      *
      */
-    static "__#5@#configureSetupAndTeardownFunctions"(): void;
+    static "__#6@#configureSetupAndTeardownFunctions"(): void;
     /**
      * Filters the list of setup and teardown functions to find those that are applicable to a specific job.
      * It checks the job's application name, app name, and controller name against each setup and teardown
@@ -124,14 +132,14 @@ export default class JobManager {
      * @param  {Job}                                job  - The job to filter setup and teardown functions for.
      * @return {Array<JobSetupAndTeardownFunction>}      An array of setup and teardown functions applicable to the given job.
      */
-    static "__#5@#filterFunctiontoJob"(job: Job): Array<JobSetupAndTeardownFunction>;
+    static "__#6@#filterFunctiontoJob"(job: Job): Array<JobSetupAndTeardownFunction>;
     /**
      * Creates workers for all the jobs that have been scheduled. Each job is assigned a worker
      * that will be responsible for executing the job as per its schedule.
      *
      *
      */
-    static "__#5@#createScheduledWorkers"(): void;
+    static "__#6@#createScheduledWorkers"(): void;
     /**
      * Loads the job and worker details from the user-defined application context.
      * This involves scanning through all the controllers and extracting the job details.
@@ -140,14 +148,14 @@ export default class JobManager {
      *
      * @return {Promise<void>}              A promise that resolves when all jobs and workers have been loaded.
      */
-    static "__#5@#loadJobsAndWorkersFromController"(application: Application): Promise<void>;
+    static "__#6@#loadJobsAndWorkersFromController"(application: Application): Promise<void>;
     /**
      * Starts all the scheduled jobs. This involves initiating the execution of each job
      * as per its predefined schedule.
      *
      * @return {Promise<void>} A promise that resolves when all scheduled jobs have started execution.
      */
-    static "__#5@#startScheduleJob"(): Promise<void>;
+    static "__#6@#startScheduleJob"(): Promise<void>;
     /**
      * Schedules a job to run at predefined intervals. This involves creating a cron job
      * that triggers the job execution as per its schedule.
@@ -155,7 +163,7 @@ export default class JobManager {
      * @param  {Job}           job  - The job object that needs to be scheduled.
      * @return {Promise<void>}      A promise that resolves when the job has been scheduled.
      */
-    static "__#5@#schedulingJob"(job: Job): Promise<void>;
+    static "__#6@#schedulingJob"(job: Job): Promise<void>;
 }
 /**
  * **Created on 07/06/2023**

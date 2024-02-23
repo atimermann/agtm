@@ -2,17 +2,19 @@
  * Created on 27/07/23
  *
  * @file
- *  SOcket.io Server
+ * This module provides functionality to initialize and run a Socket.io server
+ * with various modes of operation including standalone and integrated with HTTP/HTTPS servers.
+ * It supports SSL/TLS for secure connections and allows configuration of CORS and transport options.
+ *
  *
  * @author André Timermann <andre@timermann.com.br>
- * TODO:
- *  - Abstrair middlewares? ?? https://socket.io/docs/v4/middlewares/
- *  - Gerenciamento de erro
+ * TODO: Abstrair middlewares? ?? https://socket.io/docs/v4/middlewares/
  *  https://www.youtube.com/watch?v=0RMYomgf4a8
  *
  *
  * Todas as opções disponivel para serem analisada e implentada: https://socket.io/docs/v4/server-options/
  * @typedef {import('./application.mjs').default} Application
+ * @typedef {import('./controller/socket.mjs').default} SocketController - The controller for handling socket-related actions.
  *
  * @typedef {object} SocketConfigOptions
  * Represents the configuration options for a socket connection. This object includes
@@ -28,6 +30,13 @@
  * @property {object}                                                                                     [cors]        - CORS configuration settings.
  * @property {string}                                                                                     cors.origin   - Allowed origin(s) for the socket server.
  * @property {Array<string>}                                                                              [transports]  - Allowed transport methods for the socket server.
+ */
+
+/**
+ * @typedef {object} SSLKeyPair
+ * Represents the SSL/TLS key pair configuration for HTTPS or HTTP2 servers.
+ * @property {string} cert  - The file path to the SSL/TLS certificate.
+ * @property {string} key   - The file path to the SSL/TLS key.
  */
 
 import { createServer } from 'node:http'
@@ -68,10 +77,10 @@ export default class SocketServer {
    * The SSL key pair for the server, used when creating an HTTPS or HTTP2 server. Loaded from the configuration file.
    * Contains paths to the key and certificate files.
    *
-   * @type {object}
+   * @type {SSLKeyPair}
    * @static
    */
-  static keys
+  static sslPairKeys
 
   /**
    * Holds the instance of the Socket.io server.
@@ -156,19 +165,39 @@ export default class SocketServer {
    */
   static async #loadApplications (application) {
     for (const controller of application.getControllers('socket')) {
-      controller.io = this.io
-      await controller.setup()
+      logger.debug(`Loading application: "${controller.controllerName}"`)
 
-      logger.info('Socket applications loaded!')
-      logger.debug(`Controller loaded: "${controller.applicationName}/${controller.appName}/${controller.controllerName}"`)
+      controller.io = this.io
+
+      // Load namespace in nsp
+
+      controller.nsp = this.io.of(controller.namespace)
+
+      await this.#runSetup(controller)
+
+      // Get Connection
+      controller.nsp.on('connection', async socket => {
+        await controller.newConnection(socket)
+      })
     }
+  }
+
+  /**
+   * Sets up the controller for handling socket connections.
+   *
+   * @param {SocketController} controller  - The controller to set up.
+   */
+  static async #runSetup (controller) {
+    await controller.setup()
+    logger.info('Socket applications loaded!')
+    logger.debug(`Controller loaded: "${controller.applicationName}/${controller.appName}/${controller.controllerName}"`)
   }
 
   /**
    * Configures an existing Express HTTP Server for use with socket.io.
    *
    * @static
-   * @param {object} httpServer  - The HTTP server instance to configure.
+   * @param {import('http').Server} httpServer  - The HTTP server instance to configure.
    */
   static configureExpressHttpServer (httpServer) {
     if (Config.get('socket.enabled', 'boolean') && Config.get('socket.mode') === 'http-server') {
@@ -233,14 +262,14 @@ export default class SocketServer {
    */
   static #getHttpsOptions () {
     return {
-      key: readFileSync(this.keys.key), cert: readFileSync(this.keys.cert)
+      key: readFileSync(this.sslPairKeys.key), cert: readFileSync(this.sslPairKeys.cert)
     }
   }
 
   /**
-   * Genreate Socket config options.
+   * Generate Socket config options.
    *
-   * @return {SocketConfigOptions} Returns processed settings
+   * @return {Partial<import("socket.io").ServerOptions>} Returns processed settings
    */
   static #getOptions () {
     // TODO: Deve retornar node_modules/socket.io/dist/index.d.ts: ServerOptions  VALIDAR

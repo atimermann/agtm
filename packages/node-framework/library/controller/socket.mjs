@@ -111,13 +111,27 @@ export default class SocketController extends BaseController {
    * @param {SocketEvent}                event   - The event object containing the path and callback function.
    */
   #registerEventForSocket (socket, event) {
-    socket.on(event.path, async (data, callback) => {
+    socket.on(event.path, async (...args) => {
+      let callback = args[args.length - 1]
+      if (typeof callback !== 'function') callback = undefined
+      const dataArgs = callback ? args.slice(0, -1) : args
+
       try {
-        logger.debug(`New event. Socket: ${socket.id} `)
-        const result = await event.fn(data)
-        callback({ success: true, data: result })
+        logger.debug(`New event. Socket: ${socket.id}`)
+        const response = await event.fn(...dataArgs)
+
+        if (callback === undefined && response !== undefined) {
+          logger.error('Client did not specify a callaback, respose lost.')
+        }
+
+        if (callback !== undefined) {
+          callback({ success: true, data: response })
+        }
       } catch (err) {
-        callback({ success: false, data: err.message })
+        if (callback) {
+          callback({ success: false, data: err.message })
+        }
+
         logger.error(JSON.stringify({ message: err.message, stack: err.stack }))
       }
     })

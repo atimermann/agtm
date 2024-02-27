@@ -44,6 +44,11 @@ atributos:
 | **submitted** |            |                       | Formulário foi submetido e salvo com sucesso, só é emitido depois que evento submit é retornado com sucesso.                                                                           |
 |               | new        | Bool                  | Verdadeiro se novo registro, false se for uma atualização                                                                                                                              |
 |               | values     | Array                 | valores atualizados atualizado do servidor com id                                                                                                                                      |
+| **delete**    |            |                       | Um pedido para remover registro                                                                                                                                                        |
+|               | id         | Number                | Id do registro a ser removido                                                                                                                                                          |
+|               | callback   | Function(err, values) | Obrigatório enviar pelo callback status da requisição com servidor:<br/> Err: Objeto erro em caso de erro<br/>Values: {success: Boolean})                                              |
+| **deleted**   |            |                       | Registro foi removido com sucesso. Só é emitido quando remoção foi concluída com sucesso.                                                                                              |
+|               | values     | Array                 | Valores removidos                                                                                                                                                                      |
 
 ## Exemplo básico
 

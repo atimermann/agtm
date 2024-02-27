@@ -12,6 +12,8 @@
 import PrimeVue from 'primevue/config'
 import Tooltip from 'primevue/tooltip'
 import ToastService from 'primevue/toastservice'
+import ConfirmationService from 'primevue/confirmationservice'
+
 import { pt } from '../locale/locale.mjs'
 import { defineNuxtPlugin } from '#app'
 
@@ -26,6 +28,7 @@ import 'primeflex/primeflex.css'
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(PrimeVue, { ripple: true, locale: pt })
   nuxtApp.vueApp.use(ToastService)
+  nuxtApp.vueApp.use(ConfirmationService)
 
   nuxtApp.vueApp.directive('tooltip', Tooltip)
 })

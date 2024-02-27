@@ -36,69 +36,74 @@
     />
   </Dialog>
 
-  <!--  <ConfirmDialog group="headless">-->
-  <!--    <template #container="{ message, acceptCallback, rejectCallback }">-->
-  <!--      <div class="flex flex-column align-items-center p-5 surface-overlay border-round">-->
-  <!--        <div class="border-circle bg-primary inline-flex justify-content-center align-items-center h-6rem w-6rem -mt-8">-->
-  <!--          <i class="pi pi-question text-5xl" />-->
-  <!--        </div>-->
-  <!--        <span class="font-bold text-2xl block mb-2 mt-4">{{ message.header }}</span>-->
-  <!--        <p class="mb-0">-->
-  <!--          {{ message.message }}-->
-  <!--        </p>-->
-  <!--        <div class="flex align-items-center gap-2 mt-4">-->
-  <!--          <Button label="Save" @click="acceptCallback" />-->
-  <!--          <Button label="Cancel" outlined @click="rejectCallback" />-->
-  <!--        </div>-->
-  <!--      </div>-->
-  <!--    </template>-->
-  <!--  </ConfirmDialog>-->
+  <ConfirmDialog group="headless">
+    <template #container="{ message, acceptCallback, rejectCallback }">
+      <div class="flex flex-column align-items-center p-5 surface-overlay border-round">
+        <div class="border-circle bg-primary inline-flex justify-content-center align-items-center h-6rem w-6rem -mt-8">
+          <i class="pi pi-question text-5xl" />
+        </div>
+        <span class="font-bold text-2xl block mb-2 mt-4">{{ message.header }}</span>
+        <p class="mb-0">
+          {{ message.message }}
+        </p>
+        <div class="flex align-items-center gap-2 mt-4">
+          <Button label="Save" @click="acceptCallback" />
+          <Button label="Cancel" outlined @click="rejectCallback" />
+        </div>
+      </div>
+    </template>
+  </ConfirmDialog>
   <!--  <div class="card flex justify-content-center">-->
   <!--    <Button label="Save" @click="requireConfirmation()" />-->
   <!--  </div>-->
-  <!--  <Toast />-->
+  <Toast />
 
-  <pre style="background-color: lightgray">
-<b>formValues:</b>
-  {{ formValues }}
-<b>formSchema:</b>
-  {{ formSchema }}
-<b>MODEL:</b>
-    {{ model }}
-</pre>
+<!--  <pre style="background-color: lightgray">-->
+<!--<b>formValues:</b>-->
+<!--  {{ formValues }}-->
+<!--<b>formSchema:</b>-->
+<!--  {{ formSchema }}-->
+<!--<b>MODEL:</b>-->
+<!--    {{ model }}-->
+<!--</pre>-->
 </template>
 ------------------------------------------------------------------------------------------------------------------------
                                                         SCRIPT
 ------------------------------------------------------------------------------------------------------------------------
 <script setup>
 
+import cloneDeep from 'lodash/cloneDeep'
+
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
+import Toast from 'primevue/toast'
 
 import { computed, ref } from '#imports'
 
-// import ConfirmDialog from 'primevue/confirmdialog'
-// import { useConfirm } from 'primevue/useconfirm'
-// import { useToast } from 'primevue/usetoast'
+import ConfirmDialog from 'primevue/confirmdialog'
+import { useConfirm } from 'primevue/useconfirm'
+import { useToast } from 'primevue/usetoast'
 //
 
 // ------------------------------------------------
-// const confirm = useConfirm()
-// const toast = useToast()
-//
-// const requireConfirmation = () => {
-//   confirm.require({
-//     group: 'headless',
-//     header: 'Are you sure?',
-//     message: 'Please confirm to proceed.',
-//     accept: () => {
-//       toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 })
-//     },
-//     reject: () => {
-//       toast.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 })
-//     }
-//   })
-// }
+
+const confirm = useConfirm()
+
+const toast = useToast()
+
+const requireConfirmation = () => {
+  confirm.require({
+    group: 'headless',
+    header: 'Are you sure?',
+    message: 'Please confirm to proceed.',
+    accept: () => {
+      toast.add({ severity: 'info', summary: 'Confirmed', detail: 'You have accepted', life: 3000 })
+    },
+    reject: () => {
+      toast.add({ severity: 'error', summary: 'Rejected', detail: 'You have rejected', life: 3000 })
+    }
+  })
+}
 
 // ------------------------------------------------
 const props = defineProps({
@@ -114,7 +119,7 @@ const props = defineProps({
 
 const model = defineModel({ required: true, type: Array })
 
-const emit = defineEmits(['submit'])
+const emit = defineEmits(['submit', 'submitted', 'delete', 'deleted'])
 
 const formVisible = ref(false)
 
@@ -207,6 +212,7 @@ function onSubmitted (newData, values) {
     }
   }
   closeForm()
+  emit('submitted', newData, values)
 }
 
 function onEdit (id) {
@@ -221,7 +227,26 @@ function onEdit (id) {
 }
 
 function onDelete (id) {
-  alert(`Delete: ${id}`)
+  // TODO: Implementar dialogo de confirmação
+  emit('delete', { id }, (err, response) => {
+    if (err) {
+      console.log(err.stack)
+    }
+    if (response.success === true) {
+      if (response.success === true) {
+        const index = model.value.findIndex(item => item.id === id)
+
+        const deletedValue = cloneDeep(model.value[index])
+
+        if (index !== -1) {
+          model.value.splice(index, 1) // Remove o item de forma reativa
+          emit('deleted', deletedValue)
+        } else {
+          throw new Error(`Item with id ${id} not found.`)
+        }
+      }
+    }
+  })
 }
 
 </script>

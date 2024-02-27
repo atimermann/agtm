@@ -47,8 +47,7 @@ defineProps({
 
 defineEmits(['edit', 'delete'])
 
-const model = defineModel({required: true, type: Array})
-
+const model = defineModel({ required: true, type: Array })
 
 </script>
 

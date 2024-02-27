@@ -1,5 +1,8 @@
 # Funcionalidades:
 
+* Criar mais um objeto options ṕara configurações globais do crud como por exemplo algum titulo etc...
+* Implementar e documentar Toast padrão no layer
+* Implementar e documentar confirm dialog padrão no layer
 * Tratament servidor => cliente, padronizar formato erro atualmente {success: bool, data: info }
   * Modo produção não pode dar detalhes do erro, definor no servidor
   * Definir padrão de validação no backend, atualmente só gera erro na consulta, deve tratar por exemplo se id não foi enviado
@@ -28,7 +31,11 @@
 * Modo Compacto (fonte fina https://codepen.io/naikjavaid/pen/XPrpjr)
   * Customização de zoom
 * socket (ao vivo)
-  * Servidor pode enviar atualização pontual e o grid se atualiza 
+  * Servidor pode enviar atualização pontual e o grid se atualiza
+  * Modo form ao vivo tb
+    * Avisa quando dados foram alterados
+    * coloca novo valor em volta, 
+    * ou pede confirmnação para sobrescrever e mostra oq mudou
 * Campos em tempo real como gráficos temporizador, 
   * Util em relatório de servidor
 * Configurável em tempo real
@@ -37,6 +44,7 @@
 * Modo edição inline
   * https://primevue.org/datatable/#row_edit
 * Customização com Slot se possível
+
 
 https://dribbble.com/shots/21735871-User-management-table
 

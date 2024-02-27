@@ -17,19 +17,23 @@ import ConfirmationService from 'primevue/confirmationservice'
 import { pt } from '../locale/locale.mjs'
 import { defineNuxtPlugin } from '#app'
 
-import 'primevue/resources/primevue.min.css'
+import '../assets/prime-vue-theme.css'
+// import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 import 'primeflex/primeflex.css'
 
 import '../assets/adminlte/css/adminlte.css'
-import '../assets/prime-vue-theme.css'
 
 // Módulos carregados
 
 // TODO: Removido todos os componentes, importar diretamente no componente que vai utilizar
 
 export default defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.vueApp.use(PrimeVue, { ripple: true, locale: pt })
+  nuxtApp.vueApp.use(PrimeVue, {
+    ripple: true, // Ripple é uma animação opcional para os componentes suportados, como botões.
+    locale: pt,
+    unstyled: false
+  })
   nuxtApp.vueApp.use(ToastService)
   nuxtApp.vueApp.use(ConfirmationService)
 

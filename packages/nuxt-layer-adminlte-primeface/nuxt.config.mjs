@@ -80,10 +80,8 @@ export default defineNuxtConfig({
   modules: [
     '@agtm/nuxt-tools',
     '@pinia/nuxt',
-    '@pinia-plugin-persistedstate/nuxt',
-    ['@formkit/nuxt', {
-      configFile: join(currentDir, 'formkit.config.js')
-    }]
+    '@pinia-plugin-persistedstate/nuxt'
+    // Alguns módulos não funcionam bem com layer, como primeVue e formkit, recomenda-se criar plugins
   ],
   runtimeConfig: {
     public: {

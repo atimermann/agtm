@@ -72,7 +72,7 @@
 ------------------------------------------------------------------------------------------------------------------------
 <script setup>
 
-import cloneDeep from 'lodash/cloneDeep'
+import { cloneDeep } from 'lodash-es'
 
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'

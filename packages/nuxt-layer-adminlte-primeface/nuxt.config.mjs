@@ -36,6 +36,9 @@ export default defineNuxtConfig({
     }
   },
   css: [
+
+    // CARREGAR TODOS OS CSS VIA PLUGIN, muitos problemas com layer
+
     // ========================
     //  PRIME CONFIG
     // ========================
@@ -44,7 +47,7 @@ export default defineNuxtConfig({
     //    como funciona sem o link e se tem alguma forma de carregar q não tenha este problema
 
     // 'primevue/resources/themes/bootstrap4-light-blue/theme.css', (Não usar direto)
-    join(currentDir, './src/assets/theme.css'),
+    // join(currentDir, './src/assets/theme.css'),
 
     // TODO: Esta importação é problemática, foi carregado diretamente em src/plugins/primevue.mjs
     // '~/assets/theme.css', // (Customizado) Este arquivo foi gerado em https://designer.primevue.org/#/ e modificado
@@ -58,7 +61,7 @@ export default defineNuxtConfig({
     // ========================
     //  ADMIN LTE CONFIG
     // ========================
-    join(currentDir, './src/assets/adminlte/css/adminlte.css')
+    // join(currentDir, './src/assets/adminlte/css/adminlte.css')
 
     // ========================
     // fortawesome

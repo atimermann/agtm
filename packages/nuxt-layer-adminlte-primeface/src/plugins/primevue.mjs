@@ -21,6 +21,9 @@ import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 import 'primeflex/primeflex.css'
 
+import '../assets/adminlte/css/adminlte.css'
+import '../assets/theme.css'
+
 // Módulos carregados
 
 // TODO: Removido todos os componentes, importar diretamente no componente que vai utilizar

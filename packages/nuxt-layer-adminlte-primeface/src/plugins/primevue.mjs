@@ -17,8 +17,10 @@ import ConfirmationService from 'primevue/confirmationservice'
 import { pt } from '../locale/locale.mjs'
 import { defineNuxtPlugin } from '#app'
 
-import '../assets/prime-vue-theme.css'
-// import 'primevue/resources/primevue.min.css'
+import 'primevue/resources/primevue.min.css'
+// import '../assets/primevue.css'
+
+import '../assets/primevue-theme.css'
 import 'primeicons/primeicons.css'
 import 'primeflex/primeflex.css'
 
@@ -30,7 +32,7 @@ import '../assets/adminlte/css/adminlte.css'
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(PrimeVue, {
-    ripple: true, // Ripple é uma animação opcional para os componentes suportados, como botões.
+    // ripple: true, // Ripple é uma animação opcional para os componentes suportados, como botões.
     locale: pt,
     unstyled: false
   })

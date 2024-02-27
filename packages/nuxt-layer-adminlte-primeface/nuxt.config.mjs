@@ -46,11 +46,11 @@ export default defineNuxtConfig({
     // TODO: ao usar npm run link, o nuxt não encontra mais o caminho, necessário especificar manualmente, verificar
     //    como funciona sem o link e se tem alguma forma de carregar q não tenha este problema
 
-    // 'primevue/resources/themes/bootstrap4-light-blue/prime-vue-theme.css', (Não usar direto)
-    // join(currentDir, './src/assets/prime-vue-theme.css'),
+    // 'primevue/resources/themes/bootstrap4-light-blue/primevue-theme.css', (Não usar direto)
+    // join(currentDir, './src/assets/primevue-theme.css'),
 
     // TODO: Esta importação é problemática, foi carregado diretamente em src/plugins/primevue.mjs
-    // '~/assets/prime-vue-theme.css', // (Customizado) Este arquivo foi gerado em https://designer.primevue.org/#/ e modificado
+    // '~/assets/primevue-theme.css', // (Customizado) Este arquivo foi gerado em https://designer.primevue.org/#/ e modificado
     // join(currentDir, './node_modules/primevue/resources/primevue.min.css'),
     // join(currentDir, './node_modules/primeicons/primeicons.css'),
     // join(currentDir, './node_modules/primeflex/primeflex.css'),
@@ -71,7 +71,8 @@ export default defineNuxtConfig({
 
   ],
   build: {
-    transpile: ['primevue', 'pinia-plugin-persistedstate']
+    // TODO: verificar se precisa ainda 'primevue'
+    transpile: ['pinia-plugin-persistedstate']
   },
   vite: {
     resolve: {

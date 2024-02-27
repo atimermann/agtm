@@ -9,7 +9,7 @@
     <div class="col" />
   </div>
   <div class="grid">
-    <div class="col">
+    <div class="col-12">
       <NfCrudLayoutDefaultDataTable
         v-model="model"
         :schema

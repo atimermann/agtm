@@ -17,10 +17,10 @@ import ConfirmationService from 'primevue/confirmationservice'
 import { pt } from '../locale/locale.mjs'
 import { defineNuxtPlugin } from '#app'
 
-import 'primevue/resources/primevue.min.css'
-// import '../assets/primevue.css'
+import 'primevue/resources/themes/aura-light-green/theme.css'
 
-import '../assets/primevue-theme.css'
+// TODO: Nova versão do Primevue,alterou a forma de carregar os temas, averificar necessidade de manter customização abaixo:
+// import '../assets/primevue-theme.css'
 import 'primeicons/primeicons.css'
 import 'primeflex/primeflex.css'
 

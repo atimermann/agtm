@@ -22,7 +22,7 @@ import 'primeicons/primeicons.css'
 import 'primeflex/primeflex.css'
 
 import '../assets/adminlte/css/adminlte.css'
-import '../assets/theme.css'
+import '../assets/prime-vue-theme.css'
 
 // Módulos carregados
 

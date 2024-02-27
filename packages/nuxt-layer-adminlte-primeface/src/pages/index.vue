@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div class="login-logo">
       <b>Nuxt Layer Admin LTE + Primeface</b>
       <p>Page index must be created.</p>
@@ -38,7 +37,6 @@
 <script setup>
 
 import { definePageMeta } from '#imports'
-
 
 definePageMeta({
   layout: 'admin',

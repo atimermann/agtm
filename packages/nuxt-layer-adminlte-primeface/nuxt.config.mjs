@@ -80,7 +80,10 @@ export default defineNuxtConfig({
   modules: [
     '@agtm/nuxt-tools',
     '@pinia/nuxt',
-    '@pinia-plugin-persistedstate/nuxt'
+    '@pinia-plugin-persistedstate/nuxt',
+    ['@formkit/nuxt', {
+      configFile: join(currentDir, 'formkit.config.js')
+    }]
   ],
   runtimeConfig: {
     public: {

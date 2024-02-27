@@ -81,7 +81,7 @@ class MenuItem {
     if (subItem instanceof SubMenuItem) {
       this.subItems.push(subItem)
     } else {
-      throw new Error('Invalid subItem. Expected instance of SubMenuItem.')
+      throw new TypeError('Invalid subItem. Expected instance of SubMenuItem.')
     }
     return this
   }

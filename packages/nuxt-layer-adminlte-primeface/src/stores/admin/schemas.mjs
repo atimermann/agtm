@@ -3,7 +3,7 @@
  *
  * @file packages/nuxt-layer-adminlte-primeface/src/stores/admin/schemas.mjs
  *  [[ DESCRIPTION HERE ]]
-
+ 
  * @author André Timermann <andre@timermann.com.br>
  *
  */

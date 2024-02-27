@@ -3,18 +3,13 @@ parserOptions:
   ecmaVersion: latest
 env:
   browser: true
-  node: true
   jest: true
 extends:
   - standard
-  - "@nuxt/eslint-config"
-  - plugin:vue/vue3-essential
-plugins:
-  - local
+  - 'plugin:vue/vue3-recommended'
+  - tjw-jsdoc
 rules:
-  quotes:
-    - error
-    - single
+  'import/no-default-export': 'off'
   "vue/multi-word-component-names": "off"
   "vue/no-multiple-template-root": "off"
   "vue/max-attributes-per-line":
@@ -23,5 +18,12 @@ rules:
         max: 3
       multiline:
         max: 1
-  "local/import-require-node-prefix": "warn"
-  "local/no-underscore-method": "warn"
+  "jsdoc/require-jsdoc": "off"
+  "jsdoc/require-file-overview": "off"
+  quotes:
+    - error
+    - single
+overrides:
+  - files: '*.mjs'
+globals:
+  $fetch: readonly

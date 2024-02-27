@@ -15,7 +15,7 @@ Para integrar e utilizar as funcionalidades do painel administrativo em seu proj
 explicitamente o store. Utilize a seguinte sintaxe de importação para acessar o store do painel administrativo:
 
 ```javascript
-import {useAdminStore} from '@agtm/nuxt-layer-adminlte-primeface/store';
+import { useAdminStore } from '@agtm/nuxt-layer-adminlte-primeface/store';
 
 const adminStore = useAdminStore();
 ```
@@ -34,3 +34,6 @@ adminStore.toggleMenuItem('Estoque');
 ```
 
 [Clique aqui para saber como configurar o menu](./menu.md)
+
+## Refêrencia de métodos(actions) e propriedades
+

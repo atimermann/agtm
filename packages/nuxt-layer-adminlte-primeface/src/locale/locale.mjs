@@ -2,8 +2,8 @@
  * **Created on 12/02/2023**
  *
  * src/locale/locale.mjs
- * @author André Timermann <andre@timermann.com.br>
  *
+ * @author André Timermann <andre@timermann.com.br>
  */
 
 export const pt = {

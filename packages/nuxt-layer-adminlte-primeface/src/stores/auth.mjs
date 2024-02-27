@@ -2,18 +2,18 @@
  * **Created on 16/12/23**
  *
  * packages/nuxt-layer-adminlite-primeface/src/stores/auth.mjs
+ *
  * @author André Timermann <andre@timermann.com.br>
  *
  * @link https://dev.to/kellskamuzu/nuxt-3-authentication-with-pinia-3bj7
  * @link https://prazdevs.github.io/pinia-plugin-persistedstate/frameworks/nuxt-3.html
  *
  * TODO: Implementar: https://www.keycloak.org/docs/latest/securing_apps/#_javascript_adapter
- *
  */
 
 import { defineStore } from 'pinia'
-import { useFetch, useRuntimeConfig } from '#imports'
 import { jwtDecode } from 'jwt-decode'
+import { useFetch, useRuntimeConfig } from '#imports'
 
 export const useAuthStore = defineStore('auth', {
   state: () => {

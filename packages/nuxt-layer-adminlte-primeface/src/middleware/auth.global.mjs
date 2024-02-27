@@ -2,14 +2,14 @@
  * **Created on 16/04/2023**
  *
  * src/middleware/auth.mjs
+ *
  * @author André Timermann <andre@timermann.com.br>
  *
  * Ref: https://auth.nuxtjs.org/
- *
  */
 
-import { defineNuxtRouteMiddleware, useAppConfig, navigateTo, useRouter } from '#imports'
 import { useAuthStore } from '../stores/auth.mjs'
+import { defineNuxtRouteMiddleware, useAppConfig, navigateTo, useRouter } from '#imports'
 
 export default defineNuxtRouteMiddleware(async (to, from, x) => {
   const appConfig = useAppConfig()
@@ -25,7 +25,7 @@ export default defineNuxtRouteMiddleware(async (to, from, x) => {
     if (to.meta.auth === undefined) {
       const routes = useRouter().getRoutes()
       const routeExists = routes.some(route => route.path === to.path || route.name === to.name)
-      if (!routeExists) return
+      if (!routeExists) { return }
 
       throw new Error('Attribute "auth" is mandatory in definePageMeta, must be "true" or "false"')
     }

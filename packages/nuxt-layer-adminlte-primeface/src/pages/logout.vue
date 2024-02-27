@@ -1,7 +1,7 @@
 <template></template>
 <script setup>
-import { definePageMeta, navigateTo } from '#imports'
 import { useAuthStore } from '../stores/auth.mjs'
+import { definePageMeta, navigateTo } from '#imports'
 
 const AuthStore = useAuthStore()
 await AuthStore.logout()

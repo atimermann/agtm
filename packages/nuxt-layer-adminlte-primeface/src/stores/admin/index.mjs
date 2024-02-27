@@ -13,23 +13,22 @@
  * Defines the allowed types for badges, controlling their appearance.
  *
  *
- * @typedef {Object} MenuItem
+ * @typedef {object} MenuItem
  * Represents an item in the admin panel's navigation menu.
- * @property {string} [id] - Optional unique identifier for the menu item.
- * @property {string} title - Display title for the menu item.
- * @property {string} key - System-generated key for the menu item.
- * @property {string} [parent] - Optional key of the parent menu item.
- * @property {string} [link] - Optional URL link for the menu item.
- * @property {Array<string>} iconClasses - Array of CSS classes for the item's icon.
- * @property {string} [badge] - Optional badge text to display on the item.
- * @property {('primary' | 'secondary' | 'success' | 'info' | 'warning' | 'danger' | 'light' | 'dark')} [badgeType] - Optional type for the badge, defining its appearance.
- * @property {Array<MenuItem>} [subItems] - Optional array of nested sub-items, allowing for recursive structure.
+ * @property {string}                                                                                   [id]         - Optional unique identifier for the menu item.
+ * @property {string}                                                                                   title        - Display title for the menu item.
+ * @property {string}                                                                                   key          - System-generated key for the menu item.
+ * @property {string}                                                                                   [parent]     - Optional key of the parent menu item.
+ * @property {string}                                                                                   [link]       - Optional URL link for the menu item.
+ * @property {Array<string>}                                                                            iconClasses  - Array of CSS classes for the item's icon.
+ * @property {string}                                                                                   [badge]      - Optional badge text to display on the item.
+ * @property {('primary' | 'secondary' | 'success' | 'info' | 'warning' | 'danger' | 'light' | 'dark')} [badgeType]  - Optional type for the badge, defining its appearance.
+ * @property {Array<MenuItem>}                                                                          [subItems]   - Optional array of nested sub-items, allowing for recursive structure.
  *
  *
- * @typedef {Object} Menu
+ * @typedef {object} Menu
  * Represents the top-level structure of the admin panel's navigation menu.
- * @property {Array<MenuItem>} items - Array of top-level menu items.
- *
+ * @property {Array<MenuItem>}                                                                          items        - Array of top-level menu items.
  */
 
 import { defineStore } from 'pinia'
@@ -38,7 +37,7 @@ import { menuSchema } from './schemas.mjs'
 /**
  * Defines a Pinia store for admin control.
  *
- * @returns {Object} The admin store instance.
+ * @return {object} The admin store instance.
  */
 export const useAdminStore = defineStore('admin', {
   state: () => ({
@@ -57,7 +56,7 @@ export const useAdminStore = defineStore('admin', {
      * Defines the admin panel menu using a given menu object. Validates the menu structure,
      * sets the menu state, and indexes the menu items for quick access.
      *
-     * @param {Menu} menu The menu object to be defined and indexed.
+     * @param {Menu} menu  The menu object to be defined and indexed.
      */
     defineMenu (menu) {
       menuSchema.parse(menu)
@@ -67,10 +66,10 @@ export const useAdminStore = defineStore('admin', {
     /**
      * Sets the badge and badge type for a given menu item.
      *
-     * @param {string} menuKey           - The name of the menu item to which the badge will be set. Assumes the
-     *                                          menu item name is a key in `indexedMenu`.
-     * @param {string} badge                  - The badge text to be displayed on the menu item.
-     * @param {BadgeType} [badgeType='info']  - The type of the badge, which controls its appearance.
+     * @param {string}    menuKey      - The name of the menu item to which the badge will be set. Assumes the
+     *                                 menu item name is a key in `indexedMenu`.
+     * @param {string}    badge        - The badge text to be displayed on the menu item.
+     * @param {BadgeType} [badgeType]  - The type of the badge, which controls its appearance.
      *
      * @throws Will throw an error if the menu item does not exist in `indexedMenu`.
      */
@@ -85,8 +84,8 @@ export const useAdminStore = defineStore('admin', {
      * If the menu item has subItems and it's being opened, all other items are closed
      * to ensure only one submenu is open at a time.
      *
-     * @param {string} menuKey - The unique key of the menu item to toggle. This key is either
-     *                           derived from the item's id or its title.
+     * @param {string} menuKey  - The unique key of the menu item to toggle. This key is either
+     *                          derived from the item's id or its title.
      * @throws Will throw an error if the menuKey does not match any item in `indexedMenu`,
      *         listing all possible keys for reference.
      */
@@ -112,16 +111,16 @@ export const useAdminStore = defineStore('admin', {
  * Indexes menu items recursively for quick access. Generates a flat object where keys are
  * derived from item titles or IDs, and values are references to the original menu item objects.
  *
- * @param {Array<MenuItem>} items The array of menu items to be indexed.
- * @param {string} prefix The prefix used for keys of nested items, default is an empty string.
- * @param {MenuItem} parent
+ * @param  {Array<MenuItem>}           items   The array of menu items to be indexed.
+ * @param  {string}                    prefix  The prefix used for keys of nested items, default is an empty string.
+ * @param  {MenuItem}                  parent
  *
- * @returns {Object.<string, MenuItem>} The indexed menu items object.
+ * @return {Object.<string, MenuItem>}         The indexed menu items object.
  */
 function indexMenuItems (items, prefix = '', parent = undefined) {
   const indexedItems = {}
 
-  items.forEach(item => {
+  items.forEach((item) => {
     const key = `${prefix}${(item.id || item.title).replace(/[\s.]+/g, '_')}`
 
     if (indexedItems[key]) {
@@ -143,8 +142,8 @@ function indexMenuItems (items, prefix = '', parent = undefined) {
 /**
  * Verifies if the given menuKey exists in the indexedMenu. If not, throws an error listing all possible keys.
  *
- * @param {Object} indexedMenu - The object containing indexed menu items.
- * @param {string} menuKey - The key of the menu item to verify.
+ * @param {object} indexedMenu  - The object containing indexed menu items.
+ * @param {string} menuKey      - The key of the menu item to verify.
  * @throws Will throw an error if the menuKey does not exist in indexedMenu.
  */
 function verifyMenuKeyExists (indexedMenu, menuKey) {
@@ -160,9 +159,9 @@ function verifyMenuKeyExists (indexedMenu, menuKey) {
  * subItems are also closed. This method is designed to support the functionality of
  * collapsing all but the currently active submenu in a navigation structure.
  *
- * @param {Array<MenuItem>} menu - An array of menu items. Each menu item is an object that may contain 'subItems',
- *                               which is an array of menu items.
- * @param {string} [exceptMenuKey=undefined] - Optional index of the menu item that should not be closed.
+ * @param {Array<MenuItem>} menu             - An array of menu items. Each menu item is an object that may contain 'subItems',
+ *                                           which is an array of menu items.
+ * @param {string}          [exceptMenuKey]  - Optional index of the menu item that should not be closed.
  *                                           If provided, the menu item at this index will remain open,
  *                                           along with its parent items. If undefined, all menu items will be closed.
  */

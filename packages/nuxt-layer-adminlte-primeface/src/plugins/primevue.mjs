@@ -2,18 +2,18 @@
  * **Created on 31/03/2023**
  *
  * src/plugins/primevue.mjs
+ *
  * @author André Timermann <andre@timermann.com.br>
  *
  * TODO: Reduzir ao máximo a quantidade de componentes Prime carregado automaticamente por aqui, é preferível importar
  *  diretamente no componente
- *
  */
 
-import { defineNuxtPlugin } from '#app'
 import PrimeVue from 'primevue/config'
-import { pt } from '../locale/locale.mjs'
 import Tooltip from 'primevue/tooltip'
 import ToastService from 'primevue/toastservice'
+import { pt } from '../locale/locale.mjs'
+import { defineNuxtPlugin } from '#app'
 
 import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'

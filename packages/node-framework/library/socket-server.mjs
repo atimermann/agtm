@@ -106,6 +106,13 @@ export default class SocketServer {
     logger.info(`Port:      ${this.mode === 'http-server' ? Config.get('httpServer.port') : this.port}`)
     logger.info(`Cors:      ${JSON.stringify((this.#getOptions()).cors)}`)
     logger.info(`Transport: ${this.#getOptions().transports}`)
+    if (this.mode === 'standalone-https' || this.mode === 'standalone-http2') {
+      logger.info('SSL:       true')
+      logger.info(`  Certificate:   ${this.sslPairKeys.cert}`)
+      logger.info(`  Key:           ${this.sslPairKeys.key}`)
+    } else {
+      logger.info('SSL: false')
+    }
     logger.debug('Options:')
     logger.debug(this.#getOptions())
     logger.info('==============================================================')
@@ -155,7 +162,7 @@ export default class SocketServer {
   static #loadConfiguration () {
     this.mode = Config.get('socket.mode')
     this.port = Config.get('socket.port')
-    this.keys = Config.get('socket.keys')
+    this.sslPairKeys = Config.get('socket.keys')
   }
 
   /**
@@ -262,7 +269,9 @@ export default class SocketServer {
    */
   static #getHttpsOptions () {
     return {
-      key: readFileSync(this.sslPairKeys.key), cert: readFileSync(this.sslPairKeys.cert)
+      key: readFileSync(this.sslPairKeys.key),
+      cert: readFileSync(this.sslPairKeys.cert
+      )
     }
   }
 

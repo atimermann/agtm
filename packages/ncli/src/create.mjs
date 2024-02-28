@@ -235,8 +235,8 @@ program
     console.log('Editing .env ...')
     await appendFile(join(rootPath, '.env'), '\n')
     await appendFile(join(rootPath, '.env'), '# Docker build\n')
-    await appendFile(join(rootPath, '.env'), `BUILD_IMAGE_NAME="${answers.name}"\n`)
-    await appendFile(join(rootPath, '.env'), `BUILD_REGISTRY_ADDRESS="${answers.registry}"\n`)
+    await appendFile(join(rootPath, '.env'), `BUILD_IMAGE_NAME=${answers.name}\n`)
+    await appendFile(join(rootPath, '.env'), `BUILD_REGISTRY_ADDRESS=${answers.registry}\n`)
 
     /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Renomeia Diretório app

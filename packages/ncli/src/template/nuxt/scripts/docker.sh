@@ -18,25 +18,36 @@ fi
 
 # Check for correct number of arguments
 if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 [exec|run]"
+    echo "Usage: $0 [shell|run]"
     exit 1
 fi
 
 ARGUMENT=$1
 
+echo "In the .env file, ensure that the values are not enclosed with either single or double quotes."
+echo
+echo "Container running in Bridge mode (--network host). All ports are mapped directly to the host!"
+echo
 # Execute commands based on the argument
 case "$ARGUMENT" in
-    exec)
-        # Execute container with an interactive bash shell
-        docker run -it -p 3000:3000 --entrypoint /bin/bash "${BUILD_REGISTRY_ADDRESS}/${BUILD_IMAGE_NAME}:dev"
-        ;;
+
+    shell)
+      docker run -it \
+      --network host \
+      --env-file .env \
+      --entrypoint /bin/bash "${BUILD_REGISTRY_ADDRESS}/${BUILD_IMAGE_NAME}:dev"
+    ;;
+
     run)
-        # Run container normally
-        docker run -it -p 3000:3000 "${BUILD_REGISTRY_ADDRESS}/${BUILD_IMAGE_NAME}:dev"
-        ;;
+      docker run -it \
+      --network host \
+      --env-file .env \
+       "${BUILD_REGISTRY_ADDRESS}/${BUILD_IMAGE_NAME}:dev"
+    ;;
+
     *)
         echo "Invalid argument: $ARGUMENT"
         echo "Usage: $0 [exec|run]"
         exit 1
-        ;;
+    ;;
 esac

@@ -2,7 +2,7 @@
 import inquirer from 'inquirer'
 import semver from 'semver'
 import { spawn, iSpawn } from '@agtm/util/process'
-import { unlink, readdir, copyFile } from 'node:fs/promises'
+import {unlink, readdir, copyFile, appendFile} from 'node:fs/promises'
 import fsExtra from 'fs-extra'
 import { join } from 'node:path'
 import { __dirname } from '@agtm/util'
@@ -53,6 +53,11 @@ try {
       name: 'mail',
       message: 'Please provide a valid email',
       validate: input => input.match(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/) ? true : 'Informe um e-mail válido'
+    },
+    {
+      name: 'registry',
+      message: 'Endereço do registro docker.',
+      default: 'registry.crontech.com.br:5000'
     }
   ]
 
@@ -103,13 +108,12 @@ try {
     PACKAGE_VUE_ROUTER_VERSION: packageJSON.dependencies['vue-router']
   })
 
-  await render(join(rootPath, '.env'), {
-    PACKAGE_NAME: answers.name
-  })
-
-  await render(join(rootPath, '.env.template.dev'), {
-    PACKAGE_NAME: answers.name
-  })
+  // Configure .env
+  console.log('Editing .env ...')
+  await appendFile(join(rootPath, '.env'), '\n')
+  await appendFile(join(rootPath, '.env'), '# Docker build\n')
+  await appendFile(join(rootPath, '.env'), `BUILD_IMAGE_NAME=${answers.name}\n`)
+  await appendFile(join(rootPath, '.env'), `BUILD_REGISTRY_ADDRESS=${answers.registry}\n`)
 
   console.log('--------------------------------------------------------------------------------------------------------')
   console.log('Installing Nuxt Layer AdminLTE Primefaces...')

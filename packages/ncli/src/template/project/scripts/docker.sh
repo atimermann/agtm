@@ -24,12 +24,14 @@ fi
 
 ARGUMENT=$1
 
+echo "In the .env file, ensure that the values are not enclosed with either single or double quotes."
 # Execute commands based on the argument
 case "$ARGUMENT" in
 
     shell)
       docker run -it \
       -p 3001:3001 \
+      -p 4001:4001 \
       -e NF_HTTPSERVER_HOSTNAME=0.0.0.0 \
       --env-file .env \
       --entrypoint /bin/bash \
@@ -39,6 +41,7 @@ case "$ARGUMENT" in
     run)
       docker run -it \
       -p 3001:3001 \
+      -p 4001:4001 \
       -e NF_HTTPSERVER_HOSTNAME=0.0.0.0 \
       --env-file .env \
        "${BUILD_REGISTRY_ADDRESS}/${BUILD_IMAGE_NAME}:dev" npm start

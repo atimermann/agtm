@@ -268,10 +268,17 @@ export default class SocketServer {
    * @return {object} - An object containing the key and cert for HTTPS
    */
   static #getHttpsOptions () {
-    return {
-      key: readFileSync(this.sslPairKeys.key),
-      cert: readFileSync(this.sslPairKeys.cert
-      )
+    if (!this.sslPairKeys.key || !this.sslPairKeys.key) {
+      throw new Error('SSL certificate key or certificate not provided. Please specify in env vars NF_SOCKET_KEYS_KEY and NF_SOCKET_KEYS_CERT with certificate and key path')
+    }
+
+    try {
+      return {
+        key: readFileSync(this.sslPairKeys.key),
+        cert: readFileSync(this.sslPairKeys.cert)
+      }
+    } catch (error) {
+      throw new Error(`Failed to read SSL key or certificate file: ${error.message}`)
     }
   }
 

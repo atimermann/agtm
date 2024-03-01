@@ -19,7 +19,7 @@ import { defineNuxtPlugin } from '#app'
 
 import 'primevue/resources/themes/aura-light-green/theme.css'
 
-// TODO: Nova versão do Primevue,alterou a forma de carregar os temas, averificar necessidade de manter customização abaixo:
+// TODO: Nova versão do Primevue, alterou a forma de carregar os temas, verificar necessidade de manter customização abaixo:
 // import '../assets/primevue-theme.css'
 import 'primeicons/primeicons.css'
 import 'primeflex/primeflex.css'

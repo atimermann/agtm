@@ -2,14 +2,14 @@
   "name": "@agtm/nuxt-layer-adminlte-primeface",
   "private": false,
   "type": "module",
-  "version": "0.10.9",
+  "version": "0.10.10",
   "description": "Nuxt 3 layer for integrating AdminLTE 3 and PrimeVue 3 in your project",
   "author": "André Timermann",
   "license": "ISC",
   "module": "./src/index.mjs",
   "exports": {
     ".": "./nuxt.config.mjs",
-    "./store": "./src/stores/admin/index.mjs"
+    "./admin": "./src/admin.mjs"
   },
   "scripts": {
     "publish-patch": "npm version patch && npm publish --access public && git push",

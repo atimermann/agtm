@@ -19,6 +19,6 @@
 <script setup>
 
 // import { AdminLayout } from '@agtm/nuxt-layer-adminlite-primeface'
-import { AdminLayout } from '../..'
+// import { AdminLayout } from '../..'
 
 </script>

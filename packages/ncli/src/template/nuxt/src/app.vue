@@ -16,6 +16,7 @@ appConfig.template.logoPath = (await import('~/assets/img/logo.png')).default
 appConfig.template.menu = {
   items: [
     {
+      id: 'dashboard',
       title: 'Dashboard',
       link: '/',
       iconClasses: [
@@ -24,6 +25,7 @@ appConfig.template.menu = {
       ]
     },
     {
+      id: 'exit',
       title: 'Sair',
       link: '/login',
       iconClasses: [

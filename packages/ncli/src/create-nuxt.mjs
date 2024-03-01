@@ -2,7 +2,7 @@
 import inquirer from 'inquirer'
 import semver from 'semver'
 import { spawn, iSpawn } from '@agtm/util/process'
-import {unlink, readdir, copyFile, appendFile} from 'node:fs/promises'
+import { unlink, readdir, copyFile, appendFile, rm } from 'node:fs/promises'
 import fsExtra from 'fs-extra'
 import { join } from 'node:path'
 import { __dirname } from '@agtm/util'
@@ -70,7 +70,7 @@ try {
   console.log('--------------------------------------------------------------------------------------------------------')
   console.log(`Creating project "${answers.name}"...`)
   console.log('--------------------------------------------------------------------------------------------------------')
-  await iSpawn(`npx nuxi@latest init "${answers.name}"`)
+  await iSpawn(`npx nuxi@latest init --packageManager npm "${answers.name}"`)
 
   const packageJSON = (
     await import(
@@ -83,7 +83,7 @@ try {
   console.log('Configuring project...')
   console.log('--------------------------------------------------------------------------------------------------------')
   await unlink(join(rootPath, 'app.vue'))
-  await unlink(join(rootPath, 'public'))
+  await rm(join(rootPath, 'public'), { recursive: true, force: true });
 
   const entries = await readdir(templateNuxtPath, { withFileTypes: true })
   for (const entry of entries) {
@@ -121,12 +121,24 @@ try {
   await iSpawn(`cd "${answers.name}" && npm i -f pinia @pinia/nuxt`)
   await iSpawn(`cd "${answers.name}" && npm i @pinia-plugin-persistedstate/nuxt`)
   await iSpawn(`cd "${answers.name}" && npm i primevue`)
-  await iSpawn(`cd "${answers.name}" && npm i @agtm/nuxt-layer-adminlte-primeface`)
+  await iSpawn(`cd "${answers.name}" && npm i @agtm/nuxt-layer-adminlte-primeface @agtm/nuxt-tools`)
 
   console.log('--------------------------------------------------------------------------------------------------------')
   console.log('Installing development dependencies...')
   console.log('--------------------------------------------------------------------------------------------------------')
   await iSpawn(`cd "${answers.name}" && npm i -D @babel/preset-env @nuxtjs/eslint-config babel-jest babel-plugin-module-resolver eslint eslint-config-standard eslint-config-tjw-jsdoc eslint-plugin-jest jest dotenv-cli`)
+
+  /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // FINALIZANDO
+  /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  console.log('\n------------------------------------')
+  console.log('Project created successfully!')
+  console.log(`\tcd ${projectFolderName}`)
+  console.log('\nThen:\n\tnpm run dev\n')
+  console.log(`
+`)
+  console.log('------------------------------------\n\n')
 } catch (e) {
   console.error(e.message)
   console.error(e.stack)

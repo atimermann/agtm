@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+// noinspection JSUnusedGlobalSymbols
 import { defineNuxtConfig } from 'nuxt/config'
 import packageJSON from './package.json'
 
@@ -36,6 +37,9 @@ export default defineNuxtConfig({
     public: {
       template: {
         version: packageJSON.version
+      },
+      server: {
+        host: ''
       }
     }
   }

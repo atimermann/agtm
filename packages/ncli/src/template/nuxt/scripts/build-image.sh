@@ -58,6 +58,16 @@ docker push "$BUILD_REGISTRY_ADDRESS"/"$BUILD_IMAGE_NAME":"${NEW_VERSION}"
 # Step 4: Also create and push a 'dev' tag if not a production build
 if [ "$ARGUMENT" != "prod" ]; then
   docker tag "$BUILD_REGISTRY_ADDRESS"/"$BUILD_IMAGE_NAME":"${NEW_VERSION}" "$BUILD_REGISTRY_ADDRESS"/"$BUILD_IMAGE_NAME":dev
+
+
+  echo "Do you want to push the image as 'dev'? (y/n)"
+  read -r CONFIRMATION
+  if [ "$CONFIRMATION" = "y" ]; then
+    docker push "$BUILD_REGISTRY_ADDRESS"/"$BUILD_IMAGE_NAME":dev
+  else
+    echo "Operation canceled by user."
+  fi
+
   docker push "$BUILD_REGISTRY_ADDRESS"/"$BUILD_IMAGE_NAME":dev
 
 else

@@ -44,10 +44,10 @@ Para customizar seu template, habilitar funcionalidades acesse a configuração:
 
 ## Interface de Controle de Aplicações do Painel Administrativo
 
-Este layer incorpora uma **Interface de Controle**, construída com o gerenciador de estados Pinia, para oferecer uma
-gestão centralizada de estados e configurações do painel administrativo. A API é projetada para oferecer controle
-programático sobre diversos aspectos da interface do usuário (UI) do painel, permitindo uma interação dinâmica e reativa
-com os componentes do painel.
+Este layer incorpora uma **Interface de Controle**, construída com o gerenciador de estados Pinia ou com composables,
+para oferecer uma gestão centralizada de estados e configurações do painel administrativo. A interface é projetada para
+oferecer controle programático sobre diversos aspectos da interface do usuário (UI) do painel, permitindo uma interação
+dinâmica e reativa com os componentes do painel.
 
 ### Exemplo
 
@@ -65,7 +65,7 @@ Através dessa interface de controle, os desenvolvedores têm acesso a um conjun
 Para uma compreensão detalhada dos métodos disponíveis, parâmetros esperados, e exemplos de uso prático da API do painel
 administrativo, consulte a documentação técnica completa disponível em:
 
-[Documentação Interface de Controle](./docs/api.md)
+[Documentação Interface de Controle](./docs/admin)
 
 ## Desenvolvendo seu projeto em conjunto com o template
 

@@ -84,8 +84,7 @@ export const useAdminStore = defineStore('admin', {
      * If the menu item has subItems and it's being opened, all other items are closed
      * to ensure only one submenu is open at a time.
      *
-     * @param {string} menuKey  - The unique key of the menu item to toggle. This key is either
-     *                          derived from the item's id or its title.
+     * @param {string} menuKey  - The unique key of the menu item to toggle. This key is either derived from the item's id or its title.
      * @throws Will throw an error if the menuKey does not match any item in `indexedMenu`,
      *         listing all possible keys for reference.
      */

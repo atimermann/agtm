@@ -9,7 +9,7 @@
         style="opacity: .8"
       >
 
-      <span class="brand-text font-weight-light">{{ template.logoLabel }}</span>
+      <span class="brand-text font-weight-light">{{ admin.logoLabel }}</span>
     </a>
 
     <!-- Sidebar -->
@@ -23,10 +23,10 @@
 <script setup>
 import { useAppConfig } from '#imports'
 
-const { template } = useAppConfig()
+const { admin } = useAppConfig()
 
-const defaultLogoPath = (template.logoPath === 'DEFAULT')
+const defaultLogoPath = (admin.logoPath === 'DEFAULT')
   ? (await import('@assets/adminlte/img/AdminLTELogo.png')).default
-  : template.logoPath
+  : admin.logoPath
 
 </script>

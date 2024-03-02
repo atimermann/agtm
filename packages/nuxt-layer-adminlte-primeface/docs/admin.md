@@ -5,13 +5,20 @@ oferecer uma gestão centralizada de estados e configurações do painel adminis
 controle programático sobre diversos aspectos da interface do usuário (UI) do painel, permitindo uma interação dinâmica
 e reativa com os componentes do painel.
 
+Lembrando que cada modulo pode ter seu próprio conjunto de configuração definido em
+
+* **appConfig:** Parâmetros que não podem ser alterados em tempo de execução, normalmente estrutural como habilitação do
+  sistema de login.
+* **env/runtimeConfig** Parâmetros que podem ser alterados em tempo de execução, na inicialização e definidos via
+  váriavel de ambiente. Exemplo: endereço de servidor remoto.
+
 ## Acessando a Interface de Controle
 
 Para integrar e utilizar as funcionalidades do painel administrativo em seu projeto utilize o alias @admin, por exemplo:
 
 ```javascript
 
-import {useMenuStore} from '@admin'
+import {useMenuStore} from '@/admin'
 
 const menu = useMenuStore()
 
@@ -22,14 +29,23 @@ menu.setBadge('dashboard', 10)
 menu.toggleMenuItem('inventory')
 
 ```
-
 Com o store/composable importado e instanciado corretamente, você agora tem acesso completo às suas ações e estados,
 permitindo uma
 manipulação eficaz do painel administrativo.
+---
+
+**Nota:** atributos appConfig são acessado da seguinte forma:
+```javascript
+import { useAppConfig } from '#imports'
+const { template } = useAppConfig()
+console.log(template.auth.enabled)
+```
+Na documentação abaixo a titulo de simplificação é exibido apenas **auth.enabled**
+
 
 # Refêrencia
 
-## useMenuStore
+## - useMenuStore
 
 Controla o menu principal da barra lateral
 
@@ -43,10 +59,45 @@ Controla o menu principal da barra lateral
 | **toggleMenuItem()** |              |        | Alterna o estado de aberto de um item de menu específico identificado por sua chave.                 |
 | menuKey              | String       |        | A chave única do item de menu a ser alternado. Esta chave é derivada do id do item ou do seu título. |
 
-## useAuthStore
+### Configurações (appConfig)
 
-# Desenvolvimento
+| Atributo | Tipo   | Padrão | Descrição         |
+|----------|--------|--------|-------------------|
+| menu     | object |        | Estrutura do menu |
 
-* Após criar nova Store ou novo composable é necessário atualizar a exportação no arquivo src/admin.mjs
+## - useAuthStore
+
+Gerencia autenticação do usuário
+* Autenticação é salva no localStorage 
+
+**Importante:** Necessário habilitar a função auth em **auth.enabled** como descrito a baixo
+
+| Função             | Tipo                            | Padrão | Descrição                                                     |
+|--------------------|---------------------------------|--------|---------------------------------------------------------------|
+| **authenticate()** | {success: bool, status: string} |        | Autentica usuário utilizando usuário e senha. Retorna objeto: |
+| username           | string                          |        | Usuário                                                       |
+| password           | string                          |        | Senha                                                         |
+
+### Configurações (appConfig)
+
+| Atributo     | Tipo | Padrão | Descrição                                  |
+|--------------|------|--------|--------------------------------------------|
+| auth.enabled | bool | false  | se modulo de authenticação está habilitado |
+|              |      |        |                                            |
+
+
+### Configurações (runtimeConfig)
+
+| Váriável de ambiente             | Tipo   | Padrão | Descrição                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|----------------------------------|--------|--------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| NUXT_PUBLIC_ADMIN_AUTH_URL       | string |        | Endereço servidor de authenticação                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| NUXT_PUBLIC_ADMIN_AUTH_CLIENT_ID | string |        | Client ID da aplicação                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+
+# Desenvolvimento/Checklist
+
+* Após criar nova store ou novo composable é necessário atualizar a exportação no arquivo src/admin.mjs
 * Enquando desenvolve as interface mantenha esta documentação aberta e atualizada, principalmente a refêrencia de
   métodos e propriedades.
+* Não esquecer de atualizar em nuxt.config.mjs os atributos do runtimeConfig
+* Documentar configurações defininas para store: .env, runtimeConfig ou appConfig
+* Mantenha o template em @agtm/ncli atualizado.

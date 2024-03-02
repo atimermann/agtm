@@ -1,7 +1,7 @@
 // AdminLte 3 Configuration Template
 export default {
-  template: {
-    login: {
+  admin: {
+    auth: {
       enabled: false
     },
     logoLabel: 'NuxtLayerAdminLTE'

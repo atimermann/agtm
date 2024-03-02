@@ -2,7 +2,7 @@
   <Toast position="bottom-right" />
   <div class="login-box">
     <div class="login-logo">
-      <div>{{ template.logoLabel }}</div>
+      <div>{{ admin.logoLabel }}</div>
     </div>
     <!-- /.login-logo -->
     <div class="card">
@@ -91,16 +91,16 @@ import { useAuthStore } from '../stores/auth.mjs'
 import { definePageMeta, navigateTo, ref, useAppConfig } from '#imports'
 
 const AuthStore = useAuthStore()
-const { template } = useAppConfig()
+const { admin } = useAppConfig()
 const toast = useToast()
 
 const usarname = ref('')
 const password = ref('')
 
 async function login () {
-  const auth = await AuthStore.login(usarname.value, password.value)
+  const auth = await AuthStore.authenticate(usarname.value, password.value)
 
-  if (auth.auth) {
+  if (auth.success) {
     const redirectPath = sessionStorage.getItem('redirectAfterLogin') || '/'
     sessionStorage.removeItem('redirectAfterLogin')
     navigateTo(redirectPath)

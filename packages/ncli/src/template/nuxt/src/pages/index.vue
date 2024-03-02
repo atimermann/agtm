@@ -31,6 +31,18 @@
         </NfCard>
       </div>
     </div>
+    <div class="grid">
+      <div class="col-6">
+        <NfCard>
+          <template #title>
+            FormKit
+          </template>
+          <template #content>
+            [EXEMPLO FORMKIT AQUI]
+          </template>
+        </NfCard>
+      </div>
+    </div>
   </div>
 </template>
 

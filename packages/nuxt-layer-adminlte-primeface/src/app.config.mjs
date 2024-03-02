@@ -1,8 +1,9 @@
 // AdminLte 3 Configuration Template
 export default {
-  template: {
-    login: {
-      enabled: false
+  admin: {
+    auth: {
+      enabled: false,
+      storage: 'local'
     },
     logoPath: 'DEFAULT',
     logoLabel: 'AdminLte 3',

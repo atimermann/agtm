@@ -6,6 +6,17 @@
         :key="index"
         :menu-item="item"
       />
+      <AdminSideBarMenuItem
+        v-if="admin.auth.enabled"
+        :menu-item="{
+          title: 'Sair',
+          link: '/logout',
+          iconClasses: [
+            'pi',
+            'pi-sign-out'
+          ]
+        }"
+      />
     </ul>
   </nav>
 </template>
@@ -23,12 +34,12 @@ TODO:
  * [OK] Implementar configuração de menu
 */
 
-const { template } = useAppConfig()
+const { admin } = useAppConfig()
 
-const admin = useAdminStore()
-admin.defineMenu(template.menu)
+const menuAdminStore = useAdminStore()
+menuAdminStore.defineMenu(admin.menu)
 
-const { menu } = storeToRefs(admin)
+const { menu } = storeToRefs(menuAdminStore)
 
 </script>
 

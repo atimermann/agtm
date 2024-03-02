@@ -47,7 +47,7 @@ export const useAdminStore = defineStore('admin', {
      */
     menu: {},
     /**
-     * @type {Object.<string, MenuItem>}
+     * @type {{[key: string]: MenuItem}}
      */
     indexedMenu: {}
   }),

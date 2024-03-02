@@ -89,10 +89,12 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     public: {
-      template: {
+      admin: {
         version: null,
         auth: {
-          url: null
+          url: null,
+          clientId: null,
+          storage: null
         }
       }
     }

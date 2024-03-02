@@ -14,14 +14,14 @@ import { defineNuxtRouteMiddleware, useAppConfig, navigateTo, useRouter } from '
 export default defineNuxtRouteMiddleware(async (to, from, x) => {
   const appConfig = useAppConfig()
 
-  if (!appConfig.template.login) {
-    throw new Error('"appConfig.template.login" attribute not defined. Check the "app.config.ts" file')
+  if (!appConfig.admin.auth) {
+    throw new Error('"appConfig.admin.auth" attribute not defined. Check the "app.config.ts" file')
   }
-  if (!appConfig.template.login.enabled && to.path === '/login') {
+  if (!appConfig.admin.auth.enabled && to.path === '/login') {
     return navigateTo({ path: '/' })
   }
 
-  if (appConfig.template.login.enabled) {
+  if (appConfig.admin.auth.enabled) {
     if (to.meta.auth === undefined) {
       const routes = useRouter().getRoutes()
       const routeExists = routes.some(route => route.path === to.path || route.name === to.name)
@@ -47,7 +47,7 @@ export default defineNuxtRouteMiddleware(async (to, from, x) => {
   // console.log(data)
   //
 
-  // console.log('LOGIN HABILITADO', appConfig.template.login.enable)
+  // console.log('LOGIN HABILITADO', appConfig.admin.auth.enable)
 
   // console.log(to.path)
 

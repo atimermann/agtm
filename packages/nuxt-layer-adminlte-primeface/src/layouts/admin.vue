@@ -31,7 +31,7 @@
         <slot name="footer">
           <!-- TODO: Estudar uma forma do usuário poder inserir um componente aqui, sem ser apenas texto-->
           <div class="flex justify-content-end">
-            {{ runtimeConfig.public.template.version || 'Nuxt Admin' }}
+            {{ runtimeConfig.public.admin.version || 'Nuxt Admin' }}
           </div>
         </slot>
       </footer>
@@ -47,9 +47,8 @@
 // TODO: Configuração em parametros app.config.ts
 // TODO: Documentar tudo aqui e no zim (De preferencia criar cheatChet)
 
-import { useAppConfig, ref, provide, useRuntimeConfig } from '#imports'
+import { ref, provide, useRuntimeConfig } from '#imports'
 
-const { template } = useAppConfig()
 const runtimeConfig = useRuntimeConfig()
 
 const colapsedMenu = ref(false)
@@ -60,52 +59,52 @@ function colapseMenu () {
 
 provide('colapseMenu', colapseMenu)
 
-class MenuItem {
-  constructor (title, iconClasses, link) {
-    this.title = title
-    this.iconClasses = iconClasses
-    this.link = link
-    this.active = false
-    this.subItems = []
-    this.badge = null
-    this.badgeClasses = null
-    this.isOpen = false
-  }
-
-  setActive (active) {
-    this.active = active
-    return this
-  }
-
-  addSubItem (subItem) {
-    if (subItem instanceof SubMenuItem) {
-      this.subItems.push(subItem)
-    } else {
-      throw new TypeError('Invalid subItem. Expected instance of SubMenuItem.')
-    }
-    return this
-  }
-
-  setBadge (badge, badgeClasses) {
-    this.badge = badge
-    this.badgeClasses = badgeClasses
-    return this
-  }
-}
-
-class SubMenuItem {
-  constructor (title, iconClasses, link) {
-    this.title = title
-    this.iconClasses = iconClasses
-    this.link = link
-    this.active = false
-  }
-
-  setActive (active) {
-    this.active = active
-    return this
-  }
-}
+// class MenuItem {
+//   constructor (title, iconClasses, link) {
+//     this.title = title
+//     this.iconClasses = iconClasses
+//     this.link = link
+//     this.active = false
+//     this.subItems = []
+//     this.badge = null
+//     this.badgeClasses = null
+//     this.isOpen = false
+//   }
+//
+//   setActive (active) {
+//     this.active = active
+//     return this
+//   }
+//
+//   addSubItem (subItem) {
+//     if (subItem instanceof SubMenuItem) {
+//       this.subItems.push(subItem)
+//     } else {
+//       throw new TypeError('Invalid subItem. Expected instance of SubMenuItem.')
+//     }
+//     return this
+//   }
+//
+//   setBadge (badge, badgeClasses) {
+//     this.badge = badge
+//     this.badgeClasses = badgeClasses
+//     return this
+//   }
+// }
+//
+// class SubMenuItem {
+//   constructor (title, iconClasses, link) {
+//     this.title = title
+//     this.iconClasses = iconClasses
+//     this.link = link
+//     this.active = false
+//   }
+//
+//   setActive (active) {
+//     this.active = active
+//     return this
+//   }
+// }
 
 // const dashboard = new MenuItem('Dashboard', ['pi', 'pi-home'], '#')
 //   .setActive(true)

@@ -21,13 +21,28 @@
 
     <!-- Right navbar links -->
     <slot />
+
+    <div v-if="admin.auth.enabled" class="flex align-items-center gap-2">
+      <span class="text-muted">{{ adminAuthStore.decodedToken?.name }} </span>
+      <Avatar :image="avatarImg" shape="circle" />
+    </div>
+    <!--    <a v-ripple v-bind="props.action" class="flex align-items-center gap-2">-->
+    <!--      <img :alt="item.name" :src="`/images/avatar/${item.image}`" style="width: 32px" />-->
+    <!--      <span class="font-bold">{{ item.name }}</span>-->
+    <!--    </a>-->
   </nav>
 </template>
 
 <script setup>
 
-import { inject } from '#imports'
+import { inject, useAppConfig } from '#imports'
+import { useAuthStore } from '@/stores/auth.mjs'
+import Avatar from 'primevue/avatar'
 
+import avatarImg from '@/assets/adminlte/img/avatar5.png'
+
+const { admin } = useAppConfig()
+const adminAuthStore = useAuthStore()
 const colapseMenu = inject('colapseMenu')
 
 </script>

@@ -12,8 +12,8 @@ import { useAppConfig } from '#imports'
 
 const appConfig = useAppConfig()
 
-appConfig.template.logoPath = (await import('~/assets/img/logo.png')).default
-appConfig.template.menu = {
+appConfig.admin.logoPath = (await import('~/assets/img/logo.png')).default
+appConfig.admin.menu = {
   items: [
     {
       id: 'dashboard',

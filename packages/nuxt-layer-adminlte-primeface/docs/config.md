@@ -147,9 +147,9 @@ Para acessar configurações do tipo appConfig em seu projeto utilize
 ```vue
 
 <script setup>
-  import {useAppConfig} from '#imports'
+  import { useAppConfig } from '#imports'
 
-  const {template} = useAppConfig()
+  const { template } = useAppConfig()
 </script>
 
 <template>

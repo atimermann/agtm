@@ -8,3 +8,4 @@
  */
 
 export { useAdminStore } from './stores/admin/index.mjs'
+export { useAuthStore } from './stores/auth.mjs'

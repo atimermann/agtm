@@ -35,7 +35,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      template: {
+      admin: {
         version: packageJSON.version
       },
       server: {

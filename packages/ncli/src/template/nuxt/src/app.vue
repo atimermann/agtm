@@ -4,7 +4,7 @@
 
 <script setup>
 
-import { useAppConfig } from '#imports'
+import { useAppConfig, useMenuAdminStore } from '#imports'
 
 // ----------------------------------------------------------------------
 // Template Configuration
@@ -13,7 +13,10 @@ import { useAppConfig } from '#imports'
 const appConfig = useAppConfig()
 
 appConfig.admin.logoPath = (await import('~/assets/img/logo.png')).default
-appConfig.admin.menu = {
+
+const menuAdminStore = useMenuAdminStore()
+
+menuAdminStore.defineMenu({
   items: [
     {
       id: 'dashboard',
@@ -34,6 +37,6 @@ appConfig.admin.menu = {
       ]
     }
   ]
-}
+})
 
 </script>

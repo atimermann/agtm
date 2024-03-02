@@ -122,6 +122,7 @@ try {
   await iSpawn(`cd "${answers.name}" && npm i @pinia-plugin-persistedstate/nuxt`)
   await iSpawn(`cd "${answers.name}" && npm i primevue`)
   await iSpawn(`cd "${answers.name}" && npm i @agtm/nuxt-layer-adminlte-primeface @agtm/nuxt-tools`)
+  await iSpawn(`cd "${answers.name}" && npm i @formkit/vue jwt-decode vue-slide-up-down zod`)
 
   console.log('--------------------------------------------------------------------------------------------------------')
   console.log('Installing development dependencies...')

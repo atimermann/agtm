@@ -1,6 +1,6 @@
 {
   "name": "@agtm/ncli",
-  "version": "8.4.4",
+  "version": "8.4.5",
   "description": "Conjuntos de scripts para auxiliar no desenvolvimento de projetos node.",
   "type": "module",
   "bin": {

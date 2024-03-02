@@ -2,7 +2,7 @@
  * **Created on 27/02/2024*
  *
  * @author André Timermann <andre@timermann.com.br>
- * @link https://formkit.com/getting-started/installation
+ * https://formkit.com/getting-started/installation
  *
  *   Install the version for Vue and not for nuxt (version for nuxt does not work well with layer)
  */

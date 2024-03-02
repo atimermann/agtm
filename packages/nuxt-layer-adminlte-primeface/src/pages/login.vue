@@ -87,10 +87,10 @@ TODO: O cookie "auth" não tem o atributo "SameSite" com valor válido. Em breve
 import Toast from 'primevue/toast'
 
 import { useToast } from 'primevue/usetoast'
-import { useAuthStore } from '../stores/auth.mjs'
-import { definePageMeta, navigateTo, ref, useAppConfig } from '#imports'
+import { definePageMeta, navigateTo, ref, useAppConfig, useAuthAdminStore } from '#imports'
 
-const AuthStore = useAuthStore()
+const AuthAdminStore = useAuthAdminStore()
+
 const { admin } = useAppConfig()
 const toast = useToast()
 
@@ -98,7 +98,7 @@ const usarname = ref('')
 const password = ref('')
 
 async function login () {
-  const auth = await AuthStore.authenticate(usarname.value, password.value)
+  const auth = await AuthAdminStore.authenticate(usarname.value, password.value)
 
   if (auth.success) {
     const redirectPath = sessionStorage.getItem('redirectAfterLogin') || '/'

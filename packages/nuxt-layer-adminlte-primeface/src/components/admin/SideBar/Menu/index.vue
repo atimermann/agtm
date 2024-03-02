@@ -6,26 +6,15 @@
         :key="index"
         :menu-item="item"
       />
-      <AdminSideBarMenuItem
-        v-if="admin.auth.enabled"
-        :menu-item="{
-          title: 'Sair',
-          link: '/logout',
-          iconClasses: [
-            'pi',
-            'pi-sign-out'
-          ]
-        }"
-      />
     </ul>
   </nav>
 </template>
 
 <script setup>
 
-import { useAdminStore } from '@/stores/admin'
-import { useAppConfig } from '#imports'
 import { storeToRefs } from 'pinia'
+
+import { useMenuAdminStore } from '#imports'
 
 /*
 TODO:
@@ -34,10 +23,7 @@ TODO:
  * [OK] Implementar configuração de menu
 */
 
-const { admin } = useAppConfig()
-
-const menuAdminStore = useAdminStore()
-menuAdminStore.defineMenu(admin.menu)
+const menuAdminStore = useMenuAdminStore()
 
 const { menu } = storeToRefs(menuAdminStore)
 

@@ -4,7 +4,7 @@
       :to="menuItem.link"
       class="nav-link"
       :class="{ active: menuItem.link === $route.path }"
-      @click.prevent="admin.toggleMenuItem(menuItem.key)"
+      @click.prevent="menuAdminStore.toggleMenuItem(menuItem.key)"
     >
       <span :style="spaceStyle" />
       <i v-if="menuItem.iconClasses" :class="['nav-icon', ...menuItem.iconClasses]" />
@@ -31,8 +31,8 @@
 
 <script setup>
 
-import { useAdminStore } from '@/stores/admin'
-import { defineProps, computed } from 'vue'
+import { computed, useMenuAdminStore } from '#imports'
+
 // https://github.com/danieldiekmeier/vue-slide-up-down
 import SlideUpDown from 'vue-slide-up-down'
 
@@ -47,10 +47,12 @@ const props = defineProps({
   }
 })
 
-const admin = useAdminStore()
+// Store
+const menuAdminStore = useMenuAdminStore()
 
 /**
- * Add indentation to submenus
+ * Add indentation to submenus.
+ *
  * @type {ComputedRef<{padding: string, margin: number, paddingLeft: string}>}
  */
 const spaceStyle = computed(() => {

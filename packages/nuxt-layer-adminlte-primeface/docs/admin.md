@@ -17,31 +17,35 @@ Lembrando que cada modulo pode ter seu próprio conjunto de configuração defin
 Para integrar e utilizar as funcionalidades do painel administrativo em seu projeto utilize o alias @admin, por exemplo:
 
 ```javascript
+import {useAppConfig, useMenuAdminStore} from '#imports'
 
-import {useMenuStore} from '@/admin'
+// Config
+const {admin: adminConfig} = useAppConfig()
 
-const menu = useMenuStore()
+// Store
+const menuAdminStore = useMenuAdminStore()
 
-// Adiciona um marcador ao menu dashboard com o valor 10 (também suporte string)
-menu.setBadge('dashboard', 10)
+menuAdminStore.defineMenu(adminConfig.menu)
 
-// Simula clique no menu inventory (abre ou fecha, dependendo do status atual) 
-menu.toggleMenuItem('inventory')
+if (adminConfig.auth.enabled) {
+  menuAdminStore.addItemMenu({
+    title: 'Sair',
+    link: '/logout',
+    iconClasses: [
+      'pi',
+      'pi-sign-out'
+    ]
+  }, 'inventory.productCategories')
+}
 
 ```
+
 Com o store/composable importado e instanciado corretamente, você agora tem acesso completo às suas ações e estados,
-permitindo uma
-manipulação eficaz do painel administrativo.
----
+permitindo uma manipulação eficaz do painel administrativo.
 
-**Nota:** atributos appConfig são acessado da seguinte forma:
-```javascript
-import { useAppConfig } from '#imports'
-const { template } = useAppConfig()
-console.log(template.auth.enabled)
-```
 Na documentação abaixo a titulo de simplificação é exibido apenas **auth.enabled**
 
+---
 
 # Refêrencia
 
@@ -49,15 +53,47 @@ Na documentação abaixo a titulo de simplificação é exibido apenas **auth.en
 
 Controla o menu principal da barra lateral
 
-| Função               | Tipo         | Padrão | Descrição                                                                                            |
-|----------------------|--------------|--------|------------------------------------------------------------------------------------------------------|
-| **defineMenu()**     |              |        | Define o menu do painel administrativo usando um objeto de menu.                                     |
-| menu                 | Object(Menu) |        | O objeto de menu a ser definido e indexado.                                                          |
-| **setBadge()**       |              |        | Define o distintivo e o tipo de distintivo para um determinado item de menu.                         |
-| menuKey              | String       |        | O nome do item de menu ao qual o distintivo será definido.                                           |
-| badge                | String       |        | Estilo: 'primary', 'secondary', 'success', 'info', 'warning', 'danger', 'light', 'dark'              |
-| **toggleMenuItem()** |              |        | Alterna o estado de aberto de um item de menu específico identificado por sua chave.                 |
-| menuKey              | String       |        | A chave única do item de menu a ser alternado. Esta chave é derivada do id do item ou do seu título. |
+### defineMenu()
+
+Define o menu do painel administrativo usando um objeto de menu. Valida a estrutura do menu e indexa os itens do menu
+para acesso rápido.
+
+| Nome | Tipo | Padrão | Descrição                                 |
+|------|------|--------|-------------------------------------------|
+| menu | Menu | N/A    | Objeto de menu a ser definido e indexado. |
+
+### addMenuItem()
+
+Adiciona um novo item ao menu especificado ou ao menu principal, em uma posição especificada. Permite adicionar o item
+diretamente em um submenu usando a chave do item de menu pai e especificar a posição como 'atStart', um índice
+específico, 'atEnd' (padrão), 'before:<key>', ou 'after:<key>'.
+
+| Nome      | Tipo     | Padrão  | Descrição                                                                                                                 |
+|-----------|----------|---------|---------------------------------------------------------------------------------------------------------------------------|
+| menuItem  | MenuItem | N/A     | O item de menu a ser adicionado.                                                                                          |
+| parentKey | String   | `null`  | Chave do item de menu pai ao qual o novo item será adicionado como um sub-item. Opcional.                                 |
+| position  | String   | 'atEnd' | Especifica a posição na qual inserir o novo menu item. Pode ser 'atStart', 'atEnd', 'before:\<key\>', ou 'after:\<key\>'. |
+
+### setBadge()
+
+Este método é utilizado para adicionar ou modificar um "distintivo" (badge) em um item específico do menu. Distintivos
+são pequenas marcações gráficas ou etiquetas que servem para destacar informações adicionais sobre o item de menu, como
+alertas, status, números indicativos (por exemplo, a quantidade de novas mensagens ou notificações), ou qualquer outra
+informação breve que seja importante ressaltar visualmente ao usuário.
+
+| Nome      | Tipo      | Padrão | Descrição                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+|-----------|-----------|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| menuKey   | String    | N/A    | A chave do item de menu ao qual o distintivo será definido.                                                                                                                                                                                                                                                                                                                                                                                    |
+| badge     | String    | N/A    | O texto do distintivo a ser exibido no item de menu.                                                                                                                                                                                                                                                                                                                                                                                           |
+| badgeType | BadgeType | 'info' | O tipo do distintivo, que determina sua aparência visual (cor e estilo). Por exemplo, 'success' pode exibir o distintivo em verde, indicando uma operação bem-sucedida, enquanto 'danger' pode usar vermelho para alertas ou avisos importantes. Valores opcionais incluem 'primary', 'secondary', 'success', 'info', 'warning', 'danger', 'light', e 'dark'. O padrão é 'info', que geralmente é usado para informações neutras ou genéricas. |
+
+### toggleMenuItem()
+
+Alterna o estado de aberto de um item de menu específico identificado por sua chave.
+
+| Nome    | Tipo   | Padrão | Descrição                                                                                                      |
+|---------|--------|--------|----------------------------------------------------------------------------------------------------------------|
+| menuKey | String | N/A    | A chave única do item de menu a ser alternado. Assume que o nome do item de menu é uma chave em `indexedMenu`. |
 
 ### Configurações (appConfig)
 
@@ -67,31 +103,65 @@ Controla o menu principal da barra lateral
 
 ## - useAuthStore
 
-Gerencia autenticação do usuário
-* Autenticação é salva no localStorage 
+## useAuthStore
 
-**Importante:** Necessário habilitar a função auth em **auth.enabled** como descrito a baixo
+Gerencia a autenticação do usuário. A autenticação é salva no localStorage.
 
-| Função             | Tipo                            | Padrão | Descrição                                                     |
-|--------------------|---------------------------------|--------|---------------------------------------------------------------|
-| **authenticate()** | {success: bool, status: string} |        | Autentica usuário utilizando usuário e senha. Retorna objeto: |
-| username           | string                          |        | Usuário                                                       |
-| password           | string                          |        | Senha                                                         |
+**Importante:** É necessário habilitar a função de autenticação em **auth.enabled** como descrito abaixo.
+
+**Persistência**
+
+Os dados de autenticação são persistentemente armazenados usando o plugin `pinia-plugin-persistedstate`, permitindo que
+o estado da autenticação seja mantido entre as sessões do navegador.
+
+### Atributos
+
+| Nome                  | Tipo    | Descrição                                                                                                             |
+|-----------------------|---------|-----------------------------------------------------------------------------------------------------------------------|
+| `authenticated`       | boolean | Indica se o usuário está atualmente autenticado.                                                                      |
+| `accessToken`         | ?string | O token de acesso JWT recebido do servidor de autenticação.                                                           |
+| `decodedToken`        | ?object | O token de acesso JWT decodificado contendo informações do usuário e da sessão.                                       |
+| `expiresIn`           | ?number | Tempo em segundos quando o token de acesso irá expirar.                                                               |
+| `refreshToken`        | ?string | O token de atualização usado para obter novos tokens de acesso.                                                       |
+| `decodedRefreshToken` | ?object | O token de atualização JWT decodificado contendo informações do usuário e da sessão para atualizar o token de acesso. |
+| `refreshExpiresIn`    | ?number | Tempo em segundos quando o token de atualização irá expirar.                                                          |
+| `notBeforePolicy`     | ?number | A política de não-antes indica o tempo antes do qual o token não deve ser aceito.                                     |
+| `sessionState`        | ?string | Representa o estado da sessão do usuário no servidor de autenticação.                                                 |
+| `scope`               | ?string | O escopo do token de acesso indicando quais permissões foram concedidas.                                              |
+
+### authenticate()
+
+Autentica o usuário utilizando usuário e senha. Retorna um objeto com o status da autenticação.
+
+| Nome     | Tipo   | Padrão | Descrição                          |
+|----------|--------|--------|------------------------------------|
+| username | String | N/A    | Nome de usuário para autenticação. |
+| password | String | N/A    | Senha para autenticação.           |
+
+#### Retorno
+
+| Nome     | Tipo                                 | Descrição                                              |
+|----------|--------------------------------------|--------------------------------------------------------|
+| response | { success: Boolean, status: String } | Objeto contendo o status da tentativa de autenticação. |
 
 ### Configurações (appConfig)
 
-| Atributo     | Tipo | Padrão | Descrição                                  |
-|--------------|------|--------|--------------------------------------------|
-| auth.enabled | bool | false  | se modulo de authenticação está habilitado |
-|              |      |        |                                            |
+Configurações necessárias para habilitar e configurar o módulo de autenticação.
 
+| Atributo     | Tipo    | Padrão | Descrição                                    |
+|--------------|---------|--------|----------------------------------------------|
+| auth.enabled | Boolean | false  | Se o módulo de autenticação está habilitado. |
 
 ### Configurações (runtimeConfig)
 
-| Váriável de ambiente             | Tipo   | Padrão | Descrição                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-|----------------------------------|--------|--------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| NUXT_PUBLIC_ADMIN_AUTH_URL       | string |        | Endereço servidor de authenticação                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| NUXT_PUBLIC_ADMIN_AUTH_CLIENT_ID | string |        | Client ID da aplicação                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+Variáveis de ambiente necessárias para configurar o endereço do servidor de autenticação e o Client ID da aplicação.
+
+| Variável de ambiente             | Tipo   | Padrão | Descrição                             |
+|----------------------------------|--------|--------|---------------------------------------|
+| NUXT_PUBLIC_ADMIN_AUTH_URL       | String | N/A    | Endereço do servidor de autenticação. |
+| NUXT_PUBLIC_ADMIN_AUTH_CLIENT_ID | String | N/A    | Client ID da aplicação.               |
+
+---
 
 # Desenvolvimento/Checklist
 

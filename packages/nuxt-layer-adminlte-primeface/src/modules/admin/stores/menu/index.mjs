@@ -1,12 +1,13 @@
 /**
  * Universal Admin Controller.
  *
+ * @file
  * Manages state related to the admin panel, including titles, menus, and indexed menus.
  * Utilizes Pinia for state management and Zod for menu schema validation.
  *
  * @module useAdminStore
  * @author André Timermann
- * @created on 16/12/23
+ * Created on 16/12/23
  *
  *
  * @typedef {('primary' | 'secondary' | 'success' | 'info' | 'warning' | 'danger' | 'light' | 'dark')} BadgeType
@@ -34,12 +35,14 @@
 import { defineStore } from 'pinia'
 import { menuSchema } from './schemas.mjs'
 
+import { useAppConfig } from '#imports'
+
 /**
  * Defines a Pinia store for admin control.
  *
  * @return {object} The admin store instance.
  */
-export const useAdminStore = defineStore('admin', {
+export const useMenuAdminStore = defineStore('menuAdmin', {
   state: () => ({
     title: 'Admin',
     /**
@@ -59,10 +62,54 @@ export const useAdminStore = defineStore('admin', {
      * @param {Menu} menu  The menu object to be defined and indexed.
      */
     defineMenu (menu) {
+      const { admin: adminConfig } = useAppConfig()
+
       menuSchema.parse(menu)
       this.menu = menu
       this.indexedMenu = indexMenuItems(menu.items)
+
+      if (adminConfig.auth.enabled) {
+        this.addItemMenu({
+          title: 'Sair',
+          link: '/logout',
+          iconClasses: [
+            'pi',
+            'pi-sign-out'
+          ]
+        })
+      }
     },
+
+    /**
+     * Adds a new menu item to the specified parent menu or to the main menu, at a specified position.
+     * Validates the updated menu structure using a schema and re-indexes the menu items for quick access.
+     * The position can be defined as 'atStart', at a specific numeric index, 'atEnd' (default),
+     * 'before:<key>', or 'after:<key>', where <key> is the key of an existing menu item.
+     *
+     * @param {MenuItem} menuItem     - The menu item to be added, following the MenuItem structure.
+     * @param {string}   [parentKey]  - The key of the parent menu item to which the new item will be added as a sub-item. Optional.
+     *                                If not provided, the item will be added to the top-level menu.
+     * @param {string}   [position]   - Specifies the position at which to insert the new menu item. Defaults to 'atEnd'.
+     *                                Positions can be 'atStart', a specific index (as a string), 'before:<key>', or 'after:<key>'.
+     *
+     * @example
+     * // Example of adding a menu item to the top-level menu at the end
+     * addItemMenu({ id: 'newItem', title: 'New Item', key: 'new_item' });
+     *
+     * @example
+     * // Example of adding a sub-item to an existing item specified by 'parentKey', before another item
+     * addItemMenu({ id: 'subItem', title: 'Sub Item', key: 'sub_item' }, 'parentItemKey', 'before:otherItemKey');
+     */
+    addItemMenu (menuItem, parentKey, position = 'atEnd') {
+      const targetMenuArray = getTargetMenuItems(this.menu.items, this.indexedMenu, parentKey)
+
+      addItemToMenuAtPosition(targetMenuArray, menuItem, position)
+
+      // Validates the updated menu structure and re-indexes the items
+      menuSchema.parse(this.menu)
+      this.indexedMenu = indexMenuItems(this.menu.items)
+    },
+
     /**
      * Sets the badge and badge type for a given menu item.
      *
@@ -109,12 +156,18 @@ export const useAdminStore = defineStore('admin', {
 /**
  * Indexes menu items recursively for quick access. Generates a flat object where keys are
  * derived from item titles or IDs, and values are references to the original menu item objects.
+ * Each key is a string that combines the optional prefix and the item's title or ID, with spaces
+ * and periods replaced by underscores. This function also enriches each menu item with a `key`
+ * property reflecting its generated key, and a `parent` property linking to its parent item, if any.
  *
- * @param  {Array<MenuItem>}           items   The array of menu items to be indexed.
- * @param  {string}                    prefix  The prefix used for keys of nested items, default is an empty string.
- * @param  {MenuItem}                  parent
+ * @param  {MenuItem[]}                items     An array of menu items to be indexed. Each `MenuItem` should have an `id` or `title`,
+ *                                               and optionally `subItems` which is an array of `MenuItem`.
+ * @param  {string}                    [prefix]  The prefix used for keys of nested items. Defaults to an empty string.
+ * @param  {MenuItem}                  [parent]  The parent menu item of the current nesting level. Undefined for top-level items.
+ * @return {{[key: string]: MenuItem}}           An object indexing all menu items by their generated keys. The object flattens
+ *                                               the structure of nested items into a single level, with each value being a `MenuItem` that includes the `key` and `parent` properties.
  *
- * @return {Object.<string, MenuItem>}         The indexed menu items object.
+ * @private
  */
 function indexMenuItems (items, prefix = '', parent = undefined) {
   const indexedItems = {}
@@ -144,6 +197,8 @@ function indexMenuItems (items, prefix = '', parent = undefined) {
  * @param {object} indexedMenu  - The object containing indexed menu items.
  * @param {string} menuKey      - The key of the menu item to verify.
  * @throws Will throw an error if the menuKey does not exist in indexedMenu.
+ *
+ * @private
  */
 function verifyMenuKeyExists (indexedMenu, menuKey) {
   if (!indexedMenu[menuKey]) {
@@ -163,6 +218,7 @@ function verifyMenuKeyExists (indexedMenu, menuKey) {
  * @param {string}          [exceptMenuKey]  - Optional index of the menu item that should not be closed.
  *                                           If provided, the menu item at this index will remain open,
  *                                           along with its parent items. If undefined, all menu items will be closed.
+ *  @private
  */
 function closeMenuItems (menu, exceptMenuKey) {
   menu.forEach((item) => {
@@ -173,4 +229,58 @@ function closeMenuItems (menu, exceptMenuKey) {
       }
     }
   })
+}
+
+/**
+ * Determines the appropriate target menu array for adding a new menu item,
+ * either to the top-level menu or a specified submenu based on the parentKey.
+ * This function is external to the store's scope, hence it requires the menu items to be passed in.
+ *
+ * @param  {Array<MenuItem>|{[key: string]: MenuItem}} menuItems    - The current set of menu items.
+ * @param  {{[key: string]: MenuItem}}                 indexedMenu  - The indexed menu object for lookup.
+ * @param  {string}                                    [parentKey]  - Optional key of the parent menu item. If provided,
+ *                                                                  the new item will be added to the corresponding submenu.
+ * @return {Array<MenuItem>}                                        The target menu array where the new item should be added.
+ */
+function getTargetMenuItems (menuItems, indexedMenu, parentKey) {
+  if (parentKey) {
+    verifyMenuKeyExists(indexedMenu, parentKey)
+    const parentMenuItem = indexedMenu[parentKey]
+    if (!parentMenuItem.subItems) parentMenuItem.subItems = []
+    return parentMenuItem.subItems
+  } else {
+    return menuItems
+  }
+}
+
+/**
+ * Adds a new menu item to the menu structure at a specified position.
+ *
+ * @param {Array<MenuItem>} targetMenuArray  - The array where the new item will be added.
+ * @param {MenuItem}        menuItem         - The new menu item to be added.
+ * @param {string}          position         - The position where the new item should be added.
+ *                                           Can be 'atStart', a specific index, 'before:<key>', 'after:<key>', or 'atEnd'.
+ * @private
+ */
+function addItemToMenuAtPosition (targetMenuArray, menuItem, position) {
+  // Determines the insertion position based on the 'position' string
+  if (position === 'atStart') {
+    targetMenuArray.unshift(menuItem)
+  } else if (position.startsWith('before:')) {
+    const key = position.substring(7)
+    verifyMenuKeyExists(this.indexedMenu, key) // Verifies the provided key exists before trying to find the index
+    const index = targetMenuArray.findIndex(item => item.key === key)
+    targetMenuArray.splice(index, 0, menuItem)
+  } else if (position.startsWith('after:')) {
+    const key = position.substring(6)
+    verifyMenuKeyExists(this.indexedMenu, key) // Verifies the provided key exists before trying to find the index
+    const index = targetMenuArray.findIndex(item => item.key === key)
+    targetMenuArray.splice(index + 1, 0, menuItem)
+  } else if (!isNaN(position) && parseInt(position) >= 0) {
+    // If 'position' is a valid numeric index, inserts at the specified position
+    targetMenuArray.splice(parseInt(position), 0, menuItem)
+  } else {
+    // If no valid position is specified, adds the item to the end of the array
+    targetMenuArray.push(menuItem)
+  }
 }

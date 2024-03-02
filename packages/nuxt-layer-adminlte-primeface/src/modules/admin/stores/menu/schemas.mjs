@@ -2,10 +2,10 @@
  * **Created on 20/02/24**
  *
  * @file packages/nuxt-layer-adminlte-primeface/src/stores/admin/schemas.mjs
- *  [[ DESCRIPTION HERE ]]
- 
- * @author André Timermann <andre@timermann.com.br>
  *
+ *  Schema for menu validation
+ *
+ * @author André Timermann <andre@timermann.com.br>
  */
 
 import { z } from 'zod'

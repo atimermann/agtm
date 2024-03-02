@@ -5,17 +5,17 @@
  *
  * @author André Timermann <andre@timermann.com.br>
  *
- * @link https://dev.to/kellskamuzu/nuxt-3-authentication-with-pinia-3bj7
- * @link https://prazdevs.github.io/pinia-plugin-persistedstate/frameworks/nuxt-3.html
+ * - https://dev.to/kellskamuzu/nuxt-3-authentication-with-pinia-3bj7
+ * - https://prazdevs.github.io/pinia-plugin-persistedstate/frameworks/nuxt-3.html
  *
  * TODO: Implementar: https://www.keycloak.org/docs/latest/securing_apps/#_javascript_adapter
  */
 
 import { defineStore } from 'pinia'
 import { jwtDecode } from 'jwt-decode'
-import { useAppConfig, useFetch, useRuntimeConfig, persistedState } from '#imports'
+import { useAppConfig, useFetch, useRuntimeConfig } from '#imports'
 
-export const useAuthStore = defineStore('auth', {
+export const useAuthAdminStore = defineStore('authAdmin', {
   state: () => ({
     /**
      * Indicates if the user is currently authenticated.
@@ -167,5 +167,7 @@ export const useAuthStore = defineStore('auth', {
       this.accessToken = null
     }
   },
-  storage: persistedState.localStorage
+  persist: {
+    storage: localStorage
+  }
 })

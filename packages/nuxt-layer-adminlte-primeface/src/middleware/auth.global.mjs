@@ -8,8 +8,7 @@
  * Ref: https://auth.nuxtjs.org/
  */
 
-import { useAuthStore } from '../stores/auth.mjs'
-import { defineNuxtRouteMiddleware, useAppConfig, navigateTo, useRouter } from '#imports'
+import { defineNuxtRouteMiddleware, useAppConfig, navigateTo, useRouter, useAuthAdminStore } from '#imports'
 
 export default defineNuxtRouteMiddleware(async (to, from, x) => {
   const appConfig = useAppConfig()
@@ -31,9 +30,9 @@ export default defineNuxtRouteMiddleware(async (to, from, x) => {
     }
 
     if (to.meta.auth) {
-      const authStore = useAuthStore()
+      const authAdminStore = useAuthAdminStore()
 
-      if (to.path !== '/login' && !authStore.authenticated) {
+      if (to.path !== '/login' && !authAdminStore.authenticated) {
         sessionStorage.setItem('redirectAfterLogin', to.fullPath)
         return navigateTo({ path: '/login' })
       }

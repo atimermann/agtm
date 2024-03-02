@@ -1,10 +1,12 @@
 <template></template>
 <script setup>
-import { useAuthStore } from '../stores/auth.mjs'
-import { definePageMeta, navigateTo } from '#imports'
 
-const AuthStore = useAuthStore()
-await AuthStore.logout()
+import { definePageMeta, navigateTo, useAuthAdminStore } from '#imports'
+
+// Store
+const AuthAdminStore = useAuthAdminStore()
+
+await AuthAdminStore.logout()
 
 navigateTo()
 

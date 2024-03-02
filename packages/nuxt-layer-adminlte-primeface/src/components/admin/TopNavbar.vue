@@ -35,14 +35,15 @@
 
 <script setup>
 
-import { inject, useAppConfig } from '#imports'
-import { useAuthStore } from '@/stores/auth.mjs'
 import Avatar from 'primevue/avatar'
+import { inject, useAppConfig, useAuthAdminStore } from '#imports'
 
 import avatarImg from '@/assets/adminlte/img/avatar5.png'
 
+const adminAuthStore = useAuthAdminStore()
+
 const { admin } = useAppConfig()
-const adminAuthStore = useAuthStore()
+
 const colapseMenu = inject('colapseMenu')
 
 </script>

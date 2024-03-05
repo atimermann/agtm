@@ -105,7 +105,7 @@ async function login () {
     sessionStorage.removeItem('redirectAfterLogin')
     navigateTo(redirectPath)
   } else {
-    toast.add({ severity: 'error', summary: 'Atenção', detail: auth.message, life: 3000 })
+    toast.add({ severity: 'error', summary: 'Atenção', detail: auth.message, life: 10000 })
     usarname.value = ''
     password.value = ''
   }

@@ -2,7 +2,7 @@
 
 ## Prioridade Alta
 
-
+* Paginação / configuração de paginação
 * Verificar porque o layout do formkit não carrega em produção
   * Está carregando url inválida do CDN, bug, carregar proprio CSS (definir)
 * Implementar e documentar Toast padrão no layer

@@ -1,9 +1,14 @@
+# BUG
+
+* Problema para redirecionar do login em alguns casos (testar)
+
+# Funcionalidades
+
 * Documentar que para texto utilizar o adminlte/bootstap, criar um de para sobre oq é melhor usar no adminlte/bootstrap
   vs primevue
 * Converter o PrimeVue para TailWind: https://tailwind.primevue.org/nuxt/
 * Verificar compatibilidade com AdminnLTE (verificar AdminLTE com TailWind)
 * Converter tema do formkit para Tailwind
-
 
 * configurar cors e CSP adeaqudamente para evitar invasão por roubo de token
 * implementar secure Cookie 
@@ -16,3 +21,6 @@
 
 Conexão segura websocket:
 https://freecodecamp.org/news/how-to-secure-your-websocket-connections-d0be0996c556/
+
+
+* [OK]Autorização acessar painel: criar uma variavel, que será acessado no access token com as variaveis.

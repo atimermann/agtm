@@ -92,9 +92,13 @@ export default defineNuxtConfig({
       admin: {
         version: null,
         auth: {
-          url: null,
-          clientId: null,
-          storage: null
+          url: '',
+          clientId: '',
+          role: {
+            enabled: false,
+            path: '',
+            roles: []
+          }
         }
       }
     }

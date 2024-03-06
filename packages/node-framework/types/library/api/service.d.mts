@@ -12,11 +12,41 @@ export default class ServiceService {
      *
      * @static
      * @async
-     * @param  {Function}        fn  The function that performs the Prisma query operation. Should be an async function or return a Promise.
-     * @return {Promise<object>}     An object indicating the outcome of the operation. On success, it returns the query data.
-     *                               On failure, it returns an object with error details, which can be from a Yup validation error
-     *                               or a Prisma database error.
+     * @param  {Function}             fn  The function that performs the Prisma query operation. Should be an async function or return a Promise.
+     * @return {Promise<ApiResponse>}     An object indicating the outcome of the operation. On success, it returns the query data.
+     *                                    On failure, it returns an object with error details, which can be from a Yup validation error
+     *                                    or a Prisma database error.
      */
-    static prismaQuery(fn: Function): Promise<object>;
+    static prismaQuery(fn: Function): Promise<ApiResponse>;
 }
+/**
+ * Created on 06/03/24
+ */
+export type ValidationError = import("yup").ValidationError;
+export type ApiResponse = {
+    /**
+     * Indica se a criação foi bem-sucedida.
+     */
+    success: boolean;
+    /**
+     * O produto criado ou os detalhes do erro de validação.
+     */
+    data?: object | object[];
+    /**
+     * Código do erro
+     */
+    code?: string;
+    /**
+     * Tipo de erro ex: VALIDATION_ERROR, DATABASE_ERROR
+     */
+    error?: string;
+    /**
+     * descrição do erro
+     */
+    message?: string;
+    /**
+     * Detalhamento do erro
+     */
+    errors?: object | ValidationError[];
+};
 //# sourceMappingURL=service.d.mts.map

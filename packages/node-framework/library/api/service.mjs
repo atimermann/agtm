@@ -7,6 +7,18 @@
  * TODO: Em produção não deve retonar detalhes do erro
  *
  * @author André Timermann <andre@timermann.com.br>
+ *
+ * @typedef { import("yup").ValidationError } ValidationError
+ */
+
+/**
+ * @typedef {object} ApiResponse
+ * @property {boolean}                  success    Indica se a criação foi bem-sucedida.
+ * @property {object|object[]}          [data]     O produto criado ou os detalhes do erro de validação.
+ * @property {string}                   [code]     Código do erro
+ * @property {string}                   [error]    Tipo de erro ex: VALIDATION_ERROR, DATABASE_ERROR
+ * @property {string}                   [message]  descrição do erro
+ * @property {object|ValidationError[]} [errors]   Detalhamento do erro
  */
 
 import createLogger from '../logger.mjs'
@@ -26,10 +38,10 @@ export default class ServiceService {
    *
    * @static
    * @async
-   * @param  {Function}        fn  The function that performs the Prisma query operation. Should be an async function or return a Promise.
-   * @return {Promise<object>}     An object indicating the outcome of the operation. On success, it returns the query data.
-   *                               On failure, it returns an object with error details, which can be from a Yup validation error
-   *                               or a Prisma database error.
+   * @param  {Function}             fn  The function that performs the Prisma query operation. Should be an async function or return a Promise.
+   * @return {Promise<ApiResponse>}     An object indicating the outcome of the operation. On success, it returns the query data.
+   *                                    On failure, it returns an object with error details, which can be from a Yup validation error
+   *                                    or a Prisma database error.
    */
   static async prismaQuery (fn) {
     try {

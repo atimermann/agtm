@@ -1,8 +1,9 @@
 {
   "name": "@agtm/node-framework",
-  "version": "8.3.2",
+  "version": "8.3.3",
   "description": "Framework nodejs baseado no ExpressJs",
   "types": "./types/index.d.mts",
+  "type": "module",
   "bin": {
     "nf-monitor": "scripts/monitor.mjs"
   },
@@ -48,7 +49,8 @@
     "socket.io": "^4.7.1",
     "socket.io-client": "^4.7.2",
     "winston": "^3.8.2",
-    "winston-transport": "^4.5.0"
+    "winston-transport": "^4.5.0",
+    "yup": "^1.4.0"
   },
   "files": [
     "library",

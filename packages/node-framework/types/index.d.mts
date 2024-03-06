@@ -16,5 +16,7 @@ import SocketController from './library/controller/socket.mjs';
 import checkExecution from './library/check-execution.mjs';
 import JobManager from './library/jobs/job-manager.mjs';
 import WorkerManager from './library/jobs/worker-manager.mjs';
-export { Application, Server, createLogger, Config, ApplicationController, JobsController, HttpController, CoreController, SocketController, checkExecution, JobManager, WorkerManager };
+import YupValidation from './library/api/yup-validation.mjs';
+import Service from './library/api/service.mjs';
+export { Application, Server, createLogger, Config, ApplicationController, JobsController, HttpController, CoreController, SocketController, checkExecution, JobManager, WorkerManager, YupValidation, Service };
 //# sourceMappingURL=index.d.mts.map

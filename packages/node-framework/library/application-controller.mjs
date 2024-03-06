@@ -28,9 +28,8 @@ const logger = createLogger('ApplicationController')
  */
 export default class ApplicationController {
   /**
-   *
-   * Um mapeamento de tipos de controlador para suas respectivas classes. Cada chave é uma string
-   * que representa o tipo de controlador, e o valor é a classe do controlador correspondente.
+   * A mapping of controller types to their respective classes. Each key is a string
+   * representing the controller type, and the value is the corresponding controller class.
    *
    * @type {{[key: string]: typeof BaseController}}
    */
@@ -51,12 +50,12 @@ export default class ApplicationController {
   }
 
   /**
-   * Verifica se controller é instancia da classe type.
+   * Checks if a given controller is an instance of the specified controller type.
+   * This method ensures that the controller matches the expected type as defined in the controllerMap.
    *
-   * @param  {BaseController} controller
-   * @param  {string}         type
-   *
-   * @return {void}
+   * @param {BaseController} controller  - The controller instance to be checked.
+   * @param {string}         type        - The string identifier of the controller type to compare against.
+   * @throws {TypeError} - Throws a TypeError if the controller is not an instance of the specified type, indicating a mismatch.
    */
   static instanceOf (controller, type) {
     const controllerName = controller.controllerName

@@ -1,3 +1,7 @@
+/**
+ * @file  Imports the necessary modules and sets constant values for color codes.
+ */
+
 import blessed from 'blessed'
 import { filesize } from 'filesize'
 import { io } from 'socket.io-client'
@@ -9,48 +13,67 @@ const YELLOW_COLOR = '\x1b[33m'
 const PURLE_COLOR = '\x1b[35m'
 
 /**
- * Tamanho do historico diminuir se travando
+ * Specifies the maximum number of log messages to keep in history to prevent performance issues. Decrease this value if the interface becomes sluggish.
  *
  * @type {number}
  */
+
 const LOG_HISTORY_SIZE = 20
 /**
- * Intervalo de atualização dos logs, aumentar se travando
+ * Defines the interval (in milliseconds) at which the log messages are refreshed on the screen. Increase this value if the interface becomes sluggish.
  *
  * @type {number}
  */
 const LOG_UPDATE_INTERVAL = 1000
 
 /**
- * Created on 06/07/2023
- *
- * /blessed.mjs
+ * Implements a terminal-based user interface using the 'blessed' library, for displaying log messages in a structured and interactive manner.
  *
  * @author André Timermann <andre@timermann.com.br>
  */
 export default class BlessedInterface {
+  /**
+   * Maps box names to their instances for quick access.
+   *
+   * @type {{[key: string]: blessed.Widgets.BoxElement}}
+   */
   static indexedBoxes = {}
+
+  /**
+   * Holds an array of all box instances for iteration purposes.
+   *
+   * @type {blessed.Widgets.BoxElement[]}
+   */
   static boxes = []
+  /**
+   * References the currently active (focused) box, if any.
+   *
+   * @type {blessed.Widgets.BoxElement|null}
+   */
   static activeBox = null
+  /**
+   * Indicates whether the UI has been fully initialized and is ready to display logs.
+   *
+   * @type {boolean}
+   */
   static ready = false
 
   /**
-   * Representa cada linha da caixa de log, será convertido para texto e será o conteudo do box
-   * Indexado pelo nome do box
+   * Stores lines of log messages for each box. Indexed by box name.
    *
-   * @type {{}}
+   * @type {{[key: string]: boolean}}
    */
   static boxesLines = {}
 
   /**
-   * Boxs para serem atualizados (quando tem novo log)
+   * Tracks which boxes need to be updated due to new log messages.
    *
-   * @type {{}}
+   * @type {{[key: string]: boolean}}
    */
   static boxesForUpdate = {}
 
   /**
-   * Initializes the application. This function prepares the screen, sets shortcuts and creates a status bar.
+   * Initializes the user interface, creating the main screen, setting up keyboard shortcuts, and establishing a socket connection for log messages.
    *
    * @static
    */
@@ -64,22 +87,24 @@ export default class BlessedInterface {
     })
 
     this.screen.on('resize', () => {
-      this._resizeBoxes(null, -2)
+      this.#resizeBoxes(null, -2)
     })
 
-    this._setShortcuts()
+    this.#setShortcuts()
 
-    this._createStatusBar()
+    this.#createStatusBar()
     this.screen.render()
     this.ready = true
 
     this.connectSocketServer()
 
-    setInterval(() => this._updateLogs(), LOG_UPDATE_INTERVAL)
+    setInterval(() => this.#updateLogs(), LOG_UPDATE_INTERVAL)
   }
 
   /**
-   * Connect to socket server
+   * Establishes a connection to the specified log server using socket.io, handles connection events, and receives log messages.
+   *
+   * @static
    */
   static connectSocketServer () {
     const socketAddress = Config.get('monitor.socketServer')
@@ -104,16 +129,19 @@ export default class BlessedInterface {
     })
 
     socketLoggerClient.on('log', logObj => {
-      const { message, module } = this._parselogObj(logObj)
+      const { message, module } = this.#parselogObj(logObj)
       this.log(message, module)
     })
   }
 
   /**
+   * Determines the appropriate color code for log messages based on their severity level.
    *
-   * @param level
+   * @param  {string} level  - The severity level of the log message ('info', 'warn', 'error', 'debug').
+   * @return {string}        The escape code for the color associated with the given severity level.
+   * @static
    */
-  static _getLevelColor (level) {
+  static #getLevelColor (level) {
     switch (level) {
       case 'info': // INFO
         return '\x1b[39m'
@@ -129,16 +157,17 @@ export default class BlessedInterface {
   }
 
   /**
-   * Formatting raw message received from the server
+   * Parses log objects received from the log server, formatting them for display in the UI.
    *
-   * @param           logObj
-   * @return {string}
+   * @param  {object} logObj  - The log object containing the level, module, and message.
+   * @return {object}         An object containing the formatted message and the module name.
+   * @static
    */
-  static _parselogObj (logObj) {
+  static #parselogObj (logObj) {
     const { level, module, message } = logObj
 
     const date = new Date()
-    const levelColor = this._getLevelColor(level)
+    const levelColor = this.#getLevelColor(level)
     const levelText = `${levelColor}${level.padEnd(5)}${RESET_COLOR}`
     const moduleText = module ? `${BLUE_DARK_COLOR}[${module}]${RESET_COLOR}` : ''
     const msgColor = `${levelColor}${message}${levelColor}`
@@ -151,17 +180,17 @@ export default class BlessedInterface {
   }
 
   /**
-   * Adds a message to the specified box. If the box does not exist, it creates a new box.
+   * Appends a log message to the specified box, creating a new box if necessary.
    *
-   * @param {string} message  - The message to add to the box.
-   * @param {string} boxName  - The name of the box to add the message to.
+   * @param {string} message  - The log message to display.
+   * @param {string} boxName  - The name of the box to which the message should be added.
    * @static
    */
   static log (message, boxName) {
     if (!this.ready) return
 
     if (!this.indexedBoxes[boxName]) {
-      this._createBox(boxName)
+      this.#createBox(boxName)
     }
 
     if (!this.boxesLines[boxName]) {
@@ -184,9 +213,11 @@ export default class BlessedInterface {
   }
 
   /**
+   * Periodically updates the content of all boxes marked for update with the latest log messages.
    *
+   * @static
    */
-  static _updateLogs () {
+  static #updateLogs () {
     for (const boxName of Object.keys(this.indexedBoxes)) {
       if (this.boxesForUpdate[boxName]) {
         this.indexedBoxes[boxName].setContent(this.boxesLines[boxName].join('\n'))
@@ -196,28 +227,26 @@ export default class BlessedInterface {
   }
 
   /**
-   * Sets application shortcuts.
+   * Sets up keyboard shortcuts for application control, such as quitting, restarting, and navigating between boxes.
    *
-   * @private
    * @static
    */
-  static _setShortcuts () {
+  static #setShortcuts () {
     this.screen.key(['q', 'C-c'], () => process.exit(0)) // Close application
     this.screen.key(['r'], () => process.exit(12)) // Reboot application
-    this.screen.key('C-right', () => this._moveBoxFocusTo('right'))
-    this.screen.key('C-left', () => this._moveBoxFocusTo('left'))
-    this.screen.key('C-down', () => this._moveBoxFocusTo('down'))
-    this.screen.key('C-up', () => this._moveBoxFocusTo('up'))
+    this.screen.key('C-right', () => this.#moveBoxFocusTo('right'))
+    this.screen.key('C-left', () => this.#moveBoxFocusTo('left'))
+    this.screen.key('C-down', () => this.#moveBoxFocusTo('down'))
+    this.screen.key('C-up', () => this.#moveBoxFocusTo('up'))
   }
 
   /**
-   * Creates a status bar at the bottom of the screen.
+   * Creates a status bar at the bottom of the screen, displaying helpful shortcuts and real-time memory usage information.
    *
-   * @private
-   * @param {string} boxName  - Name of the box to which the status bar will be added.
+   * @param {string} [boxName]  - The name of the box for which the status bar is being created. Currently not used.
    * @static
    */
-  static _createStatusBar (boxName) {
+  static #createStatusBar (boxName) {
     this.statusBar = blessed.box({
       bottom: 0,
       left: 0,
@@ -255,13 +284,12 @@ export default class BlessedInterface {
   }
 
   /**
-   * Creates a box on the screen with the specified name.
+   * Creates a new box on the screen for displaying log messages.
    *
-   * @private
    * @param {string} boxName  - The name of the box to create.
    * @static
    */
-  static _createBox (boxName) {
+  static #createBox (boxName) {
     const newBox = blessed.log({
       mouse: false,
       keys: true,
@@ -298,22 +326,20 @@ export default class BlessedInterface {
     this.boxes.push(newBox)
     this.indexedBoxes[boxName] = newBox
     this.screen.append(newBox)
-    this._resizeBoxes(null, -2)
+    this.#resizeBoxes(null, -2)
 
     this.screen.render()
   }
 
   /**
-   * Resizes all boxes according to the screen size and given custom dimensions and offsets.
+   * Dynamically resizes all boxes based on the current screen size and optional custom dimensions.
    *
-   * @private
-   * @param {number} customWidth   - Custom width for the boxes. If negative, it's subtracted from screen width.
-   * @param {number} customHeight  - Custom height for the boxes. If negative, it's subtracted from screen height.
-   * @param {number} offsetWidth   - The amount of space left on the sides of the boxes.
-   * @param {number} offsetHeight  - The amount of space left on top and bottom of the boxes.
-   * @static
+   * @param {number|null} customWidth     - Optional custom width for the boxes.
+   * @param {number|null} customHeight    - Optional custom height for the boxes.
+   * @param {number}      [offsetWidth]   - Horizontal space to leave empty on the sides of the boxes.
+   * @param {number}      [offsetHeight]  - Vertical space to leave empty above and below the boxes.
    */
-  static _resizeBoxes (customWidth, customHeight, offsetWidth = 0, offsetHeight = 0) {
+  static #resizeBoxes (customWidth, customHeight, offsetWidth = 0, offsetHeight = 0) {
     const boxCount = this.boxes.length
     const cols = Math.ceil(Math.sqrt(boxCount))
     const rows = Math.ceil(boxCount / cols)
@@ -339,11 +365,9 @@ export default class BlessedInterface {
   /**
    * Moves focus to a specific direction. If there are no boxes in the direction, nothing happens.
    *
-   * @private
    * @param {string} direction  - The direction to move the focus to. Can be 'up', 'down', 'left', 'right'.
-   * @static
    */
-  static _moveBoxFocusTo (direction) {
+  static #moveBoxFocusTo (direction) {
     if (!this.activeBox && this.boxes.length > 0) {
       this.activeBox = this.boxes[0]
       this.activeBox.focus()

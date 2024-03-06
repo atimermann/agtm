@@ -1,103 +1,128 @@
 /**
- * Created on 06/07/2023
- *
- * /blessed.mjs
+ * Implements a terminal-based user interface using the 'blessed' library, for displaying log messages in a structured and interactive manner.
  *
  * @author André Timermann <andre@timermann.com.br>
  */
 export default class BlessedInterface {
-    static indexedBoxes: {};
-    static boxes: any[];
-    static activeBox: any;
+    /**
+     * Maps box names to their instances for quick access.
+     *
+     * @type {{[key: string]: blessed.Widgets.BoxElement}}
+     */
+    static indexedBoxes: {
+        [key: string]: blessed.Widgets.BoxElement;
+    };
+    /**
+     * Holds an array of all box instances for iteration purposes.
+     *
+     * @type {blessed.Widgets.BoxElement[]}
+     */
+    static boxes: blessed.Widgets.BoxElement[];
+    /**
+     * References the currently active (focused) box, if any.
+     *
+     * @type {blessed.Widgets.BoxElement|null}
+     */
+    static activeBox: blessed.Widgets.BoxElement | null;
+    /**
+     * Indicates whether the UI has been fully initialized and is ready to display logs.
+     *
+     * @type {boolean}
+     */
     static ready: boolean;
     /**
-     * Representa cada linha da caixa de log, será convertido para texto e será o conteudo do box
-     * Indexado pelo nome do box
+     * Stores lines of log messages for each box. Indexed by box name.
      *
-     * @type {{}}
+     * @type {{[key: string]: boolean}}
      */
-    static boxesLines: {};
+    static boxesLines: {
+        [key: string]: boolean;
+    };
     /**
-     * Boxs para serem atualizados (quando tem novo log)
+     * Tracks which boxes need to be updated due to new log messages.
      *
-     * @type {{}}
+     * @type {{[key: string]: boolean}}
      */
-    static boxesForUpdate: {};
+    static boxesForUpdate: {
+        [key: string]: boolean;
+    };
     /**
-     * Initializes the application. This function prepares the screen, sets shortcuts and creates a status bar.
+     * Initializes the user interface, creating the main screen, setting up keyboard shortcuts, and establishing a socket connection for log messages.
      *
      * @static
      */
     static init(): void;
     /**
-     * Connect to socket server
+     * Establishes a connection to the specified log server using socket.io, handles connection events, and receives log messages.
+     *
+     * @static
      */
     static connectSocketServer(): void;
     /**
+     * Determines the appropriate color code for log messages based on their severity level.
      *
-     * @param level
+     * @param  {string} level  - The severity level of the log message ('info', 'warn', 'error', 'debug').
+     * @return {string}        The escape code for the color associated with the given severity level.
+     * @static
      */
-    static _getLevelColor(level: any): "\u001B[0m" | "\u001B[33m" | "\u001B[31m" | "\u001B[92m" | "\u001B[39m";
+    static "__#10@#getLevelColor"(level: string): string;
     /**
-     * Formatting raw message received from the server
+     * Parses log objects received from the log server, formatting them for display in the UI.
      *
-     * @param           logObj
-     * @return {string}
+     * @param  {object} logObj  - The log object containing the level, module, and message.
+     * @return {object}         An object containing the formatted message and the module name.
+     * @static
      */
-    static _parselogObj(logObj: any): string;
+    static "__#10@#parselogObj"(logObj: object): object;
     /**
-     * Adds a message to the specified box. If the box does not exist, it creates a new box.
+     * Appends a log message to the specified box, creating a new box if necessary.
      *
-     * @param {string} message  - The message to add to the box.
-     * @param {string} boxName  - The name of the box to add the message to.
+     * @param {string} message  - The log message to display.
+     * @param {string} boxName  - The name of the box to which the message should be added.
      * @static
      */
     static log(message: string, boxName: string): void;
     /**
+     * Periodically updates the content of all boxes marked for update with the latest log messages.
      *
-     */
-    static _updateLogs(): void;
-    /**
-     * Sets application shortcuts.
-     *
-     * @private
      * @static
      */
-    private static _setShortcuts;
+    static "__#10@#updateLogs"(): void;
     /**
-     * Creates a status bar at the bottom of the screen.
+     * Sets up keyboard shortcuts for application control, such as quitting, restarting, and navigating between boxes.
      *
-     * @private
-     * @param {string} boxName  - Name of the box to which the status bar will be added.
      * @static
      */
-    private static _createStatusBar;
+    static "__#10@#setShortcuts"(): void;
     /**
-     * Creates a box on the screen with the specified name.
+     * Creates a status bar at the bottom of the screen, displaying helpful shortcuts and real-time memory usage information.
      *
-     * @private
+     * @param {string} [boxName]  - The name of the box for which the status bar is being created. Currently not used.
+     * @static
+     */
+    static "__#10@#createStatusBar"(boxName?: string): void;
+    /**
+     * Creates a new box on the screen for displaying log messages.
+     *
      * @param {string} boxName  - The name of the box to create.
      * @static
      */
-    private static _createBox;
+    static "__#10@#createBox"(boxName: string): void;
     /**
-     * Resizes all boxes according to the screen size and given custom dimensions and offsets.
+     * Dynamically resizes all boxes based on the current screen size and optional custom dimensions.
      *
-     * @private
-     * @param {number} customWidth   - Custom width for the boxes. If negative, it's subtracted from screen width.
-     * @param {number} customHeight  - Custom height for the boxes. If negative, it's subtracted from screen height.
-     * @param {number} offsetWidth   - The amount of space left on the sides of the boxes.
-     * @param {number} offsetHeight  - The amount of space left on top and bottom of the boxes.
-     * @static
+     * @param {number|null} customWidth     - Optional custom width for the boxes.
+     * @param {number|null} customHeight    - Optional custom height for the boxes.
+     * @param {number}      [offsetWidth]   - Horizontal space to leave empty on the sides of the boxes.
+     * @param {number}      [offsetHeight]  - Vertical space to leave empty above and below the boxes.
      */
-    private static _resizeBoxes;
+    static "__#10@#resizeBoxes"(customWidth: number | null, customHeight: number | null, offsetWidth?: number, offsetHeight?: number): void;
     /**
      * Moves focus to a specific direction. If there are no boxes in the direction, nothing happens.
      *
-     * @private
      * @param {string} direction  - The direction to move the focus to. Can be 'up', 'down', 'left', 'right'.
-     * @static
      */
-    private static _moveBoxFocusTo;
+    static "__#10@#moveBoxFocusTo"(direction: string): void;
 }
+import blessed from 'blessed';
 //# sourceMappingURL=blessed.d.mts.map

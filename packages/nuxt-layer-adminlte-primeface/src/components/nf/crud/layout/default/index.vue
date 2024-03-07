@@ -31,9 +31,14 @@
     <NfCrudLayoutDefaultForm
       :value="formValues"
       :schema="formSchema"
+      :handlers="handlers.form"
       @submit="onSubmit"
       @submitted="onSubmitted"
-    />
+    >
+      <template #form>
+        <slot name="form" :form-schema="formSchema" />
+      </template>
+    </NfCrudLayoutDefaultForm>
   </Dialog>
 
   <ConfirmDialog group="headless">
@@ -114,6 +119,14 @@ const props = defineProps({
   schema: {
     type: Array,
     default: () => []
+  },
+  /**
+   * Handlers made available by the user to be used for inputs or columns when loading schema, since it is not possible
+   * to load functions in schemas
+   */
+  handlers: {
+    type: Object,
+    default: () => {}
   }
 })
 
@@ -184,12 +197,14 @@ function setDefaultValueInSchema (schemaItem) {
  * @return {{$formkit: string, name, label}}
  */
 function mapSchemaToFormSchema (schemaItem) {
-  return {
-    name: schemaItem.name,
-    label: schemaItem.label,
-    $formkit: 'text',
-    ...schemaItem.form
-  }
+  return schemaItem.form.$el
+    ? schemaItem.form
+    : {
+        name: schemaItem.name,
+        label: schemaItem.label,
+        $formkit: schemaItem.form.$el,
+        ...schemaItem.form
+      }
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

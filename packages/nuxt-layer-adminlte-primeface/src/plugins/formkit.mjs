@@ -8,14 +8,25 @@
  */
 
 import { defineNuxtPlugin } from '#app'
-import { plugin, defaultConfig } from '@formkit/vue'
+import { plugin, defaultConfig, createInput } from '@formkit/vue'
 import { pt } from '@formkit/i18n'
+
+/*
+ * Nuxt Layer Inputs:
+ *  - https://formkit.com/guides/create-a-custom-input#registration
+ *  - https://formkit.com/api-reference/context
+ */
+import AutoComplete from '../inputs/AutoComplete.vue'
 
 export default defineNuxtPlugin(nuxtApp => {
   nuxtApp.vueApp.use(plugin, defaultConfig({
     theme: 'genesis',
     locales: { pt },
-    locale: 'pt'
-    // inputs: primeInputs
+    locale: 'pt',
+    inputs: {
+      autocomplete: createInput(AutoComplete, {
+        props: ['search']
+      })
+    }
   }))
 })

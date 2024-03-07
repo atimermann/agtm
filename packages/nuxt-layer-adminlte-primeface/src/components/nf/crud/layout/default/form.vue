@@ -1,18 +1,23 @@
 <template>
   <FormKit
     id="form"
+    v-model="values"
     :value
     type="form"
     :submit-label="value.id ? 'Atualizar' : 'Criar'"
     @submit="submit"
   >
-    <FormKitSchema :schema />
+    <slot name="form">
+      <FormKitSchema :schema :data />
+    </slot>
   </FormKit>
 </template>
 
 <script setup>
 
-defineProps({
+import { ref, reactive } from '#imports'
+
+const props = defineProps({
   schema: {
     type: Array,
     default: () => []
@@ -21,7 +26,23 @@ defineProps({
     type: Object,
     default: () => {
     }
+  },
+  /**
+   * https://formkit.com/essentials/schema#referencing-functions
+   * Handlers made available by the user to be used for inputs or columns when loading schema, since it is not possible
+   * to load functions in schemas
+   */
+  handlers: {
+    type: Object,
+    default: () => {
+    }
   }
+})
+
+const values = ref({})
+
+const data = reactive({
+  ...props.handlers
 })
 
 const emit = defineEmits(['submit', 'submitted'])
@@ -43,8 +64,7 @@ function submit (values) {
 
     if (err) {
       console.log(err.stack)
-    }
-    if (response.success === true) {
+    } else if (response.success === true) {
       emit('submitted', newForm, response.data)
     }
   })

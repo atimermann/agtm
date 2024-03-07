@@ -2,6 +2,9 @@
 
 ## Prioridade Alta
 
+* Campo de Relacionamento AutoComplete
+* Validação Servidor
+  * Criar um service de validação e tratamento
 * Paginação / configuração de paginação
 * Verificar porque o layout do formkit não carrega em produção
   * Está carregando url inválida do CDN, bug, carregar proprio CSS (definir)

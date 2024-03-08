@@ -177,7 +177,6 @@ export default class SocketServer {
       controller.io = this.io
 
       // Load namespace in nsp
-
       controller.nsp = this.io.of(controller.namespace)
 
       await this.#runSetup(controller)

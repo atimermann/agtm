@@ -28,6 +28,7 @@
 
 import BaseController from './base-controller.mjs'
 import createLogger from '../logger.mjs'
+import ApiError from '../api/api-error.mjs'
 const logger = createLogger('BaseController')
 
 /**
@@ -121,18 +122,40 @@ export default class SocketController extends BaseController {
         const response = await event.fn(...dataArgs)
 
         if (callback === undefined && response !== undefined) {
-          logger.error('Client did not specify a callaback, respose lost.')
+          logger.error('Client did not specify a callaback, response lost.')
         }
 
         if (callback !== undefined) {
           callback({ success: true, data: response })
         }
-      } catch (err) {
-        if (callback) {
-          callback({ success: false, data: err.message })
+      } catch (error) {
+        /**
+         *
+         * @type {{data: any, success: boolean}}
+         */
+        const payloadError = { success: false, data: null }
+
+        if (error instanceof ApiError) {
+          // ------------------------------------------
+          // API_ERROR
+          // ------------------------------------------
+          payloadError.data = {
+            type: 'API_ERROR',
+            data: error.inner
+          }
+        } else {
+          // ------------------------------------------
+          // GENERIC
+          // ------------------------------------------
+          payloadError.data = {
+            type: 'GENERIC_ERROR',
+            data: error.message
+          }
         }
 
-        logger.error(JSON.stringify({ message: err.message, stack: err.stack }))
+        callback
+          ? callback(payloadError)
+          : logger.error(JSON.stringify(payloadError))
       }
     })
   }

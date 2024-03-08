@@ -48,7 +48,8 @@ export default class YupValidation {
     let response
     try {
       // Note: Returning directly does not generate an error
-      response = await this.schema.validate(data, { abortEarly: false })
+      const response = await this.schema.validate(data, { abortEarly: false, stripUnknown: false })
+
       return response
     } catch (e) {
       logger.debug('Error by catch...')

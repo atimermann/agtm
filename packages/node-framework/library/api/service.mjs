@@ -21,6 +21,7 @@
  * @property {object|ValidationError[]} [errors]   Detalhamento do erro
  */
 
+import ApiError from '../api/api-error.mjs'
 import createLogger from '../logger.mjs'
 const logger = createLogger('Api Service')
 
@@ -48,25 +49,11 @@ export default class ServiceService {
       logger.debug('Executing prisma query...')
       return await fn()
     } catch (e) {
-      logger.debug(`Error: ${e.constructor.name}`)
-      logger.debug(`ErrorType: ${e.type}`)
-      logger.debug(`ErrorMessage: ${e.message}`)
-
-      if (e.type === 'YUP_VALIDATION_ERROR') {
-        return {
-          success: false,
-          error: e.message,
-          errors: e.inner
-        }
+      if (e instanceof ApiError) {
+        throw e
       } else {
         // Prisma Error
-        return {
-          success: false,
-          code: e.code,
-          error: 'DATABASE_ERROR',
-          message: e.message,
-          errors: e.meta
-        }
+        throw new ApiError('DATABASE_ERROR', e.meta, e.message, e.code)
       }
     }
   }

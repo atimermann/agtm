@@ -16,7 +16,8 @@ import { pt } from '@formkit/i18n'
  *  - https://formkit.com/guides/create-a-custom-input#registration
  *  - https://formkit.com/api-reference/context
  */
-import AutoComplete from '../inputs/AutoComplete.vue'
+import autocomplete from '../inputs/autocomplete.vue'
+import taglist from '../inputs/taglist.vue'
 
 export default defineNuxtPlugin(nuxtApp => {
   nuxtApp.vueApp.use(plugin, defaultConfig({
@@ -24,9 +25,11 @@ export default defineNuxtPlugin(nuxtApp => {
     locales: { pt },
     locale: 'pt',
     inputs: {
-      autocomplete: createInput(AutoComplete, {
+      // Keep in alphabetical order
+      autocomplete: createInput(autocomplete, {
         props: ['search']
-      })
+      }),
+      taglist: createInput(taglist)
     }
   }))
 })

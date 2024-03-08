@@ -14,6 +14,7 @@
         v-model="model"
         :schema
         :id-key
+        :debug
         @edit="onEdit"
         @delete="onDelete"
       />
@@ -29,9 +30,10 @@
   >
     <!--  When closing the modal form it is removed from memory, when opening again a new instance with clean data is loaded  -->
     <NfCrudLayoutDefaultForm
-      :value="formValues"
+      :values="formValues"
       :schema="formSchema"
       :handlers="handlers.form"
+      :debug
       @submit="onSubmit"
       @submitted="onSubmitted"
     >
@@ -127,6 +129,13 @@ const props = defineProps({
   handlers: {
     type: Object,
     default: () => {}
+  },
+  /**
+   * Debug mode, displays more information
+   */
+  debug: {
+    type: Boolean,
+    default: false
   }
 })
 

@@ -2,9 +2,11 @@
 
 ## Prioridade Alta
 
-* Campo de Relacionamento AutoComplete
-* Validação Servidor
-  * Criar um service de validação e tratamento
+* Formatação coluna, implementar tipos de coluna
+* Criar tratamento para tipos de erros do back no form e grid:
+  * GENERIC_ERROR
+  * API_ERROR
+  * Tratamento diferenciado produção/desenvolvimento
 * Paginação / configuração de paginação
 * Verificar porque o layout do formkit não carrega em produção
   * Está carregando url inválida do CDN, bug, carregar proprio CSS (definir)
@@ -19,6 +21,9 @@
 
 ## Prioridade Baixa
 
+* Implementar cache de socket (projeto definido backend)
+* Implementar pré-load no autocomplete, pelo menos pro select inicial padrão
+  * Carregar no cache inicial  
 * Atualização em tempo real, se outro usuario adicionar um novo registro atualiza em todo os clientes conectado
   * Necessario tratar casos de multi-replicas, as diferentes replicas devem se conectar através de um redis(recomendável)
 * Criar mais um objeto options ṕara configurações globais do crud como por exemplo algum titulo etc...
@@ -58,6 +63,9 @@
 
 ## Finalizado
 
+* [OK] Validação Servidor
+  * [OK] Criar um service de validação e tratamento
+* [OK] Campo de Relacionamento AutoComplete
 * [OK] Gerador de list by form
 * [OK] Listagem 100% largura
 * [OK] Formulario popup

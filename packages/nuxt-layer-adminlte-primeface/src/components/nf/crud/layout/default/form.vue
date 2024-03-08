@@ -1,16 +1,16 @@
 <template>
   <FormKit
     id="form"
-    v-model="values"
-    :value
+    v-model="formValues"
     type="form"
-    :submit-label="value.id ? 'Atualizar' : 'Criar'"
+    :submit-label="values.id ? 'Atualizar' : 'Criar'"
     @submit="submit"
   >
     <slot name="form">
       <FormKitSchema :schema :data />
     </slot>
   </FormKit>
+  <pre v-if="debug" style="background-color: #ffe456">{{ formValues }}</pre>
 </template>
 
 <script setup>
@@ -22,7 +22,7 @@ const props = defineProps({
     type: Array,
     default: () => []
   },
-  value: {
+  values: {
     type: Object,
     default: () => {
     }
@@ -36,10 +36,17 @@ const props = defineProps({
     type: Object,
     default: () => {
     }
+  },
+  /**
+   * Debug mode, displays more information
+   */
+  debug: {
+    type: Boolean,
+    default: false
   }
 })
 
-const values = ref({})
+const formValues = ref(props.values)
 
 const data = reactive({
   ...props.handlers
@@ -60,12 +67,16 @@ const emit = defineEmits(['submit', 'submitted'])
  */
 function submit (values) {
   emit('submit', values, (err, response) => {
-    const newForm = (values.id === undefined)
-
     if (err) {
-      console.log(err.stack)
+      console.log(err)
     } else if (response.success === true) {
+      const newForm = (values.id === undefined)
       emit('submitted', newForm, response.data)
+    } else {
+      // TODO: Criar classe para tratar erro do topo API **************
+      alert('Erro de API') //                                         *
+      console.log(response.data) //                                   *
+      // **************************************************************
     }
   })
 }

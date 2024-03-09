@@ -131,26 +131,22 @@ export default class SocketController extends BaseController {
       } catch (error) {
         /**
          *
-         * @type {{data: any, success: boolean}}
+         * @type {{data: any, success: boolean, type: string}}
          */
-        const payloadError = { success: false, data: null }
+        const payloadError = { success: false, data: null, type: '' }
 
         if (error instanceof ApiError) {
           // ------------------------------------------
           // API_ERROR
           // ------------------------------------------
-          payloadError.data = {
-            type: 'API_ERROR',
-            data: error.inner
-          }
+          payloadError.type = 'API_ERROR'
+          payloadError.data = error.inner
         } else {
           // ------------------------------------------
           // GENERIC
           // ------------------------------------------
-          payloadError.data = {
-            type: 'GENERIC_ERROR',
-            data: error.message
-          }
+          payloadError.type = 'GENERIC_ERROR'
+          payloadError.data = error.messager
         }
 
         callback

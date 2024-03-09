@@ -105,6 +105,18 @@ export default class HelloWorldController extends Controller {
 }
 
 ```
+## Padrão de Comunicação
+
+Em requisições para clientes criados com nuxt-layer-adminlite-primeface, utilizamos o seguinte padrão de comunicação:
+
+| Propriedade | Tipo    | Descrição                                                                                                                                                                                      |
+|-------------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| success     | Boolean | Se a requisição concluída com sucesso                                                                                                                                                          |
+| type        | String  | Tipo de erro, a titulo de simplificação, durante a requisição se o erro for gerado no próprio frontend, será do tipo **FRONTEND_ERROR**.<br/> Outros exemplo de erro: GENERIC_ERROR, API_ERROR |
+| data        | Object  | Objeto com dados do erro ou com o resultado a requisição, cada requisição ou tipo de erro tem seu próprio layout                                                                               |
+
+
+
 
 ## Gerando Versão
 

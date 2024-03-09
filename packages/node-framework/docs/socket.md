@@ -1,5 +1,8 @@
 # Servidor de Socket (WebSocket) baseado no socket.io
 
+**DEPRECATED - DEPRECATED - DEPRECATED- DEPRECATED**
+TODO: documentar retorno padrão de erros para o front onde os erros são classificados e retornado por tipo como API_ERROR e GENERIC_ERROR  
+
 REF: https://socket.io/docs/v4/server-socket-instance/
 
 

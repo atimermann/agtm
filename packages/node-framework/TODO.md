@@ -33,6 +33,8 @@ BUGS - URGENT
   server.timezone') e em .env ser SERVER_TIMEZONE
 - Dupliquei sleep em varios lugares, centralizar no agt/util e puxar de lá ou pensar numa forma melhor
 - Parametrizar Cors
+- Tratar erro em um unico local, atualmente definido em Controller: socket.#registerEventForSocket
+  - Replicar para API REST
 
 ************************************************************************************************************************
 Socket

@@ -1,8 +1,14 @@
 # Funcionalidades:
 
-## Prioridade Alta
+## Próximo(s)
 
+* Implementar cache de socket (projeto definido backend)
 * Formatação coluna, implementar tipos de coluna
+
+## Prioridade Alta
+ 
+* Debug deve ser automatica global e não passado por props
+* Documentar o ciclo de  vida de um crud, desde o inicio até tratamento de erro
 * Criar tratamento para tipos de erros do back no form e grid:
   * GENERIC_ERROR
   * API_ERROR
@@ -21,7 +27,8 @@
 
 ## Prioridade Baixa
 
-* Implementar cache de socket (projeto definido backend)
+* Revisar layout input do primeface não está ficando correto no formkit
+* Seleção e remoção em lote
 * Implementar pré-load no autocomplete, pelo menos pro select inicial padrão
   * Carregar no cache inicial  
 * Atualização em tempo real, se outro usuario adicionar um novo registro atualiza em todo os clientes conectado

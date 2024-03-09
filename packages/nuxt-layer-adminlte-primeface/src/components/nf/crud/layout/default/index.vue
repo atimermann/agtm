@@ -15,6 +15,7 @@
         :schema
         :id-key
         :debug
+        :loading="loadingGrid"
         @edit="onEdit"
         @delete="onDelete"
       />
@@ -134,6 +135,13 @@ const props = defineProps({
    * Debug mode, displays more information
    */
   debug: {
+    type: Boolean,
+    default: false
+  },
+  /**
+   * Grid in loading mode
+   */
+  loadingGrid: {
     type: Boolean,
     default: false
   }

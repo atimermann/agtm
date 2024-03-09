@@ -15,11 +15,13 @@ desenvolvimento, minimizando a necessidade de configurações extensas.
 
 ## Props
 
-| Atributo | Tipo   | padrão    | Descrição                                                                                 |
-|----------|--------|-----------|-------------------------------------------------------------------------------------------|
-| idKey    | String | 'id'      | Identificador único dentro do CRUD. Utilizado como chave primária para operações de CRUD. |
-| label    | String | Undefined | Texto exibido para o usuário como rótulo do campo.                                        |
-| schema   | Array  | []        | Define a estrutura dos dados, configuração de colunas no CRUD e campos no formulário.     |
+| Atributo    | Tipo   | padrão    | Descrição                                                                                 |
+|-------------|--------|-----------|-------------------------------------------------------------------------------------------|
+| idKey       | String | 'id'      | Identificador único dentro do CRUD. Utilizado como chave primária para operações de CRUD. |
+| label       | String | Undefined | Texto exibido para o usuário como rótulo do campo.                                        |
+| schema      | Array  | []        | Define a estrutura dos dados, configuração de colunas no CRUD e campos no formulário.     |
+| debug       | Bool   | false     | Exibe dados do crud para melhor depuração.                                                |
+| loadingGrid | Bool   | false     | Grid no modo carregamento (Aguardando dados do servidor)                                  |
 
 ## Schema
 
@@ -170,6 +172,7 @@ const handlers = {
 Usamos este slot pra definir inputs sem uso do schema ou de forma mesclada, por exemplo:
 
 ```vue
+
 <template>
   <NfCrud
     v-model="data"
@@ -192,7 +195,8 @@ Usamos este slot pra definir inputs sem uso do schema ou de forma mesclada, por 
 
 **Notas:**
 
-* **formSchema** é o schema final gerado dinamicamente à partir do schema do nfCrud. Use-o se for utilizar **FormKitSchema**
+* **formSchema** é o schema final gerado dinamicamente à partir do schema do nfCrud. Use-o se for utilizar *
+  *FormKitSchema**
 * Note que estamos utilizando slots dentro do FormKitSchema, com essa funcionalidade podemos definir um slot e
   referencia-la dentro do schema, isso é util pra definirmos a posição do input dentro da lista de inputs. De outra
   maneira seriamos obrigados a posicionar os inputs no inicio ou fim do formulário
@@ -232,7 +236,9 @@ Usamos este slot pra definir inputs sem uso do schema ou de forma mesclada, por 
 * Mais sobre elementos html no schema aqui: https://formkit.com/essentials/schema#html-elements-el
 
 Podemos simplesmente ignorar schema e definir todos os inputs via template:
+
 ```vue
+
 <template>
   <NfCrud
     v-model="data"
@@ -256,12 +262,15 @@ Podemos simplesmente ignorar schema e definir todos os inputs via template:
 ```
 
 # Inputs / Colunas customizada
-O nfCrud disponibiliza alguns inputs extras para serem usada no formulário (formkit), veja documentação de cada um na pasta inputs
+
+O nfCrud disponibiliza alguns inputs extras para serem usada no formulário (formkit), veja documentação de cada um na
+pasta inputs
 A referencia de colunas podem será encontrado na pasta columns (não implementado ainda, por enquanto tudo é texto)
 
 # Layouts Disponíveis
 
 ## Default
+
 Caracteristicas:
 
 * Listagem em tela cheia

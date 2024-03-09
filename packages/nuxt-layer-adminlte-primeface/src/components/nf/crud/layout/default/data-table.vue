@@ -1,5 +1,5 @@
 <template>
-  <DataTable :value="model">
+  <DataTable :value="model" :loading>
     <Column
       v-for="col of schema"
       :key="col.idKey"
@@ -42,6 +42,10 @@ defineProps({
   schema: {
     type: Array,
     default: () => []
+  },
+  loading: {
+    type: Boolean,
+    default: false
   }
 })
 

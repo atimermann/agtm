@@ -19,6 +19,8 @@
   * se em algum acesso subsequente algo mudar desconecta usuario tanto do keycloak quanto da api
   * dependendo do caso bloquear usuario
 
+* padrão de erro definido em - Front: useSocket: clientSocket.pEmit
+
 Conexão segura websocket:
 https://freecodecamp.org/news/how-to-secure-your-websocket-connections-d0be0996c556/
 

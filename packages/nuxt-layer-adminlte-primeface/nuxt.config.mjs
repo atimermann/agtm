@@ -99,6 +99,10 @@ export default defineNuxtConfig({
             path: '',
             roles: []
           }
+        },
+        socket: {
+          host: '',
+          timeout: 30000
         }
       }
     }

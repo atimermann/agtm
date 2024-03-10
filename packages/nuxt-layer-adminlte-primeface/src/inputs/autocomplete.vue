@@ -31,8 +31,6 @@ if (!props.context.search) {
 const value = ref(props.context._value)
 const items = ref([])
 
-const cache = ref({})
-
 /**
  * Searches for items based on the user's input. It checks the cache for existing
  * results before making a new request. Caches new results to minimize API calls.
@@ -41,10 +39,7 @@ const cache = ref({})
  */
 
 const search = async (event) => {
-  if (!cache.value[event.query]) {
-    cache.value[event.query] = await props.context.search(event.query)
-  }
-  items.value = cloneDeep(cache.value[event.query])
+  items.value = cloneDeep(await props.context.search(event.query))
 }
 
 /**

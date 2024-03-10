@@ -33,7 +33,6 @@
     <NfCrudLayoutDefaultForm
       :values="formValues"
       :schema="formSchema"
-      :handlers="handlers.form"
       :debug
       @submit="onSubmit"
       @submitted="onSubmitted"

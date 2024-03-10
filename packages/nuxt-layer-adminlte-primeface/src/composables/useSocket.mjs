@@ -15,7 +15,9 @@
  */
 
 import { io as Client } from 'socket.io-client'
-import { useRuntimeConfig } from '#imports'
+import sha256 from 'js-sha256'
+import prettyBytes from 'pretty-bytes'
+import { readonly, ref, useRuntimeConfig } from '#imports'
 
 /**
  * Cache for storing active socket connections
@@ -23,6 +25,10 @@ import { useRuntimeConfig } from '#imports'
  * @type {{}}
  */
 const connectionsCache = {}
+
+const requestCache = {}
+
+const bindCache = {}
 
 /**
  * Creates or retrieves a cached socket connection for a specific endpoint.
@@ -76,11 +82,126 @@ export function useSocket (endpoint) {
     }
   }
 
+  /**
+   * Retrieves data for a given eventName and arguments from the server, caching the result.
+   * If the data is already cached, it returns the cached data instead of making a new request.
+   *
+   * Note: This method should not be used for events that send data to the server, such as insert/update/delete operations.
+   * due to the risk of updates and inserts might not be sent to the server
+   *
+   * Persistence requests may be cached and never sent to the server without warning (as it will return success as if
+   * it had been sent), causing data inconsistency.
+   *
+   * @param  {string}       eventName  - The name of the event to request data for.
+   * @param  {...any}       args       - Additional arguments to pass with the event.
+   * @return {Promise<any>}            A promise that resolves with the server's response.
+   */
+  clientSocket.get = async (eventName, ...args) => {
+    const cacheKey = sha256(eventName + JSON.stringify(args))
+
+    if (!requestCache[cacheKey]) {
+      console.log(`[SOCKET]: Request "${eventName}" key "${cacheKey}" not found in cache. Requesting...`)
+      const response = await clientSocket.pEmit(eventName, ...args)
+
+      if (!response.success) {
+        console.log(`[Socket] Request "${eventName} failed, caching aborted!`)
+        return response
+      }
+
+      requestCache[cacheKey] = {
+        data: response
+      }
+    } else {
+      console.log(`[SOCKET] Loading request "${eventName}" key "${cacheKey}" data from cache...`)
+    }
+
+    console.log(`[SOCKET] Cache size = ${prettyBytes(getSizeInBytes(requestCache))}`)
+    return requestCache[cacheKey].data
+  }
+
+  /**
+   * Proactively caches the response for a given eventName and arguments by making a request to the server,
+   * even if the data has not been requested yet. This is useful for pre-fetching data you anticipate needing soon.
+   *
+   * @param  {object}          [options]  - Optional configuration options for caching.
+   * @param  {string}          eventName  - The name of the event to cache data for.
+   * @param  {...any}          args       - Additional arguments to pass with the event.
+   *
+   * @return {Promise<object>}            A promise that resolves with an object containing cache details,
+   *                                      including success status, cache size, and more.
+   */
+  clientSocket.cache = async (options = {}, eventName, ...args) => {
+    const cacheKey = sha256(eventName + JSON.stringify(args))
+    console.log(`[SOCKET]: Pre-caching "${eventName}" key "${cacheKey}" ...`)
+
+    let response
+    if (requestCache[cacheKey]) {
+      response = requestCache[cacheKey].data
+      console.log('[SOCKET]: Request is already in cache!')
+    } else {
+      response = await clientSocket.get(eventName, ...args)
+    }
+
+    const cacheSize = getSizeInBytes(requestCache)
+    const cacheKeySize = getSizeInBytes(requestCache[cacheKey])
+
+    return {
+      success: response.success,
+      cacheSize,
+      cachePrettySize: prettyBytes(cacheSize),
+      cacheKey,
+      cacheKeySize,
+      cacheKeyPrettySize: prettyBytes(cacheKeySize)
+    }
+  }
+
+  /**
+   * Registers a client-side binding to a specific server event and caches the response.
+   * This method emits a 'bind' event to the server with the specified eventName and arguments.
+   * It then listens for 'bindUpdated' events from the server to update the local cache with
+   * the latest data. The bound data is made reactive and read-only to prevent client-side
+   * modifications, ensuring the data consistency is maintained by the server updates.
+   *
+   * The bound data is accessible as a Vue ref, and updates will trigger reactivity in
+   * components that use the data. This method is particularly useful for data that
+   * needs to stay up to date with the server state without requiring manual refresh requests.
+   *
+   * @param  {string} eventName  - The name of the event to bind to.
+   * @param  {...any} args       - Additional arguments to pass along with the event.
+   *
+   * @return {object}            - A Vue ref object containing the bound data, which is read-only.
+   */
+  clientSocket.bind = (eventName, ...args) => {
+    const cacheKey = sha256(eventName + JSON.stringify(args))
+
+    bindCache[cacheKey] = ref([])
+
+    // Conecta no servidor
+    console.log(`[SOCKET BIND] Emit: "${eventName}", "${cacheKey}"`, args)
+    clientSocket.emit('bind', eventName, ...args)
+
+    // Aguarda atualizações
+    clientSocket.on('bindUpdated', response => {
+      console.log('[Bind] Updated:', response)
+      if (!response.success) {
+        console.error(`[Bind] Bind Update "${eventName} failed!`)
+        // TODO: Avisar usuário (central de mensagem ou toast)
+        return
+      }
+      bindCache[cacheKey].value = response.data
+    })
+
+    // Bind must be read only. It is only updated via the server
+    return readonly(bindCache[cacheKey])
+  }
+
   return {
     clientSocket
   }
 }
-
+// ---------------------------------------------------------------------------------------------------------------------
+// PRIVATE
+// ---------------------------------------------------------------------------------------------------------------------
 /**
  * Retrieves an existing socket connection from cache or establishes a new one.
  *
@@ -133,23 +254,24 @@ function handleSocketConnection (clientSocket, endpoint) {
   })
 }
 
-// function decomposeSocketIOString (str) {
-//   // Procura por ',' que separa a parte do namespace/evento do payload JSON
-//   const separatorIndex = str.indexOf(',')
-//
-//   // Extrai a parte do namespace/evento e o payload JSON
-//   const eventPart = str.substring(0, separatorIndex)
-//   const jsonPayload = str.substring(separatorIndex + 1)
-//
-//   // Separa o tipo de mensagem (se houver) e o namespace
-//   const [messageType, namespace] = eventPart.split('/', 2)
-//
-//   // Tenta analisar o payload JSON
-//   try {
-//     const data = JSON.parse(jsonPayload.substring(1, jsonPayload.length - 1)) // Remove os colchetes iniciais e finais
-//
-//     return { messageType, namespace, data }
-//   } catch (error) {
-//     return { messageType, namespace, data: jsonPayload }
-//   }
-// }
+/**
+ * Calculates the approximate size of a JavaScript object in bytes.
+ * This function converts the object into a JSON string and then uses the TextEncoder
+ * to measure the length of the resulting string in UTF-8 bytes. It provides an estimate
+ * of the memory usage of the object, although the exact byte size in memory may vary.
+ *
+ * @param  {any}    obj  - The object for which the size in bytes is to be calculated.
+ * @return {number}      - The approximate size of the object in bytes.
+ */
+function getSizeInBytes (obj) {
+  let str = null
+  if (typeof obj === 'string') {
+    // If obj is a string, then use it
+    str = obj
+  } else {
+    // Else, make obj into a string
+    str = JSON.stringify(obj)
+  }
+  // Get the length of the Uint8Array
+  return new TextEncoder().encode(str).length
+}

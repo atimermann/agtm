@@ -48,9 +48,103 @@ Suporta `await` e implementa um timeout para a resposta.
       data.value = response.data
     } else {
       console.error('Erro:', response.data)
-    }    
+    }
   })
-  
+
 </script>
 
+```
+
+### `get`
+
+Recupera dados para um dado nome de evento e argumentos do servidor, armazenando o resultado em cache. Se os dados já
+estiverem em cache, retorna os dados em cache em vez de fazer uma nova solicitação.
+
+**Nota:** Este método não deve ser usado para eventos que enviam dados para o servidor, como operações de
+inserção/atualização/exclusão. Devido ao risco de atualizações e inserções que podem não ser enviadas ao servidor.
+
+Requisições de persistência podem ser armazenadas em cache e nunca enviadas ao servidor sem aviso (já que retornará
+sucesso como se tivesse sido enviada), causando inconsistência de dados.
+
+### `cache`
+
+Pré-armazena em cache a resposta para um dado nome de evento e argumentos, fazendo uma requisição ao servidor, mesmo que
+os dados não tenham sido solicitados ainda. Útil para dados que serão necessários em breve.
+
+**Exemplo:**
+
+```vue
+
+<template>
+  <NfCrud
+    v-model="data"
+    id-key="id"
+    :schema="schema"
+    :handlers  
+  />
+
+</template>
+
+<script setup>
+
+  import {ref, onMounted, useSocket} from '#imports'
+  import schema from './schema.json'
+
+  const {clientSocket} = useSocket('/inventory')
+
+  const data = ref([])
+
+  onMounted(async () => {
+    // Pré Cache
+    const cacheInfo = await clientSocket.cache({}, 'productCategory:findByName', {find: '', limit: 19})
+    console.log('CACHE INFO:', cacheInfo)
+  })
+
+  const handlers = {
+    form: {
+      search: async (query) => {
+        const findQuery = {
+          find: query,
+          limit: 19
+        }
+        const response = await clientSocket.get('productCategory:findByName', findQuery)
+        if (response.success) {
+          return response.data
+        }
+      }
+    }
+  }
+
+</script>
+```
+
+### `bind`
+
+Registra uma vinculação do lado do cliente a um evento específico do servidor e armazena a resposta em cache. Este
+método emite um evento 'bind' para o servidor com o nome do evento e argumentos especificados. Em seguida, escuta por
+eventos 'bindUpdated' do servidor para atualizar o cache local com os dados mais recentes. Os dados vinculados são
+tornados reativos e somente leitura para evitar modificações do lado do cliente, garantindo que a consistência dos dados
+seja mantida pelas atualizações do servidor.
+
+Os dados vinculados são acessíveis como uma referência do Vue, e as atualizações irão disparar reatividade em
+componentes que utilizam os dados. Este método é particularmente útil para dados que precisam permanecer atualizados com
+o estado do servidor sem requerer solicitações de atualização manual.
+
+**Exemplo:**
+
+```vue
+
+<template>
+  <pre>{{ bindData }}</pre>
+</template>
+
+<script setup>
+
+  import {useSocket} from '#imports'
+
+  const {clientSocket} = useSocket('/inventory')
+
+  const bindData = clientSocket.bind('productCategory:findByName', {find: '', limit: 19})
+
+</script>
 ```

@@ -7,6 +7,8 @@
 
 ## Prioridade Alta
 
+* Habilitar o tamanho da calculadora de cache apenas em desenvolvimento pois pode adicionar muito calculo
+  * Criar um debug bar igual da Cheap2Ship
 * Debug deve ser automatica global e não passado por props
 * Documentar o ciclo de vida de um crud, desde o inicio até tratamento de erro
 * Criar tratamento para tipos de erros do back no form e grid:

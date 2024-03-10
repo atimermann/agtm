@@ -17,7 +17,7 @@
 import { io as Client } from 'socket.io-client'
 import sha256 from 'js-sha256'
 import prettyBytes from 'pretty-bytes'
-import { readonly, ref, useRuntimeConfig } from '#imports'
+import { ref, useRuntimeConfig } from '#imports'
 
 /**
  * Cache for storing active socket connections
@@ -115,7 +115,7 @@ export function useSocket (endpoint) {
       console.log(`[SOCKET] Loading request "${eventName}" key "${cacheKey}" data from cache...`)
     }
 
-    console.log(`[SOCKET] Cache size = ${prettyBytes(getSizeInBytes(requestCache))}`)
+    logCacheInfo()
     return requestCache[cacheKey].data
   }
 
@@ -175,6 +175,12 @@ export function useSocket (endpoint) {
   clientSocket.bind = (initialValue, eventName, ...args) => {
     const cacheKey = sha256(eventName + JSON.stringify(args))
 
+    // If the bind has already been done, it only returns reference
+    if (bindCache[cacheKey]) {
+      logCacheInfo()
+      return bindCache[cacheKey]
+    }
+
     bindCache[cacheKey] = ref(initialValue)
 
     // Conecta no servidor
@@ -190,9 +196,11 @@ export function useSocket (endpoint) {
         return
       }
       bindCache[cacheKey].value = response.data
+      logCacheInfo()
     })
 
     // Bind must be read only. It is only updated via the server
+    logCacheInfo()
     return bindCache[cacheKey]
   }
 
@@ -275,4 +283,13 @@ function getSizeInBytes (obj) {
   }
   // Get the length of the Uint8Array
   return new TextEncoder().encode(str).length
+}
+
+function logCacheInfo () {
+  if (import.meta.dev) {
+    const requestCacheSize = prettyBytes(getSizeInBytes(requestCache))
+    const bindCacheSize = prettyBytes(getSizeInBytes(bindCache))
+    const totalCacheSize = prettyBytes(getSizeInBytes([requestCache, bindCache]))
+    console.log(`[SOCKET] Cache size: RequestCache ${requestCacheSize}. BindCache: ${bindCacheSize}. Total: ${totalCacheSize}`)
+  }
 }

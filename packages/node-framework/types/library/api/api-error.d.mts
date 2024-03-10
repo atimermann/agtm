@@ -39,8 +39,8 @@ export default class ApiError extends Error {
     /**
      * Internal errors.
      *
-     * @type {[]}
+     * @type {any}
      */
-    inner: [];
+    inner: any;
 }
 //# sourceMappingURL=api-error.d.mts.map

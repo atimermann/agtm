@@ -36,30 +36,7 @@ BUGS - URGENT
 - Tratar erro em um unico local, atualmente definido em Controller: socket.#registerEventForSocket
   - Replicar para API REST
 
-************************************************************************************************************************
-Socket
-************************************************************************************************************************
 
-* Melhorar sistema de socket:
-  * No nuxt, criar uma Store/composable central q gerencia todas as conexões
-  * Socket.io não gera uma nova conecxão TCP por namespace, então podemos manter varios namespace
-  * Atualmente uma nova conexão é feita ao conectar em cada página vamos mudar e centralizar isso
-  * Vamos criar um composable global ou Store para geranciar, a conexão é feita uma vez ao iniciar
-  * sempre que houver necessidade de comunicação comunicamos com esse composable/store/plugin global
-  * Esse componente será responsavel por gerenciar cache, resposta, atualizações:
-    * A pagina faz getCategoryByName('name=123')
-    * O componente registra a requisição, executa e salva o resultado internamente em um cache
-    * O valor do cache é retornado
-    * o backend pode enviar uma atualização de dados, neste caso é feita uma nova consulta atualizando o cache
-    * Atualizando os componentes automaticamente por reatividade
-  * Toda nova página necessário definir quais eventos vão ouvir, ao sair da página esses eventos são desativados
-    automaticamente( NUXT )
-    * socket.on('eventoNome', meuCallback);
-    * socket.off('eventoNome', meuCallback);
-    * Toda vez e uma nova página for acessada, vai haver uma nova configuração de listeners para serem ouvido desligando
-      os outros, pode ser usado:
-      * socket.off();
-    * Também é feito pré-cache, necessário definir a requisição previamente para ser usada posteriormente
     
 
 ************************************************************************************************************************
@@ -149,3 +126,29 @@ existe uma validação no framework que disparada erro, ou seja o projeto nem va
 Porém precisamos q apps de terceiro em versões mais antigas continue funcionando, necessário descobrir uma abordagem
 
 DOCUMENTAR IMPLEMENTAÇÂO DE LIBRARY
+
+
+************************************************************************************************************************
+Socket
+************************************************************************************************************************
+
+*[ok]  Melhorar sistema de socket:
+*[ok] No nuxt, criar uma Store/composable central q gerencia todas as conexões
+*[ok]  Socket.io não gera uma nova conecxão TCP por namespace, então podemos manter varios namespace
+*[ok]  Atualmente uma nova conexão é feita ao conectar em cada página vamos mudar e centralizar isso
+*[ok]  Vamos criar um composable global ou Store para geranciar, a conexão é feita uma vez ao iniciar
+*[ok]  sempre que houver necessidade de comunicação comunicamos com esse composable/store/plugin global
+* Esse componente será responsavel por gerenciar cache, resposta, atualizações:
+  *[ok]  A pagina faz getCategoryByName('name=123')
+  *[ok]  O componente registra a requisição, executa e salva o resultado internamente em um cache
+  *[ok]  O valor do cache é retornado
+  *[ok]  o backend pode enviar uma atualização de dados, neste caso é feita uma nova consulta atualizando o cache
+  *[ok]  Atualizando os componentes automaticamente por reatividade
+* Toda nova página necessário definir quais eventos vão ouvir, ao sair da página esses eventos são desativados
+  automaticamente( NUXT )
+  *[ok]  socket.on('eventoNome', meuCallback);
+  *[ok]  socket.off('eventoNome', meuCallback);
+  *[ok]  Toda vez e uma nova página for acessada, vai haver uma nova configuração de listeners para serem ouvido desligando
+  os outros, pode ser usado:
+  *[ok]  socket.off();
+  *[ok]  Também é feito pré-cache, necessário definir a requisição previamente para ser usada posteriormente

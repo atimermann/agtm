@@ -48,7 +48,7 @@ import Config from '../config.mjs'
 import chalk from 'chalk'
 
 import createLogger from '../logger.mjs'
-import Rooms from './rooms.mjs'
+import Room from './room.mjs'
 const logger = createLogger('Socket')
 
 /**
@@ -238,7 +238,7 @@ export default class SocketServer {
   static #initBind (socket, controllers, nsp) {
     socket.on('bind', (eventName, ...args) => {
       logger.debug(`New bind from client: Event: ${eventName}`)
-      const room = Rooms.createIfNotExist(eventName, args, controllers, nsp)
+      const room = Room.createIfNotExist(eventName, args, controllers, nsp)
       room.join(socket)
     })
   }

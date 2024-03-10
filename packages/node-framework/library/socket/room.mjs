@@ -25,11 +25,11 @@ const logger = createLogger('SocketRoom')
  * The Room class manages rooms within a Socket.io application, handling creation, data caching,
  * and synchronization of room states across connected clients.
  */
-export default class Rooms {
+export default class Room {
   /**
    * A static map holding all active room instances, keyed by a unique identifier based on the event name and arguments.
    *
-   * @type {Map<string, Rooms>}
+   * @type {Map<string, Room>}
    */
   static rooms = new Map()
 
@@ -84,7 +84,7 @@ export default class Rooms {
    * @param  {SocketController[]} socketControllers  - A list of socket controllers associated with this room.
    * @param  {Namespace}          nsp                - The Socket.io Namespace associated with this room.
    *
-   * @return {Rooms}                                 The newly created or existing room.
+   * @return {Room}                                 The newly created or existing room.
    *
    * @static
    */
@@ -98,7 +98,7 @@ export default class Rooms {
 
     logger.debug(`Creating new room: "${roomName}"`)
 
-    const newRoom = new Rooms()
+    const newRoom = new Room()
     newRoom.eventName = eventName
     newRoom.emitArgs = emitArgs
     newRoom.name = roomName
@@ -134,8 +134,8 @@ export default class Rooms {
     const socketCount = (await this.nsp.in(this.name).fetchSockets()).length
     logger.debug(`User in this room: ${socketCount}`)
     logger.debug(`Room size: ${prettyBytes(this.getSizeInBytes(this.cacheData))}`)
-    logger.debug(`Total rooms: ${Rooms.rooms.size}`)
-    logger.debug(`Total size: ${prettyBytes(this.getSizeInBytes(Rooms.rooms))}`)
+    logger.debug(`Total rooms: ${Room.rooms.size}`)
+    logger.debug(`Total size: ${prettyBytes(this.getSizeInBytes(Room.rooms))}`)
   }
 
   /**

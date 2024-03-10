@@ -1,12 +1,49 @@
+# Servidor de Socket (WebSocket) com Socket.io
+
+O Node framework utiliza o Socket.io para comunicação via socket.io. Toda a configuração e inicialização do servidor
+socket é abstraída pelo framework, permitindo implementar facilmente a lógica de aplicação socket diretamente nos
+controllers com métodos auxiliares.
+
+## Métodos Auxiliares
+
+| Método       | Descrição                                                                                                                                                                                                                                                                       |
+|--------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **on**       | Método legado, utilizado para registrar ouvintes de eventos no socket. Recomendado para uso apenas em casos específicos onde a nova estrutura com `onQuery` e `onMutate` não se aplica. Não permite bind com cliente e não dispara atualização para o cliente.                  |
+| **onQuery**  | Utilizado para registrar ouvintes de eventos destinados a operações de busca ou recuperação de dados, que não modificam o estado no servidor. Esses eventos podem ser cacheados e são ideais para atualizações dinâmicas no cliente com base em mudanças de estado no servidor. |
+| **onMutate** | Utilizado para registrar ouvintes de eventos que realizam operações de criação, atualização ou exclusão de dados no servidor. Esses eventos não são cacheáveis e garantem que ações importantes sejam realizadas e propagadas em tempo real.                                    |
+
+# Modo Bind
+
+O modo Bind no **node-framework** com **nuxt-layer-adminlte-primeface** é uma funcionalidade poderosa que permite
+vincular dados do servidor ao cliente de maneira reativa. Esse modo é especialmente útil para atualizações em tempo
+real, onde o estado do servidor precisa ser refletido no cliente sem a necessidade de requisições manuais para verificar
+mudanças.
+
+**IMPORTANTE:**
+Você deve utilizar um controller para cada conjunto de dados, os eventos mutaveis (onMutate) vai disparar evento
+update todos as query deste controller independente se o namespace é o mesmo ou diferente de outro controller
+
+## Funcionamento
+
+Quando um cliente se conecta a um determinado namespace e se "vincula" a um evento específico usando o modo Bind, ele
+informa ao servidor que está interessado em receber atualizações automáticas sempre que os dados associados a esse
+evento forem alterados. Isso é feito emitindo um evento especial de `bind` do cliente para o servidor, com o nome do
+evento ao qual deseja se vincular e, opcionalmente, argumentos adicionais.
+
+O servidor, ao receber um evento de `bind`, registra o cliente como um ouvinte para atualizações desse evento
+específico. Sempre que os dados relevantes no servidor mudam (por exemplo, um novo item é adicionado a uma lista que o
+cliente está observando), o servidor automaticamente emite um evento de `bindUpdated` para todos os clientes vinculados,
+enviando a eles os dados atualizados.
+
 # Servidor de Socket (WebSocket) baseado no socket.io
 
-**DEPRECATED - DEPRECATED - DEPRECATED- DEPRECATED**
-TODO: documentar retorno padrão de erros para o front onde os erros são classificados e retornado por tipo como API_ERROR e GENERIC_ERROR  
+TODO: documentar retorno padrão de erros para o front onde os erros são classificados e retornado por tipo como
+API_ERROR e GENERIC_ERROR
 
 REF: https://socket.io/docs/v4/server-socket-instance/
 
-
-Node framework adota o Socket.io para comunicação via websocket. Toda configuração é inicialização do servidor socket é abstraida pelo framework.
+Node framework adota o Socket.io para comunicação via websocket. Toda configuração é inicialização do servidor socket é
+abstraida pelo framework.
 
 Você pode implementar sua aplicação socket diretamente no controller com alguns métodos auxiliares.
 
@@ -14,57 +51,70 @@ Exemplo básico:
 
 ```javascript
 
-import {  SocketController } from '@agtm/node-framework'
+import {SocketController} from '@agtm/node-framework'
 
 export default class HelloWorldController extends SocketController {
-
   namespace = '/helloWorld'
 
-  async setup () {
-    this.on('create', async (data) => {      
+  async setup() {
+    this.onMutate('create', async (data) => {
       return true
     })
 
-   
-    this.on('get', async (data) => {
-      return {data: 'new date'}
+    this.onQuery('get', async (data) => {
+      return {data: 'new data'}
     })
-
-  }  
+  }
 }
 ```
-* Ao definir a propriedade "namespace", internamente o controller cria um novo evento "onConnection" e executa os eventos configurados em setup()
+
+* Ao definir a propriedade "namespace", internamente o controller cria um novo evento "onConnection" e executa os
+  eventos configurados em setup()
 * Não é necessário realizar tratamento de erro com try catch, já é realizado internamente.
 * O retorn padrão é {success: false, data: "Erro ou dados"}
 * Não é necessário utilizar callback, o retorno é enviado de volta, por isso obrigatório criar função assincrona
 
 No cliente você pode ser conectar à api da seguinte maneira:
 
-```javascript
-#!/usr/bin/env node
-import { io as Client } from 'socket.io-client'
+```vue
 
-// Configuração do cliente Socket.io para conectar ao servidor
-const clientSocket = Client('http://localhost:4001/hello-world')
+<script setup>
 
-clientSocket.on('connect', async () => {
-  console.log(`Conectado com sucesso ao servidor Socket.io. SocketID: "${clientSocket.id}"`)
+  import {ref, onMounted, useSocket} from '#imports'
 
-  const data = { name: 'Electronics', description: 'Gadgets and more' }
-  clientSocket.emit('create', data, (response) => {
+  const {clientSocket} = useSocket('/inventory')
+
+  const data = ref([])
+
+  onMounted(async () => {
+    const response = await clientSocket.pEmit('product:getAll')
     if (response.success) {
-      console.log('Criada com sucesso:', response.data)
+      data.value = response.data
     } else {
       console.error('Erro:', response.data)
     }
-    clientSocket.close()
   })
-})
 
-clientSocket.on('connect_error', (err) => {
-  console.error('Erro ao conectar ao servidor Socket.io:', err.message)
-  clientSocket.close()
-})
+</script>
+```
+
+**Exemplo com bind:**
+
+```vue
+
+<template>
+  <pre>{{ bindData }}</pre>
+</template>
+
+<script setup>
+
+  import {useSocket} from '#imports'
+
+  const {clientSocket} = useSocket('/inventory')
+
+  const bindData = clientSocket.bind('productCategory:findByName', {find: '', limit: 19})
+
+</script>
 ```
 
 # Acesso direto
@@ -74,130 +124,18 @@ Caso precisa de um controle maior da api, você tem acesso as seguintes propried
 * **this.io**: Retorna objeto io
 * **this.nsp**: Retorna io.of (namespace já configurado)
 
-## Eventos
+# Padrão de retorno
 
-Ref: https://socket.io/docs/v4/emitting-events/
-
-[CheatSheet](https://socket.io/docs/v4/emit-cheatsheet/)
-
-
-A API Socket.IO é inspirada no Node.js EventEmitter, o que significa que você pode emitir eventos de um lado e registrar ouvintes do outro:
-
-```javascript
-
-// Server site
-this.io('connection', socket => {
-    socket.emit("hello", 1, "2", {3: '4', 5: Buffer.from([6])})
-})
-
-// Client side:
-socket.on("hello", (arg1, arg2, arg3) => {
-  console.log(arg1); // 1
-  console.log(arg2); // "2"
-  console.log(arg3); // { 3: '4', 5: ArrayBuffer (1) [ 6 ] }
-});
+O padrão de retorno é
 
 ```
-
-Onde o primeiro argumento é o nome do evento e os demais são atributos para ser enviado
-
-
-**DICA:** Não há necessidade de executar JSON.stringify() em objetos, pois isso será feito para você.
-
-
-## Rooms
-
-Uma sala é um canal arbitrário no qual os soquetes podem entrar e sair. 
-Ele pode ser usado para transmitir eventos para um subconjunto de clientes.
-
-https://socket.io/docs/v4/rooms/
-
-**NOTA:** Observe que as salas são um conceito apenas de servidor (ou seja, o cliente não tem acesso à lista de salas às quais ingressou).
-
-Exemplos:
-```javascript
-
-// Adiciona um socket (Socket representa o cliente ou a conexão do cliente):
-this.io.on("connection", (socket) => {
-  socket.join("MinhaSala")
-});
-
-// Enviar mensagem para toda sala:
-this.io.to("some room").emit("some event")
-
-// Enviar mensagem para várias as salas:
-this.io.to("room1").to("room2").to("room3").emit("some event")
-
-// Enviar broadcast à partir da instancia socket:
-this.io.on("connection", (socket) => {
-  socket.to("some room").emit("some event");
-});
-
+{sucess: boolean, data: any}
 ```
 
-**Notas:**
-* Se o socket estiver em mais de uma sala, e for enviado mensagem para várias salas, socket só recebe mensagem 1 vez
+# Padrão de retorno e de erro
+
+Quando um evento manipulado no servidor encontra um erro, o retorno para o cliente segue um padrão estruturado que
+facilita o entendimento e tratamento do erro no lado do cliente. Até o momento os erros são classificados em dois tipos
+principais: `API_ERROR` e `GENERIC_ERROR`.
 
 
-## Namespace
-
-Implementação no node framework é focado em namespace:
-
-REf: https://socket.io/docs/v4/namespaces/
-
-Possiveis casos de uso:
-
-* Você deseja criar um namespace especial ao qual apenas usuários autorizados tenham acesso, para que a lógica
-  relacionada a esses usuários seja separada do restante do aplicativo
-
-Ex:
-```javascript
-
-this.namespace('/admin').use((socket, next) => {
-  // ensure the user has sufficient rights
-  next();
-});
-
-this.namespace('/admin', socket => {
-  socket.on('delete user', () => {
-    // ...
-  });
-});
-
-```
-
-* Seu aplicativo tem vários inquilinos, portanto, você deseja criar dinamicamente um namespace por inquilino
-
-Ex:
-```javascript
-
-this.namespace(/^\/\w+$/).on('connection', socket => {
-    const workspace = socket.nsp;
-
-    workspace.emit('hello');
-});
-```
-
-
-### Emitir um evento
-
-Em qualquer lugar no controller você pode chamar:
-
-```javascript
-    this.namespace('/my-namespace').emit('hi', 'everyone!')
-
- ```
-
-Onde o primeiro argumento é o nome do evento e os demais são atributos para ser enviado
-
-### No cliente:
-
-Para inicializar um namespace no cliente utilizar o caminho completo:
-
-```javascript
-  const socket = io("https://example.com"); // or io("https://example.com/"), the main namespace
-  const orderSocket = io("https://example.com/orders"); // the "orders" namespace
-  const userSocket = io("https://example.com/users"); // the "users" namespace
-```
-
-O restante é similar

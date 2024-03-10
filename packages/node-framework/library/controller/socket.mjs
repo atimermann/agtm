@@ -61,7 +61,7 @@
 import BaseController from './base-controller.mjs'
 import createLogger from '../logger.mjs'
 import ApiError from '../api/api-error.mjs'
-import Rooms from '../socket/rooms.mjs'
+import Room from '../socket/room.mjs'
 const logger = createLogger('SocketController')
 
 /**
@@ -299,7 +299,7 @@ export default class SocketController extends BaseController {
         callback({ success: true, data: response })
 
         if (event.type === 'MUTATE') {
-          Rooms.updateByController(this)
+          Room.updateByController(this)
         }
       }
     } catch (error) {

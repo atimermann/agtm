@@ -166,15 +166,16 @@ export function useSocket (endpoint) {
    * components that use the data. This method is particularly useful for data that
    * needs to stay up to date with the server state without requiring manual refresh requests.
    *
-   * @param  {string} eventName  - The name of the event to bind to.
-   * @param  {...any} args       - Additional arguments to pass along with the event.
+   * @param  {any}    initialValue  - Initial value
+   * @param  {string} eventName     - The name of the event to bind to.
+   * @param  {...any} args          - Additional arguments to pass along with the event.   *
    *
-   * @return {object}            - A Vue ref object containing the bound data, which is read-only.
+   * @return {object}               - A Vue ref object containing the bound data, which is read-only.
    */
-  clientSocket.bind = (eventName, ...args) => {
+  clientSocket.bind = (initialValue, eventName, ...args) => {
     const cacheKey = sha256(eventName + JSON.stringify(args))
 
-    bindCache[cacheKey] = ref([])
+    bindCache[cacheKey] = ref(initialValue)
 
     // Conecta no servidor
     console.log(`[SOCKET BIND] Emit: "${eventName}", "${cacheKey}"`, args)
@@ -184,7 +185,7 @@ export function useSocket (endpoint) {
     clientSocket.on('bindUpdated', response => {
       console.log('[Bind] Updated:', response)
       if (!response.success) {
-        console.error(`[Bind] Bind Update "${eventName} failed!`)
+        console.error(`[Bind] Bind Update "${eventName} failed! ${response.data}}`)
         // TODO: Avisar usuário (central de mensagem ou toast)
         return
       }
@@ -192,7 +193,7 @@ export function useSocket (endpoint) {
     })
 
     // Bind must be read only. It is only updated via the server
-    return readonly(bindCache[cacheKey])
+    return bindCache[cacheKey]
   }
 
   return {

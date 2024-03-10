@@ -16,6 +16,7 @@
 <script setup>
 
 import { ref, reactive } from '#imports'
+import { cloneDeep } from 'lodash-es'
 
 const props = defineProps({
   schema: {
@@ -46,7 +47,7 @@ const props = defineProps({
   }
 })
 
-const formValues = ref(props.values)
+const formValues = ref(cloneDeep(props.values))
 
 const data = reactive({
   ...props.handlers
@@ -75,7 +76,7 @@ function submit (values) {
     } else {
       // TODO: Criar classe para tratar erro do topo API **************
       alert('Erro de API') //                                         *
-      console.log(response.data) //                                   *
+      console.error(response) //                                      *
       // **************************************************************
     }
   })

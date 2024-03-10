@@ -15,13 +15,14 @@ desenvolvimento, minimizando a necessidade de configurações extensas.
 
 ## Props
 
-| Atributo    | Tipo   | padrão    | Descrição                                                                                 |
-|-------------|--------|-----------|-------------------------------------------------------------------------------------------|
-| idKey       | String | 'id'      | Identificador único dentro do CRUD. Utilizado como chave primária para operações de CRUD. |
-| label       | String | Undefined | Texto exibido para o usuário como rótulo do campo.                                        |
-| schema      | Array  | []        | Define a estrutura dos dados, configuração de colunas no CRUD e campos no formulário.     |
-| debug       | Bool   | false     | Exibe dados do crud para melhor depuração.                                                |
-| loadingGrid | Bool   | false     | Grid no modo carregamento (Aguardando dados do servidor)                                  |
+| Atributo    | Tipo   | padrão    | Descrição                                                                                      |
+|-------------|--------|-----------|------------------------------------------------------------------------------------------------|
+| idKey       | String | 'id'      | Identificador único dentro do CRUD. Utilizado como chave primária para operações de CRUD.      |
+| label       | String | Undefined | Texto exibido para o usuário como rótulo do campo.                                             |
+| schema      | Array  | []        | Define a estrutura dos dados, configuração de colunas no CRUD e campos no formulário.          |
+| debug       | Bool   | false     | Exibe dados do crud para melhor depuração.                                                     |
+| loadingGrid | Bool   | false     | Grid no modo carregamento (Aguardando dados do servidor)                                       |
+| autoUpdate  | Bool   | true      | Atualiza crud automaticamente após criar novo registros, sem aguardar atualização do servidor. |
 
 ## Schema
 

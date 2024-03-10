@@ -25,7 +25,7 @@ const props = defineProps({
 })
 
 if (!props.context.search) {
-  throw new Error('Serch props is required')
+  throw new Error('Search props is required')
 }
 
 const value = ref(props.context._value)

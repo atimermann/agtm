@@ -1,5 +1,8 @@
 <template>
-  <DataTable :value="model" :loading>
+  <DataTable
+    :value="model"
+    :loading="loading || model === null"
+  >
     <Column
       v-for="col of schema"
       :key="col.idKey"
@@ -51,7 +54,7 @@ defineProps({
 
 defineEmits(['edit', 'delete'])
 
-const model = defineModel({ required: true, type: Array })
+const model = defineModel({ required: true, type: [Array, null] })
 
 </script>
 

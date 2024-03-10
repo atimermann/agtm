@@ -33,6 +33,7 @@
     <NfCrudLayoutDefaultForm
       :values="formValues"
       :schema="formSchema"
+      :handlers="handlers.form"
       :debug
       @submit="onSubmit"
       @submitted="onSubmitted"
@@ -79,8 +80,6 @@
 ------------------------------------------------------------------------------------------------------------------------
 <script setup>
 
-import { cloneDeep } from 'lodash-es'
-
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import Toast from 'primevue/toast'
@@ -90,6 +89,7 @@ import { computed, ref } from '#imports'
 import ConfirmDialog from 'primevue/confirmdialog'
 import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
+import { cloneDeep } from 'lodash-es'
 //
 
 // ------------------------------------------------
@@ -128,7 +128,12 @@ const props = defineProps({
    */
   handlers: {
     type: Object,
-    default: () => {}
+    default: () => {
+      return {
+        form: {},
+        grid: {}
+      }
+    }
   },
   /**
    * Debug mode, displays more information
@@ -143,10 +148,18 @@ const props = defineProps({
   loadingGrid: {
     type: Boolean,
     default: false
+  },
+
+  /**
+   * Automatically updates crud when creating new record.
+   */
+  autoUpdate: {
+    type: Boolean,
+    default: true
   }
 })
 
-const model = defineModel({ required: true, type: Array })
+const model = defineModel({ required: true, type: [Array, null] })
 
 const emit = defineEmits(['submit', 'submitted', 'delete', 'deleted'])
 
@@ -232,14 +245,16 @@ function onSubmit (values, callback) {
 }
 
 function onSubmitted (newData, values) {
-  if (newData) {
-    model.value.push(values)
-  } else {
-    const index = model.value.findIndex(item => item.id === values.id)
-    if (index !== -1) {
-      model.value[index] = values
+  if (props.autoUpdate) {
+    if (newData) {
+      model.value.push(values)
     } else {
-      throw new Error(`Item with id ${values.id} not found.`)
+      const index = model.value.findIndex(item => item.id === values.id)
+      if (index !== -1) {
+        model.value[index] = values
+      } else {
+        throw new Error(`Item with id ${values.id} not found.`)
+      }
     }
   }
   closeForm()
@@ -263,7 +278,7 @@ function onDelete (id) {
     if (err) {
       console.log(err.stack)
     }
-    if (response.success === true) {
+    if (props.autoUpdate) {
       if (response.success === true) {
         const index = model.value.findIndex(item => item.id === id)
 

@@ -6,9 +6,9 @@
 * Formatação coluna, implementar tipos de coluna
 
 ## Prioridade Alta
- 
+
 * Debug deve ser automatica global e não passado por props
-* Documentar o ciclo de  vida de um crud, desde o inicio até tratamento de erro
+* Documentar o ciclo de vida de um crud, desde o inicio até tratamento de erro
 * Criar tratamento para tipos de erros do back no form e grid:
   * GENERIC_ERROR
   * API_ERROR
@@ -17,31 +17,51 @@
 * Verificar porque o layout do formkit não carrega em produção
   * Está carregando url inválida do CDN, bug, carregar proprio CSS (definir)
 * Implementar e documentar Toast padrão no layer
-* Implementar e documentar confirm dialog padrão no layer 
+* Implementar e documentar confirm dialog padrão no layer
 * Tratament servidor => cliente, padronizar formato erro atualmente {success: bool, data: info }
   * Modo produção não pode dar detalhes do erro, definor no servidor
-  * Definir padrão de validação no backend, atualmente só gera erro na consulta, deve tratar por exemplo se id não foi enviado* 
+  * Definir padrão de validação no backend, atualmente só gera erro na consulta, deve tratar por exemplo se id não foi
+    enviado*
 * Implementar validação Servidor
 * Tratar delays do formulário, como habilitar botão apenas quando tiver carregado
 * Dialogo modal
 
 ## Prioridade Baixa
 
+* **UseSocket bind:**
+  * Não vamo utilizar readonly e ao salvar/atualizar dados já atualiza os dados localmente
+  * bindUpdate deve poder funcionar por registro e/ou ignorar bindUpdate quando este clienet q fez a atualização,
+    receber apenas o registro alterado com novo id ou formatado
+    * Baseado sempre no id/propriedade (ex: atualizar o registro id 40 propriedade status)
+  * Modo offline one os novos registros ficam pendente
+    * Salvar no localStorage, para longa duração e pode ser cancelado
+    * Deve tratar validação por servidor posteriormente
+    * Modo não confirmado em vermelho ou uma cor especial indicando q não está confirmado
+  * Modo "fastest", similar ao offline, não aguarda confirmação do servidor, atualiza localmente envia pro servidor mais
+    tarde
+    * Pode ser configurado
+  * Criar um tempo minimo de atualização. ex: a cada 10 segundos para não sobrecarregar servidor/cliente (Parametrizável
+    por crud pois depende do caso)
+
+
 * Revisar layout input do primeface não está ficando correto no formkit
 * Seleção e remoção em lote
 * Implementar pré-load no autocomplete, pelo menos pro select inicial padrão
-  * Carregar no cache inicial  
+  * Carregar no cache inicial
 * Atualização em tempo real, se outro usuario adicionar um novo registro atualiza em todo os clientes conectado
-  * Necessario tratar casos de multi-replicas, as diferentes replicas devem se conectar através de um redis(recomendável)
+  * Necessario tratar casos de multi-replicas, as diferentes replicas devem se conectar através de um redis(
+    recomendável)
 * Criar mais um objeto options ṕara configurações globais do crud como por exemplo algum titulo etc...
-* Configuravel e configuração salva no localStorage como tamanho 
-* Necessário ter 2 modos: full, ou por demanda (lazy), quando for por demanda não carrega todos os daods do servidor, muda
+* Configuravel e configuração salva no localStorage como tamanho
+* Necessário ter 2 modos: full, ou por demanda (lazy), quando for por demanda não carrega todos os daods do servidor,
+  muda
   comportamentos, mais acessos ao servidor é necessário, ex: ao submeter não adiciona automaticamente, exige nova
   consulta, pois demende de paginação ordenação do servidor
   * Vamos criar dois layouts searado, um para cada, pois muda muita coisa
   * vamos reaproveitar componente do defalt
-  * Recomendar na aplicação do usuario verificar a quantidade de registros se for mais que 10000 por exemplo carrega outro layout 
-* Loading e mensagem nenhum registro 
+  * Recomendar na aplicação do usuario verificar a quantidade de registros se for mais que 10000 por exemplo carrega
+    outro layout
+* Loading e mensagem nenhum registro
   * https://primevue.org/button/#loading
 * possibilidade de acessar diretamente formulário com uma rota
 * Exportação
@@ -57,9 +77,9 @@
   * Servidor pode enviar atualização pontual e o grid se atualiza
   * Modo form ao vivo tb
     * Avisa quando dados foram alterados
-    * coloca novo valor em volta, 
+    * coloca novo valor em volta,
     * ou pede confirmnação para sobrescrever e mostra oq mudou
-* Campos em tempo real como gráficos temporizador, 
+* Campos em tempo real como gráficos temporizador,
   * Util em relatório de servidor
 * Configurável em tempo real
 

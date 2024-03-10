@@ -144,7 +144,7 @@ o estado do servidor sem requerer solicitações de atualização manual.
 
   const {clientSocket} = useSocket('/inventory')
 
-  const bindData = clientSocket.bind('productCategory:findByName', {find: '', limit: 19})
+  const bindData = clientSocket.bind([], 'productCategory:findByName', {find: '', limit: 19})
 
 </script>
 ```

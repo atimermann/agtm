@@ -21,7 +21,7 @@ describe('Socket Server', () => {
     process.env.SOCKET_PORT = '4001'
 
     // import the server dinamicamente
-    SocketServer = (await import('../library/socket-server.mjs')).default
+    SocketServer = (await import('../library/socket/socket-server.mjs')).default
 
     // start server
     SocketServer.run()

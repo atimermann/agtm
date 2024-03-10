@@ -10,7 +10,7 @@
 
 import Application from './application.mjs'
 import HttpServer from './http-server.mjs'
-import SocketServer from './socket-server.mjs'
+import SocketServer from './socket/socket-server.mjs'
 
 import JobManager from './jobs/job-manager.mjs'
 import WorkerRunner from './jobs/worker-runner.mjs'

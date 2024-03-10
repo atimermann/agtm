@@ -39,7 +39,7 @@ export default class SocketIoTransport extends Transport {
     que poderia levar a um comportamento indefinido ou erros de tempo de execução.
     */
     if (!SocketServer) {
-      SocketServer = (await import('../socket-server.mjs')).default
+      SocketServer = (await import('../socket/socket-server.mjs')).default
     }
 
     if (!SocketServer.io) {

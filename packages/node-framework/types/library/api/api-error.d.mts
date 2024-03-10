@@ -18,8 +18,29 @@ export default class ApiError extends Error {
      * @param {number|string} [code]   - The error code.
      */
     constructor(type: string, inner?: object[], message?: string, code?: number | string);
+    /**
+     * Meta.
+     *
+     * @type {string}
+     */
+    meta: string;
+    /**
+     * Type of error
+     *
+     * @type {string}
+     */
     type: string;
-    inner: object[];
+    /**
+     * Error code.
+     *
+     * @type {string|number}
+     */
     code: string | number;
+    /**
+     * Internal errors.
+     *
+     * @type {[]}
+     */
+    inner: [];
 }
 //# sourceMappingURL=api-error.d.mts.map

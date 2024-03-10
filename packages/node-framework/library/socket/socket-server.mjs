@@ -13,8 +13,8 @@
  *
  *
  * Todas as opções disponivel para serem analisada e implentada: https://socket.io/docs/v4/server-options/
- * @typedef {import('./application.mjs').default} Application
- * @typedef {import('./controller/socket.mjs').default} SocketController - The controller for handling socket-related actions.
+ * @typedef {import('../application.mjs').default} Application
+ * @typedef {import('../controller/socket.mjs').default} SocketController
  *
  * @typedef {object} SocketConfigOptions
  * Represents the configuration options for a socket connection. This object includes
@@ -44,10 +44,11 @@ import { readFileSync } from 'node:fs'
 import { createServer as createHttpsServer } from 'node:https'
 import { createSecureServer } from 'node:http2'
 import { Server } from 'socket.io'
-import Config from './config.mjs'
+import Config from '../config.mjs'
 import chalk from 'chalk'
 
-import createLogger from './logger.mjs'
+import createLogger from '../logger.mjs'
+import Rooms from './rooms.mjs'
 const logger = createLogger('Socket')
 
 /**
@@ -88,6 +89,13 @@ export default class SocketServer {
    * @type {import("socket.io").Server}
    */
   static io
+
+  /**
+   * List of controllers by Namespace
+   *
+   * @type {Map<string, SocketController[]>}
+   */
+  static controllersByNamespace = new Map()
 
   /**
    * Runs the Socket Server based on the configuration mode.
@@ -149,6 +157,8 @@ export default class SocketServer {
 
     await this.#loadApplications(application)
 
+    await this.#loadBind()
+
     logger.info('Socket Server started.')
   }
 
@@ -174,10 +184,18 @@ export default class SocketServer {
     for (const controller of application.getControllers('socket')) {
       logger.debug(`Loading application: "${controller.controllerName}"`)
 
+      const namespaceName = controller.namespace
+
       controller.io = this.io
 
       // Load namespace in nsp
-      controller.nsp = this.io.of(controller.namespace)
+      controller.nsp = this.io.of(namespaceName)
+
+      // Indexes controller by namespace
+      if (!this.controllersByNamespace.has(namespaceName)) {
+        this.controllersByNamespace.set(namespaceName, [])
+      }
+      this.controllersByNamespace.get(namespaceName).push(controller)
 
       await this.#runSetup(controller)
 
@@ -186,6 +204,43 @@ export default class SocketServer {
         await controller.newConnection(socket)
       })
     }
+  }
+
+  /**
+   * Configures universal Bind for dynamic communication across clients. This method sets up the server
+   * to respond to 'bind' events emitted by clients, thus establishing a dynamically updatable event-based
+   * communication. This allows for efficient data synchronization between the server and connected clients,
+   * particularly useful for real-time applications.
+   *
+   * @return {Promise<void>} A promise that resolves once the bind setup is complete.
+   */
+  static async #loadBind () {
+    this.controllersByNamespace.forEach((controllers, namespace) => {
+      const nsp = this.io.of(namespace)
+
+      nsp.on('connection', async socket => {
+        this.#initBind(socket, controllers, nsp)
+      })
+    })
+  }
+
+  /**
+   * Initializes the bind process for a specific socket connection. This function is called when
+   * a 'bind' event is received from a client. It registers the client to a specific room based
+   * on the eventName and additional arguments provided. This setup enables the server to push updates
+   * to clients proactively whenever the relevant data changes, ensuring the client always has the
+   * most up-to-date information.
+   *
+   * @param {import("socket.io").Socket}    socket       - The socket instance for the connection.
+   * @param {SocketController[]}            controllers  - The list of controllers associated with the namespace.
+   * @param {import("socket.io").Namespace} nsp          - The Namespace associated with the current connection.
+   */
+  static #initBind (socket, controllers, nsp) {
+    socket.on('bind', (eventName, ...args) => {
+      logger.debug(`New bind from client: Event: ${eventName}`)
+      const room = Rooms.createIfNotExist(eventName, args, controllers, nsp)
+      room.join(socket)
+    })
   }
 
   /**
@@ -288,7 +343,7 @@ export default class SocketServer {
    */
   static #getOptions () {
     // TODO: Deve retornar node_modules/socket.io/dist/index.d.ts: ServerOptions  VALIDAR
-    //  Separar otions usado pelo new Server do usado pra configurar o SocketServer
+    //  Separar options usado pelo new Server do usado pra configurar o SocketServer
     return {
       ...Config.get('socket.options'),
       cors: Config.get('socket.cors'),

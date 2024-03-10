@@ -11,6 +11,34 @@
  */
 export default class ApiError extends Error {
   /**
+   * Meta.
+   *
+   * @type {string}
+   */
+  meta = ''
+
+  /**
+   * Type of error
+   *
+   * @type {string}
+   */
+  type
+
+  /**
+   * Error code.
+   *
+   * @type {string|number}
+   */
+  code
+
+  /**
+   * Internal errors.
+   *
+   * @type {[]}
+   */
+  inner
+
+  /**
    * Creates an instance of ApiError.
    *
    * @param {string}        type     - The type of error.

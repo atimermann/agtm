@@ -29,7 +29,7 @@ import { createServer } from 'node:http'
 
 import cors from 'cors'
 import Config from './config.mjs'
-import SocketServer from './socket-server.mjs'
+import SocketServer from './socket/socket-server.mjs'
 import fs from 'node:fs'
 
 import createLogger from './logger.mjs'

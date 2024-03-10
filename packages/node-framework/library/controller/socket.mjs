@@ -15,6 +15,8 @@
  * A callback function to handle socket events.
  * @param    {any}                       data     The data received from the client.
  * @return   {Promise<CallbackResponse>}          A promise that resolves to a CallbackResponse object.
+ *
+ * @typedef {import("socket.io").Socket} Socket
  */
 /**
  * The type of the socket event.
@@ -199,7 +201,7 @@ export default class SocketController extends BaseController {
     for (const event of this.events) {
       logger.debug(`Registering event "${event.path}" for socket "${socket.id}"`)
       socket.on(event.path, async (...args) => {
-        await this.#callEvent(event, args)
+        await this.#callEvent(socket, event, args)
       })
     }
   }
@@ -234,19 +236,21 @@ export default class SocketController extends BaseController {
       throw new Error(`Event "${eventName}" does not exist.`)
     }
 
-    return this.triggerEvent(eventName, ...args)
+    // Get Event never emit update events socket = null
+    return this.triggerEvent(null, eventName, ...args)
   }
 
   /**
    * Triggers an event by its name with the provided arguments. If the event does not exist,
    * it rejects the promise with an error. Otherwise, it resolves with the response from the event's callback function.
    *
+   * @param  {Socket|null}  socket     - Socket.io  Socket. Only mutateEvent use socket here to emit update event
    * @param  {string}       eventName  - The name of the event to trigger.
    * @param  {...any}       args       - The arguments to pass to the event's callback function.
    * @return {Promise<any>}            - A promise that resolves with the callback response of the triggered event.
    * @throws {Error} - If the event does not exist.
    */
-  async triggerEvent (eventName, ...args) {
+  async triggerEvent (socket, eventName, ...args) {
     return new Promise((resolve, reject) => {
       if (!this.indexedEvents[eventName]) {
         reject(new Error(`Event "${eventName}" does not exist in this controller. Available events: ${Object.keys(this.indexedEvents).join(', ')}`))
@@ -266,8 +270,7 @@ export default class SocketController extends BaseController {
 
       try {
         const socketEvent = this.indexedEvents[eventName]
-
-        this.#callEvent(socketEvent, [...args, callback])
+        this.#callEvent(socket, socketEvent, [...args, callback])
       } catch (e) {
         reject(e)
       }
@@ -279,10 +282,11 @@ export default class SocketController extends BaseController {
    * If the callback is not a function, or no response is expected (and received), it logs an error.
    * In case of exceptions, logs or returns an error response depending on the presence of a callback.
    *
-   * @param {SocketEvent} event  - The event object containing the path and callback function.
-   * @param {Array<any>}  args   - The arguments to pass to the event's callback function, including the callback function itself as the last argument.
+   * @param {Socket|null} socket  - Socket.io  Socket
+   * @param {SocketEvent} event   - The event object containing the path and callback function.
+   * @param {Array<any>}  args    - The arguments to pass to the event's callback function, including the callback function itself as the last argument.
    */
-  async #callEvent (event, args) {
+  async #callEvent (socket, event, args) {
     let callback = args[args.length - 1]
     if (typeof callback !== 'function') callback = undefined
     const dataArgs = callback ? args.slice(0, -1) : args
@@ -299,7 +303,7 @@ export default class SocketController extends BaseController {
         callback({ success: true, data: response })
 
         if (event.type === 'MUTATE') {
-          Room.updateByController(this)
+          Room.updateByController(this, socket)
         }
       }
     } catch (error) {

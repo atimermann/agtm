@@ -84,7 +84,7 @@ export default class Room {
    * @param  {SocketController[]} socketControllers  - A list of socket controllers associated with this room.
    * @param  {Namespace}          nsp                - The Socket.io Namespace associated with this room.
    *
-   * @return {Room}                                 The newly created or existing room.
+   * @return {Room}                                  The newly created or existing room.
    *
    * @static
    */
@@ -115,12 +115,15 @@ export default class Room {
    * socket controller and triggering an update for those rooms.
    *
    * @param {SocketController} socketController  - The socket controller to use as a filter for updating rooms.
+   * @param {Socket|null}      socket            - If null, send event through this socket (The broadcast
+   *                                             method ensures that the message will be sent to all connected clients
+   *                                             except the socket that initiated the sending).
    */
-  static updateByController (socketController) {
+  static updateByController (socketController, socket = null) {
     for (const room of this.rooms.values()) {
       if (room.socketControllers.includes(socketController)) {
         // Update Room
-        room.update().catch(error => console.error(`Error updating room: ${error}`))
+        room.update(socket).catch(error => console.error(`Error updating room: ${error}`))
       }
     }
   }
@@ -161,9 +164,17 @@ export default class Room {
   /**
    * Updates the data for this room, caching the result, and emitting an update event to all sockets in the room.
    * If the room has no connected sockets, it clears the cached data and aborts the update.
+   *
+   * @param {Socket|null} socket  - If null, send event through this socket (The broadcast
+   *                              method ensures that the message will be sent to all connected clients
+   *                              except the socket that initiated the sending).
    */
-  async update () {
-    const room = this.nsp.to(this.name)
+  async update (socket = null) {
+    const socketRoom = socket
+      ? socket.to(this.name)
+      : this.nsp.to(this.name)
+
+    if (socket) logger.debug(`Update room by "${socket.id}"`)
 
     try {
       const socketCount = (await this.nsp.in(this.name).fetchSockets()).length
@@ -172,7 +183,7 @@ export default class Room {
         logger.debug(`Update room "${this.name}"`)
 
         this.cacheData = response
-        room.emit('bindUpdated', response)
+        socketRoom.emit('bindUpdated', response)
       } else {
         this.cacheData = undefined
         logger.info(`Room ${socketCount} is empty. Update aborted and clean cache! `)
@@ -180,7 +191,7 @@ export default class Room {
 
       this.showRoomsInfo().catch(e => logger.error(e))
     } catch (e) {
-      room.emit('bindUpdated', { success: false, data: e.message })
+      socketRoom.emit('bindUpdated', { success: false, data: e.message })
     }
   }
 

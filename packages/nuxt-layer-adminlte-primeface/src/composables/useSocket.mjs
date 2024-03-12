@@ -15,11 +15,9 @@
  */
 
 import { io as Client } from 'socket.io-client'
-import * as sha256Lib from 'js-sha256'
+import jsSHA from 'jssha'
 import prettyBytes from 'pretty-bytes'
 import { watch, ref, useRuntimeConfig } from '#imports'
-
-const sha256 = sha256Lib.sha256
 
 /**
  * Cache for storing active socket connections
@@ -172,7 +170,7 @@ function getClientSocket (endpoint, ENDPOINT_URL) {
    * @return {Promise<any>}            A promise that resolves with the server's response.
    */
   clientSocket.get = async (eventName, ...args) => {
-    const cacheKey = sha256(eventName + JSON.stringify(args))
+    const cacheKey = createHash(eventName + JSON.stringify(args))
 
     if (!requestCache[cacheKey]) {
       console.log(`[SOCKET]: Request "${eventName}" key "${cacheKey}" not found in cache. Requesting...`)
@@ -206,7 +204,7 @@ function getClientSocket (endpoint, ENDPOINT_URL) {
    *                                      including success status, cache size, and more.
    */
   clientSocket.cache = async (options = {}, eventName, ...args) => {
-    const cacheKey = sha256(eventName + JSON.stringify(args))
+    const cacheKey = createHash(eventName + JSON.stringify(args))
     console.log(`[SOCKET]: Pre-caching "${eventName}" key "${cacheKey}" ...`)
 
     let response
@@ -248,7 +246,7 @@ function getClientSocket (endpoint, ENDPOINT_URL) {
    * @return {object}               - A Vue ref object containing the bound data, which is read-only.
    */
   clientSocket.bind = (initialValue, eventName, ...args) => {
-    const cacheKey = sha256(eventName + JSON.stringify(args))
+    const cacheKey = createHash(eventName + JSON.stringify(args))
 
     // If the bind has already been done, it only returns reference
     if (bindCache[cacheKey] !== undefined) {
@@ -294,7 +292,7 @@ function getClientSocket (endpoint, ENDPOINT_URL) {
 
     return new Promise((resolve, reject) => {
       console.log(`[SOCKET BIND] WaitBind: "${eventName}"...`)
-      const cacheKey = sha256(eventName + JSON.stringify(args))
+      const cacheKey = createHash(eventName + JSON.stringify(args))
       const bindValue = clientSocket.bind(notLoaded, eventName, ...args)
 
       if (bindValue.value !== notLoaded) {
@@ -328,6 +326,23 @@ function getClientSocket (endpoint, ENDPOINT_URL) {
 // ---------------------------------------------------------------------------------------------------------------------
 // PRIVATE
 // ---------------------------------------------------------------------------------------------------------------------
+
+/**
+ * Generates a SHA-1 hash of an input string.
+ *
+ * This function creates a jsSHA object, sets it up to use the SHA-1 algorithm
+ * with text inputs, then generates the hash of the provided input string.
+ * The result is returned as a hexadecimal string.
+ *
+ * @param  {string} input  - The input string for which the SHA-1 hash will be generated.
+ * @return {string}        The SHA-1 hash of the input, represented as a hexadecimal string.
+ */
+function createHash (input) {
+  // eslint-disable-next-line new-cap
+  const shaObj = new jsSHA('SHA-1', 'TEXT')
+  shaObj.update(input)
+  return shaObj.getHash('HEX')
+}
 
 /**
  * Handles socket connection events and packet logging.

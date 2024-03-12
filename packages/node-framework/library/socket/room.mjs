@@ -158,7 +158,7 @@ export default class Room {
     // Sends cached data to the client on the first connection
     this.cacheData === undefined
       ? this.update().catch(e => logger.error(e))
-      : socket.emit('bindUpdated', this.cacheData)
+      : socket.emit('bindUpdated', this.name, this.cacheData)
   }
 
   /**
@@ -183,7 +183,7 @@ export default class Room {
         logger.debug(`Update room "${this.name}"`)
 
         this.cacheData = response
-        socketRoom.emit('bindUpdated', response)
+        socketRoom.emit('bindUpdated', this.name, response)
       } else {
         this.cacheData = undefined
         logger.info(`Room ${socketCount} is empty. Update aborted and clean cache! `)
@@ -191,7 +191,7 @@ export default class Room {
 
       this.showRoomsInfo().catch(e => logger.error(e))
     } catch (e) {
-      socketRoom.emit('bindUpdated', { success: false, data: e.message })
+      socketRoom.emit('bindUpdated', this.name, { success: false, data: e.message })
     }
   }
 

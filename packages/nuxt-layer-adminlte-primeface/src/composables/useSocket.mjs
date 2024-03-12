@@ -15,7 +15,7 @@
  */
 
 import { io as Client } from 'socket.io-client'
-import sha256 from 'js-sha256'
+import { sha256 } from 'js-sha256'
 import prettyBytes from 'pretty-bytes'
 import { watch, ref, useRuntimeConfig } from '#imports'
 

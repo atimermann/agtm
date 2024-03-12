@@ -51,6 +51,8 @@ export function useSocket (endpoint) {
     config = useRuntimeConfig()
     serverHost = config.public.admin.socket.host
     socketTimeout = config.public.admin.socket.timeout
+
+    if (!serverHost) throw new Error('Config "NUXT_PUBLIC_ADMIN_SOCKET_HOST" is not defined!')
   }
 
   const endpointUrl = `${serverHost}${endpoint}`

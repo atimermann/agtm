@@ -15,7 +15,7 @@
 
 <script setup>
 
-import { ref, reactive } from '#imports'
+import { onMounted, ref, reactive } from '#imports'
 import { cloneDeep } from 'lodash-es'
 
 const props = defineProps({
@@ -38,6 +38,11 @@ const props = defineProps({
     default: () => {
     }
   },
+
+  formLoad: {
+    type: Function,
+    default: null
+  },
   /**
    * Debug mode, displays more information
    */
@@ -46,14 +51,19 @@ const props = defineProps({
     default: false
   }
 })
+const emit = defineEmits(['submit', 'submitted'])
 
-const formValues = ref(cloneDeep(props.values))
+const formValues = ref({})
+
+onMounted(async () => {
+  formValues.value = (props.values && props.formLoad)
+    ? await props.formLoad(cloneDeep(props.values))
+    : cloneDeep(props.values)
+})
 
 const data = reactive({
   ...props.handlers
 })
-
-const emit = defineEmits(['submit', 'submitted'])
 
 // TODO: implementar modo para two-way data bind usar model em vez de value
 // const model = defineModel({ type: Object })

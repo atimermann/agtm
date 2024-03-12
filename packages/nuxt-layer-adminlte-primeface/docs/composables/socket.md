@@ -80,7 +80,7 @@ os dados não tenham sido solicitados ainda. Útil para dados que serão necess�
     v-model="data"
     id-key="id"
     :schema="schema"
-    :handlers  
+    :handlers
   />
 
 </template>
@@ -146,5 +146,44 @@ o estado do servidor sem requerer solicitações de atualização manual.
 
   const bindData = clientSocket.bind([], 'productCategory:findByName', {find: '', limit: 19})
 
+</script>
+```
+
+### `bindWait`
+
+Registra uma vinculação do lado do cliente a um evento específico do servidor e armazena a resposta em cache, assim como
+bind. Porém em vez de retornar um valor reativo direto para ser populado posteriormente, aguarda a primeira atualização
+do servidor.
+
+Este método é útil para esperar que dados sejam carregados ou atualizados a partir do servidor antes de prosseguir com a
+lógica dependente desses dados no lado do cliente.
+
+#### Parâmetros
+
+**TTL (Time To Live):** O primeiro argumento, se for um número inteiro, especifica o tempo máximo em milissegundos que a
+função deve esperar pela vinculação do evento antes de rejeitar a promessa. Padrão é 30000(30 segundos)
+
+**eventName:** Nome do evento a ser vinculado.
+
+**args:** Argumentos adicionais que devem ser passados com o evento.
+
+**Exemplo:**
+
+```vue
+<template>
+  <pre>{{ bindData }}</pre>
+</template>
+
+<script setup>
+  import {ref, onMounted} from 'vue';
+  import {useSocket} from '#imports';
+
+  const {clientSocket} = useSocket('/path-do-seu-endpoint');
+
+  const bindData = ref([]);
+
+  onMounted(async () => {
+    bindData.value = await clientSocket.bindWait(5000, 'eventoDoServidor', {seus: 'dados'});
+  })
 </script>
 ```

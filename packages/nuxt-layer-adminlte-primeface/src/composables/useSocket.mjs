@@ -17,7 +17,7 @@
 import { io as Client } from 'socket.io-client'
 import sha256 from 'js-sha256'
 import prettyBytes from 'pretty-bytes'
-import { ref, useRuntimeConfig } from '#imports'
+import { watch, ref, useRuntimeConfig } from '#imports'
 
 /**
  * Cache for storing active socket connections
@@ -25,10 +25,19 @@ import { ref, useRuntimeConfig } from '#imports'
  * @type {{}}
  */
 const connectionsCache = {}
-
 const requestCache = {}
-
 const bindCache = {}
+let initialized = false
+let config
+let serverHost
+let socketTimeout
+
+/**
+ * Represents the meaning of an unbound state
+ *
+ * @type {symbol}
+ */
+const notLoaded = Symbol('notLoaded')
 
 /**
  * Creates or retrieves a cached socket connection for a specific endpoint.
@@ -37,15 +46,79 @@ const bindCache = {}
  * @return {{clientSocket: object}}           - An object containing the socket client instance.
  */
 export function useSocket (endpoint) {
-  const config = useRuntimeConfig()
-  const serverHost = config.public.admin.socket.host
-  const socketTimeout = config.public.admin.socket.timeout
+  if (!initialized) {
+    initialized = true
+    config = useRuntimeConfig()
+    serverHost = config.public.admin.socket.host
+    socketTimeout = config.public.admin.socket.timeout
+  }
 
   const endpointUrl = `${serverHost}${endpoint}`
 
-  const clientSocket = getCachedOrNewConnection(endpoint, endpointUrl)
+  return {
+    clientSocket: getClientSocket(endpoint, endpointUrl)
+  }
+}
+// ---------------------------------------------------------------------------------------------------------------------
+// SOCKET CONFIGURATION
+// ---------------------------------------------------------------------------------------------------------------------
 
+/**
+ * Retrieves an existing socket connection from cache or establishes a new one.
+ *
+ * This function checks if a socket connection for a given endpoint already exists in the cache.
+ * If so, it returns the cached connection. Otherwise, it creates a new socket connection,
+ * stores it in the cache, and then returns the new connection.
+ *
+ * @param  {string} endpoint      - The endpoint URL path to connect to or check in the cache.
+ * @param  {string} ENDPOINT_URL  - The full URL to connect to.
+ * @return {object}               The socket client instance for the given endpoint.
+ */
+function getClientSocket (endpoint, ENDPOINT_URL) {
+  if (connectionsCache[endpoint]) {
+    console.log(`[SOCKET] Get socket ${ENDPOINT_URL} from cache...`)
+    return connectionsCache[endpoint]
+  }
+
+  console.log(`[SOCKET] Configuring new socket for "${ENDPOINT_URL}"...`)
+  const clientSocket = Client(ENDPOINT_URL)
+  connectionsCache[endpoint] = clientSocket
+
+  console.log(`[Bind]: Creating listeners for "${endpoint}"...`)
   clientSocket.on('connect', () => handleSocketConnection(clientSocket, endpoint))
+  /**
+   * Listener for 'bindUpdated' events emitted by the server. This function updates
+   * the local bind cache with the latest data received from the server. It ensures
+   * data consistency by updating only existing cache entries, and logs errors if
+   * the update operation is unsuccessful or if the cache entry is missing.
+   *
+   * This approach consolidates event handling for 'bindUpdated' events into a single
+   * listener, addressing potential memory leaks and improving scalability by preventing
+   * the registration of multiple listeners for each bind operation. It contributes to
+   * a more maintainable and efficient real-time data binding mechanism.
+   *
+   * @param {string} cacheKey  - The cache key associated with the bind operation, used
+   *                           to identify the specific cache entry to update.
+   * @param {object} response  - The response object from the server containing the update
+   *                           data and success status. Expected to have 'success' and 'data'
+   *                           properties, where 'success' is a boolean indicating the
+   *                           success of the bind update operation, and 'data' contains
+   *                           the updated value.
+   */
+  clientSocket.on('bindUpdated', (cacheKey, response) => {
+    console.log(`[Bind] Updated "${cacheKey}":`, response)
+    if (!response.success) {
+      console.error(`[Bind] Bind Update "${cacheKey} failed! ${response.data}}`)
+      // TODO: Avisar usuário (central de mensagem ou toast)
+      return
+    }
+    if (bindCache[cacheKey] === undefined) {
+      throw new Error(`Bind cache "${cacheKey}" does not exist`)
+    }
+
+    bindCache[cacheKey].value = response.data
+    logCacheInfo()
+  })
 
   /**
    * Emits a message and waits for a response. If the socket is not connected,
@@ -168,7 +241,7 @@ export function useSocket (endpoint) {
    *
    * @param  {any}    initialValue  - Initial value
    * @param  {string} eventName     - The name of the event to bind to.
-   * @param  {...any} args          - Additional arguments to pass along with the event.   *
+   * @param  {...any} args          - Additional arguments to pass along with the event.
    *
    * @return {object}               - A Vue ref object containing the bound data, which is read-only.
    */
@@ -176,7 +249,7 @@ export function useSocket (endpoint) {
     const cacheKey = sha256(eventName + JSON.stringify(args))
 
     // If the bind has already been done, it only returns reference
-    if (bindCache[cacheKey]) {
+    if (bindCache[cacheKey] !== undefined) {
       logCacheInfo()
       return bindCache[cacheKey]
     }
@@ -187,53 +260,72 @@ export function useSocket (endpoint) {
     console.log(`[SOCKET BIND] Emit: "${eventName}", "${cacheKey}"`, args)
     clientSocket.emit('bind', eventName, ...args)
 
-    // Aguarda atualizações
-    clientSocket.on('bindUpdated', response => {
-      console.log('[Bind] Updated:', response)
-      if (!response.success) {
-        console.error(`[Bind] Bind Update "${eventName} failed! ${response.data}}`)
-        // TODO: Avisar usuário (central de mensagem ou toast)
-        return
-      }
-      bindCache[cacheKey].value = response.data
-      logCacheInfo()
-    })
-
-    // Bind must be read only. It is only updated via the server
     logCacheInfo()
     return bindCache[cacheKey]
   }
 
-  return {
-    clientSocket
-  }
-}
-// ---------------------------------------------------------------------------------------------------------------------
-// PRIVATE
-// ---------------------------------------------------------------------------------------------------------------------
-/**
- * Retrieves an existing socket connection from cache or establishes a new one.
- *
- * This function checks if a socket connection for a given endpoint already exists in the cache.
- * If so, it returns the cached connection. Otherwise, it creates a new socket connection,
- * stores it in the cache, and then returns the new connection.
- *
- * @param  {string} endpoint      - The endpoint URL path to connect to or check in the cache.
- * @param  {string} ENDPOINT_URL  - The full URL to connect to.
- * @return {object}               The socket client instance for the given endpoint.
- */
-function getCachedOrNewConnection (endpoint, ENDPOINT_URL) {
-  if (connectionsCache[endpoint]) {
-    console.log(`[SOCKET] Get socket ${ENDPOINT_URL} from cache...`)
-    return connectionsCache[endpoint]
-  }
+  /**
+   * Waits for a specific event to be bound and resolves with the bound value.
+   * If the first argument is an integer, it is used as the TTL (time to live) for the operation,
+   * and the event name is then expected as the second argument, followed by any additional arguments.
+   * If the first argument is a string, a default TTL of 30000 milliseconds is used,
+   * with the first argument as the event name and any subsequent arguments passed through.
+   *
+   * @param  {number|string} firstArg  - The TTL (time to live) in milliseconds if an integer,
+   *                                   or the event name if a string.
+   * @param  {...any}        args      - The event name (if firstArg is TTL) followed by arguments for the event.
+   * @return {Promise<any>}            A promise that resolves with the event bind value or
+   *                                   rejects in case of timeout or errors.
+   */
+  clientSocket.bindWait = (firstArg, ...args) => {
+    let ttl, eventName
 
-  console.log(`[SOCKET] Connecting to server ${ENDPOINT_URL}...`)
-  const clientSocket = Client(ENDPOINT_URL)
-  connectionsCache[endpoint] = clientSocket
+    if (typeof firstArg === 'number') {
+      ttl = firstArg
+      eventName = args.shift() // Removes and returns the first element as eventName
+    } else if (typeof firstArg === 'string') {
+      ttl = 30000 // Default TTL
+      eventName = firstArg
+    } else {
+      throw new Error('Invalid first argument type for bindWait. Must be a number (TTL) or string (eventName).')
+    }
+
+    return new Promise((resolve, reject) => {
+      console.log(`[SOCKET BIND] WaitBind: "${eventName}"...`)
+      const cacheKey = sha256(eventName + JSON.stringify(args))
+      const bindValue = clientSocket.bind(notLoaded, eventName, ...args)
+
+      if (bindValue.value !== notLoaded) {
+        console.log(`[SOCKET BIND] WaitBind: "${eventName}" already lodaded!`)
+        resolve(bindValue)
+        return
+      }
+
+      // eslint-disable-next-line prefer-const
+      let stopWatching
+
+      const timeoutHandler = setTimeout(() => {
+        reject(new Error(`Timeout waiting for bind "${eventName}"`))
+        stopWatching()
+      }, ttl)
+
+      stopWatching = watch(bindValue, newValue => {
+        if (newValue !== notLoaded) {
+          console.log(`[SOCKET BIND] WaitBind: "${eventName}" loaded!`)
+          clearTimeout(timeoutHandler)
+          resolve(bindCache[cacheKey])
+          logCacheInfo()
+        }
+      })
+    })
+  }
 
   return clientSocket
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
+// PRIVATE
+// ---------------------------------------------------------------------------------------------------------------------
 
 /**
  * Handles socket connection events and packet logging.

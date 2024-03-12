@@ -15,14 +15,16 @@ desenvolvimento, minimizando a necessidade de configurações extensas.
 
 ## Props
 
-| Atributo    | Tipo   | padrão    | Descrição                                                                                      |
-|-------------|--------|-----------|------------------------------------------------------------------------------------------------|
-| idKey       | String | 'id'      | Identificador único dentro do CRUD. Utilizado como chave primária para operações de CRUD.      |
-| label       | String | Undefined | Texto exibido para o usuário como rótulo do campo.                                             |
-| schema      | Array  | []        | Define a estrutura dos dados, configuração de colunas no CRUD e campos no formulário.          |
-| debug       | Bool   | false     | Exibe dados do crud para melhor depuração.                                                     |
-| loadingGrid | Bool   | false     | Grid no modo carregamento (Aguardando dados do servidor)                                       |
-| autoUpdate  | Bool   | true      | Atualiza crud automaticamente após criar novo registros, sem aguardar atualização do servidor. |
+| Atributo    | Tipo     | padrão    | Descrição                                                                                      |
+|-------------|----------|-----------|------------------------------------------------------------------------------------------------|
+| idKey       | String   | 'id'      | Identificador único dentro do CRUD. Utilizado como chave primária para operações de CRUD.      |
+| label       | String   | Undefined | Texto exibido para o usuário como rótulo do campo.                                             |
+| schema      | Array    | []        | Define a estrutura dos dados, configuração de colunas no CRUD e campos no formulário.          |
+| debug       | Bool     | false     | Exibe dados do crud para melhor depuração.                                                     |
+| loadingGrid | Bool     | false     | Grid no modo carregamento (Aguardando dados do servidor)                                       |
+| autoUpdate  | Bool     | true      | Atualiza crud automaticamente após criar novo registros, sem aguardar atualização do servidor. |
+| formLoad    | Function | Undefined | Recebe valores de todos os inputs e deve retornar os mesmos valores formatado                  |
+| - formValue | Object   | {}        | Valores de todos os inputs do formulário                                                       |
 
 ## Schema
 
@@ -39,23 +41,23 @@ atributos:
 
 **NOTA:**
 
-* Em form, por padrão, se $formkit ou $el não for definido, será gerado um input do tipo **text**
+* Em form, por padrão, se $formkit, $el ou $cmp não for definido, será gerado um input do tipo **text**
 
 ## Eventos
 
-| Atributo      | Parâmetros | Tipo                  | Descrição                                                                                                                                                                              |
-|---------------|------------|-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **submit**    |            |                       | Um formulário foi submetido                                                                                                                                                            |
-|               | values     | Array                 | valores do formulário                                                                                                                                                                  |
-|               | callback   | Function(err, values) | Obrigatório enviar pelo callback status da requisição com servidor:<br/> Err: Objeto erro em caso de erro<br/>Values: {success: Boolean, data: Object(dados salvo no servidor com id}) |
-| **submitted** |            |                       | Formulário foi submetido e salvo com sucesso, só é emitido depois que evento submit é retornado com sucesso.                                                                           |
-|               | new        | Bool                  | Verdadeiro se novo registro, false se for uma atualização                                                                                                                              |
-|               | values     | Array                 | valores atualizados atualizado do servidor com id                                                                                                                                      |
-| **delete**    |            |                       | Um pedido para remover registro                                                                                                                                                        |
-|               | id         | Number                | Id do registro a ser removido                                                                                                                                                          |
-|               | callback   | Function(err, values) | Obrigatório enviar pelo callback status da requisição com servidor:<br/> Err: Objeto erro em caso de erro<br/>Values: {success: Boolean})                                              |
-| **deleted**   |            |                       | Registro foi removido com sucesso. Só é emitido quando remoção foi concluída com sucesso.                                                                                              |
-|               | values     | Array                 | Valores removidos                                                                                                                                                                      |
+| Atributo      | Parâmetros | Tipo                  | Descrição                                                                                                                                                                                                                   |
+|---------------|------------|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **submit**    |            |                       | Um formulário foi submetido                                                                                                                                                                                                 |
+|               | values     | Array                 | valores do formulário                                                                                                                                                                                                       |
+|               | callback   | Function(err, values) | Obrigatório enviar pelo callback status da requisição com servidor:<br/> Err: Objeto erro em caso de erro<br/>Values: {success: Boolean, data: Object(dados salvo no servidor com id, e formatado para crud se necessário}) |
+| **submitted** |            |                       | Formulário foi submetido e salvo com sucesso, só é emitido depois que evento submit é retornado com sucesso.                                                                                                                |
+|               | new        | Bool                  | Verdadeiro se novo registro, false se for uma atualização                                                                                                                                                                   |
+|               | values     | Array                 | valores atualizados atualizado do servidor com id                                                                                                                                                                           |
+| **delete**    |            |                       | Um pedido para remover registro                                                                                                                                                                                             |
+|               | id         | Number                | Id do registro a ser removido                                                                                                                                                                                               |
+|               | callback   | Function(err, values) | Obrigatório enviar pelo callback status da requisição com servidor:<br/> Err: Objeto erro em caso de erro<br/>Values: {success: Boolean})                                                                                   |
+| **deleted**   |            |                       | Registro foi removido com sucesso. Só é emitido quando remoção foi concluída com sucesso.                                                                                                                                   |
+|               | values     | Array                 | Valores removidos                                                                                                                                                                                                           |
 
 ## Handlers
 

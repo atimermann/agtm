@@ -35,6 +35,7 @@
       :schema="formSchema"
       :handlers="handlers.form"
       :debug
+      :form-load
       @submit="onSubmit"
       @submitted="onSubmitted"
     >
@@ -156,6 +157,10 @@ const props = defineProps({
   autoUpdate: {
     type: Boolean,
     default: true
+  },
+
+  formLoad: {
+    type: Function
   }
 })
 
@@ -226,12 +231,12 @@ function setDefaultValueInSchema (schemaItem) {
  * @return {{$formkit: string, name, label}}
  */
 function mapSchemaToFormSchema (schemaItem) {
-  return schemaItem.form.$el
+  return (schemaItem.form.$el || schemaItem.form.$cmp)
     ? schemaItem.form
     : {
         name: schemaItem.name,
         label: schemaItem.label,
-        $formkit: schemaItem.form.$el,
+        $formkit: schemaItem.form.$formkit,
         ...schemaItem.form
       }
 }

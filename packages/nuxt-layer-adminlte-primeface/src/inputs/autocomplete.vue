@@ -12,10 +12,11 @@
 </template>
 
 <script setup>
+// ATTENTION, when adding props you need to register in plugns/formkit
 
 import AutoComplete from 'primevue/autocomplete'
 import { cloneDeep } from 'lodash-es'
-import { ref } from '#imports'
+import { watch, onMounted, ref } from '#imports'
 
 const props = defineProps({
   context: {
@@ -25,11 +26,29 @@ const props = defineProps({
 })
 
 if (!props.context.search) {
-  throw new Error('Search props is required')
+  throw new Error('Search props is required  in AutoComplete Input. Need restart.')
 }
 
-const value = ref(props.context._value)
+if (!props.context.getItem) {
+  throw new Error('getItem props is required in AutoComplete Input. Need restart.')
+}
+
 const items = ref([])
+const value = ref()
+
+onMounted(async () => {
+  if (props.context._value) {
+    value.value = cloneDeep(await props.context.getItem(props.context._value))
+  }
+})
+
+watch(() => props.context._value, async (newValue) => {
+  if (newValue) {
+    value.value = cloneDeep(await props.context.getItem(newValue))
+  } else {
+    value.value = undefined // Limpa o valor se _value for nulo/undefined
+  }
+})
 
 /**
  * Searches for items based on the user's input. It checks the cache for existing

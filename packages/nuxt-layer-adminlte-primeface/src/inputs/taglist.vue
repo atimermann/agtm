@@ -8,9 +8,11 @@
 </template>
 
 <script setup>
+// ATTENTION, when adding props you need to register in plugns/formkit
 
 import Chips from 'primevue/chips'
-import { ref } from '#imports'
+import { ref, onMounted, watch } from '#imports'
+import { cloneDeep } from 'lodash-es'
 
 const props = defineProps({
   context: {
@@ -19,7 +21,20 @@ const props = defineProps({
   }
 })
 
-const value = ref(props.context._value)
+const value = ref()
+onMounted(async () => {
+  if (props.context._value) {
+    value.value = props.context._value
+  }
+})
+
+watch(() => props.context._value, async (newValue) => {
+  if (newValue) {
+    value.value = props.context._value
+  } else {
+    value.value = undefined
+  }
+})
 
 function update (value) {
   if (value) {

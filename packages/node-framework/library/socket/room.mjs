@@ -15,7 +15,7 @@
  * @typedef {import("socket.io").Socket} Socket
  */
 
-import { sha256 } from 'js-sha256'
+import jsSHA from 'jssha'
 import createLogger from '../logger.mjs'
 import prettyBytes from 'pretty-bytes'
 
@@ -89,7 +89,7 @@ export default class Room {
    * @static
    */
   static createIfNotExist (eventName, emitArgs, socketControllers, nsp) {
-    const roomName = sha256(eventName + JSON.stringify(emitArgs))
+    const roomName = this.createHash(eventName + JSON.stringify(emitArgs))
 
     if (!Array.isArray(socketControllers)) throw new TypeError('socketController must be array')
     if (socketControllers.length === 0) throw new TypeError('It is mandatory to define at least one socketController')
@@ -139,6 +139,23 @@ export default class Room {
     logger.debug(`Room size: ${prettyBytes(this.getSizeInBytes(this.cacheData))}`)
     logger.debug(`Total rooms: ${Room.rooms.size}`)
     logger.debug(`Total size: ${prettyBytes(this.getSizeInBytes(Room.rooms))}`)
+  }
+
+  /**
+   * Generates a SHA-1 hash of an input string.
+   *
+   * This function creates a jsSHA object, sets it up to use the SHA-1 algorithm
+   * with text inputs, then generates the hash of the provided input string.
+   * The result is returned as a hexadecimal string.
+   *
+   * @param  {string} input  - The input string for which the SHA-1 hash will be generated.
+   * @return {string}        The SHA-1 hash of the input, represented as a hexadecimal string.
+   */
+  static createHash (input) {
+    // eslint-disable-next-line new-cap
+    const shaObj = new jsSHA('SHA-1', 'TEXT')
+    shaObj.update(input)
+    return shaObj.getHash('HEX')
   }
 
   /**

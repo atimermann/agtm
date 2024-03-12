@@ -15,9 +15,11 @@
  */
 
 import { io as Client } from 'socket.io-client'
-import { sha256 } from 'js-sha256'
+import * as sha256Lib from 'js-sha256'
 import prettyBytes from 'pretty-bytes'
 import { watch, ref, useRuntimeConfig } from '#imports'
+
+const sha256 = sha256Lib.sha256
 
 /**
  * Cache for storing active socket connections

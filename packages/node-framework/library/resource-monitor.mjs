@@ -1,33 +1,58 @@
 /**
  * Created on 02/09/23
  *
- * /library/resource-monitor.mjs
+ * @file
+ * This library is responsible for monitoring application resources such as memory consumption,
+ * event listeners created, among others. It provides functionality to regularly dump memory statistics
+ * and analyze heap differences to assist in identifying potential memory leaks or areas of heavy resource usage.
  *
  * @author André Timermann <andre@timermann.com.br>
- *
- * Lib responsible for monitoring application resources such as memory consumption, Event Listeners created, among others
  */
-
 import memwatch from '@airbnb/node-memwatch'
 import v8 from 'node:v8'
 import { filesize } from 'filesize'
 
 import createLogger from './logger.mjs'
 import Config from './config.mjs'
+
 let logger
 
 /**
- * ResourceMonitor Class
- *
- * @class
- *
- * Monitoring application resources such as memory consumption, Event Listeners created, among others
+ * ResourceMonitor is a utility class for monitoring and logging various resource usage metrics
+ * within an application, such as memory consumption. It can be configured to periodically dump memory usage stats
+ * and identify changes in heap allocation to help in spotting memory leaks.
  */
 export default class ResourceMonitor {
+  /**
+   * Indicates whether the resource monitoring is enabled.
+   *
+   * @type {boolean}
+   */
   static enabled
+  /**
+   * HeapDiff instance used for calculating differences in memory heap across dumps.
+   *
+   * @type {memwatch.HeapDiff}
+   */
   static hd
+  /**
+   * Size limit for detailing individual heap allocations in memory dumps.
+   *
+   * @type {number}
+   */
   static detailSizeLimit
+  /**
+   * Node limit for detailing changes in heap allocations in memory dumps.
+   *
+   * @type {number}
+   */
   static detailNodesLimit
+
+  /**
+   * Interval in minutes for performing memory dumps.
+   *
+   * @type {number}
+   */
   static monitorInterval
 
   /**
@@ -48,30 +73,28 @@ export default class ResourceMonitor {
     logger.info(`Size limit:             ${filesize(this.detailSizeLimit)}`)
     logger.info(`Nodes limit):           ${this.detailNodesLimit}`)
 
-    if (enableMemoryDump) this._initMemoryDump()
+    if (enableMemoryDump) this.#initMemoryDump()
   }
 
   /**
-   * Initialize memory dumping
-   * Sets an interval to call the dumpMemory method every monitorInterval minutes.
+   * Initializes the memory dumping process. Sets an interval to periodically call the dumpMemory
+   * method based on the configured monitor interval.
    *
    * @static
-   * @private
    */
-  static _initMemoryDump () {
+  static #initMemoryDump () {
     logger.info('Dumping memory...')
     this.hd = new memwatch.HeapDiff()
     setInterval(() => {
-      this._dumpMemory()
+      this.#dumpMemory()
     }, Math.ceil(this.monitorInterval) * 60000)
   }
 
   /**
-   * Get memory information
-   * Collects heap statistics and returns an object containing detailed information.
+   * Collects and returns heap statistics as an object containing detailed memory usage information.
+   * Provides data on total memory allocated, memory in use, memory limit, and the percentage of memory used.
    *
-   * @static
-   * @return {object | null} Object containing memory statistics or null if monitoring is not enabled.
+   * @return {object | null} An object containing memory statistics, or null if monitoring is not enabled.
    */
   static getMemoryInfo () {
     if (this.enabled === undefined) this.enabled = Config.get('resourceMonitor.enabled', 'boolean')
@@ -85,16 +108,15 @@ export default class ResourceMonitor {
         memoryUsedPercent: `${((heapData.total_heap_size / heapData.heap_size_limit) * 100).toFixed(1)}%`
       }
     }
+
+    return null
   }
 
   /**
    * Perform memory dumping
    * Analyzes heap differences since the last dump and logs the changes.
-   *
-   * @static
-   * @private
    */
-  static _dumpMemory () {
+  static #dumpMemory () {
     logger.info('Dumping memory...')
     const diff = this.hd.end()
     delete this.hd

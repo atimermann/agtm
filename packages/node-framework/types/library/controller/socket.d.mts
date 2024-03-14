@@ -103,12 +103,13 @@ export default class SocketController extends BaseController {
      * Triggers an event by its name with the provided arguments. If the event does not exist,
      * it rejects the promise with an error. Otherwise, it resolves with the response from the event's callback function.
      *
+     * @param  {Socket|null}  socket     - Socket.io  Socket. Only mutateEvent use socket here to emit update event
      * @param  {string}       eventName  - The name of the event to trigger.
      * @param  {...any}       args       - The arguments to pass to the event's callback function.
      * @return {Promise<any>}            - A promise that resolves with the callback response of the triggered event.
      * @throws {Error} - If the event does not exist.
      */
-    triggerEvent(eventName: string, ...args: any[]): Promise<any>;
+    triggerEvent(socket: Socket | null, eventName: string, ...args: any[]): Promise<any>;
     #private;
 }
 /**
@@ -128,6 +129,10 @@ export type CallbackResponse = {
  * A callback function to handle socket events.
  */
 export type EventCallback = Function;
+/**
+ * Created on 28/07/23
+ */
+export type Socket = import("socket.io").Socket;
 /**
  * The type of the socket event.
  *

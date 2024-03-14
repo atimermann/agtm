@@ -20,7 +20,7 @@ import checkExecution from './library/check-execution.mjs'
 import JobManager from './library/jobs/job-manager.mjs'
 import WorkerManager from './library/jobs/worker-manager.mjs'
 import YupValidation from './library/api/yup-validation.mjs'
-import Service from './library/api/service.mjs'
+import Model from './library/api/model.mjs'
 
 const logger = createLogger()
 
@@ -39,5 +39,5 @@ export {
   JobManager,
   WorkerManager,
   YupValidation,
-  Service
+  Model
 }

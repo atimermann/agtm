@@ -43,7 +43,7 @@ export default class ApplicationController {
      *
      * @return {Promise<Array<BaseController>>}                    List of already instantiated controllers
      */
-    static "__#9@#getControllersInstanceByApps"(appsPath: string, controllersType?: string[]): Promise<Array<BaseController>>;
+    static "__#10@#getControllersInstanceByApps"(appsPath: string, controllersType?: string[]): Promise<Array<BaseController>>;
     /**
      * Loads and returns all controllers defined in the 'Controllers' directory.
      *
@@ -51,7 +51,7 @@ export default class ApplicationController {
      *
      * @return {Promise<Array<BaseController>>}                  List of already instantiated controllers
      */
-    static "__#9@#getControllersInstanceByControllers"(controllersPath: string): Promise<Array<BaseController>>;
+    static "__#10@#getControllersInstanceByControllers"(controllersPath: string): Promise<Array<BaseController>>;
     /**
      * Checks if the directory for the given application exists.
      *

@@ -330,9 +330,9 @@ export default class SocketController extends BaseController {
         payloadError.data = error.message
       }
 
-      callback
-        ? callback(payloadError)
-        : logger.error(JSON.stringify(payloadError))
+      if (callback) callback(payloadError)
+      logger.error(JSON.stringify(payloadError))
+      logger.error(error.stack)
     }
   }
 }

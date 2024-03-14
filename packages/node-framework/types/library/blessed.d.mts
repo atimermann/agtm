@@ -65,7 +65,7 @@ export default class BlessedInterface {
      * @return {string}        The escape code for the color associated with the given severity level.
      * @static
      */
-    static "__#10@#getLevelColor"(level: string): string;
+    static "__#11@#getLevelColor"(level: string): string;
     /**
      * Parses log objects received from the log server, formatting them for display in the UI.
      *
@@ -73,7 +73,7 @@ export default class BlessedInterface {
      * @return {object}         An object containing the formatted message and the module name.
      * @static
      */
-    static "__#10@#parselogObj"(logObj: object): object;
+    static "__#11@#parselogObj"(logObj: object): object;
     /**
      * Appends a log message to the specified box, creating a new box if necessary.
      *
@@ -87,27 +87,27 @@ export default class BlessedInterface {
      *
      * @static
      */
-    static "__#10@#updateLogs"(): void;
+    static "__#11@#updateLogs"(): void;
     /**
      * Sets up keyboard shortcuts for application control, such as quitting, restarting, and navigating between boxes.
      *
      * @static
      */
-    static "__#10@#setShortcuts"(): void;
+    static "__#11@#setShortcuts"(): void;
     /**
      * Creates a status bar at the bottom of the screen, displaying helpful shortcuts and real-time memory usage information.
      *
      * @param {string} [boxName]  - The name of the box for which the status bar is being created. Currently not used.
      * @static
      */
-    static "__#10@#createStatusBar"(boxName?: string): void;
+    static "__#11@#createStatusBar"(boxName?: string): void;
     /**
      * Creates a new box on the screen for displaying log messages.
      *
      * @param {string} boxName  - The name of the box to create.
      * @static
      */
-    static "__#10@#createBox"(boxName: string): void;
+    static "__#11@#createBox"(boxName: string): void;
     /**
      * Dynamically resizes all boxes based on the current screen size and optional custom dimensions.
      *
@@ -116,13 +116,13 @@ export default class BlessedInterface {
      * @param {number}      [offsetWidth]   - Horizontal space to leave empty on the sides of the boxes.
      * @param {number}      [offsetHeight]  - Vertical space to leave empty above and below the boxes.
      */
-    static "__#10@#resizeBoxes"(customWidth: number | null, customHeight: number | null, offsetWidth?: number, offsetHeight?: number): void;
+    static "__#11@#resizeBoxes"(customWidth: number | null, customHeight: number | null, offsetWidth?: number, offsetHeight?: number): void;
     /**
      * Moves focus to a specific direction. If there are no boxes in the direction, nothing happens.
      *
      * @param {string} direction  - The direction to move the focus to. Can be 'up', 'down', 'left', 'right'.
      */
-    static "__#10@#moveBoxFocusTo"(direction: string): void;
+    static "__#11@#moveBoxFocusTo"(direction: string): void;
 }
 import blessed from 'blessed';
 //# sourceMappingURL=blessed.d.mts.map

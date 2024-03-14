@@ -1,4 +1,4 @@
-## API's Tool
+# API's Tool
 
 Node framework disponibiliza seguintes classe para auxiliar na criação de APIs:
 
@@ -10,9 +10,9 @@ Os Serviços de API do Node Framework fornecem classes base para auxiliar no des
 APIs Socket. Essas classes base incluem `ServiceService`, para interações com banco de dados, e `YupValidation`, para
 validação de dados, facilitando a criação de lógica do lado do servidor robusta e de fácil manutenção.
 
-### `ServiceService`
+## `Service`
 
-#### Descrição
+### Descrição
 
 `ServiceService` é projetado para simplificar as operações de consulta ao banco de dados usando Prisma. Ele abstrai a
 lógica de tentativa e captura (try-catch), oferecendo tratamento de erro uniforme e estruturas de retorno padronizadas
@@ -20,7 +20,7 @@ para operações de consulta. Esta classe é particularmente hábil em distingui
 banco de dados do Prisma, permitindo que os desenvolvedores tratem esses tipos distintos de erro de maneira apropriada
 na lógica de sua API.
 
-#### Método: `prismaQuery`
+### Método: `prismaQuery`
 
 - **Propósito**: Executa uma consulta ao banco de dados Prisma, gerenciando tanto erros de validação quanto erros de
   banco de dados.
@@ -30,19 +30,19 @@ na lógica de sua API.
   dados da consulta. Em caso de falha, inclui detalhes do erro, que podem ser originados de erro de validação do Yup ou
   problemas do banco de dados Prisma.
 
-### `YupValidation`
+## `YupValidation`
 
-#### Descrição
+### Descrição
 
 `YupValidation` serve como uma classe base para criar objetos de validação usando Yup. Tem como objetivo fornecer uma
 abordagem estruturada para a validação de dados em toda a aplicação, garantindo que os dados de entrada atendam ao
 formato e restrições esperados antes do processamento.
 
-#### Propriedades
+### Propriedades
 
 - `schema` (`YupSchema`): O esquema de validação Yup contra o qual os dados são validados.
 
-#### Método: `validate`
+### Método: `validate`
 
 - **Propósito**: Valida os dados de acordo com o esquema Yup definido.
 - **Parâmetros**:
@@ -50,7 +50,7 @@ formato e restrições esperados antes do processamento.
 - **Retorno**: Uma Promise que resolve para o resultado da validação. Lança um `ApiError` se o esquema não estiver
   definido ou se a validação falhar, encapsulando os erros de validação.
 
-## Utilização
+# Utilização
 
 Essas classes são instrumentais no desenvolvimento de endpoints de API, oferecendo uma base sólida para o tratamento de
 interações com banco de dados e validação de dados. Ao abstrair padrões comuns como tratamento de erro e validação de

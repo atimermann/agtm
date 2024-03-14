@@ -142,6 +142,25 @@ export default class Room {
   }
 
   /**
+   * Triggers a query event to fetch data from associated socket controllers based on this room's event name.
+   * Iterates over the socket controllers associated with this room and triggers the query event if the controller
+   * has an event handler for the specified event name. Throws an error if no matching event handler is found.
+   *
+   * @return {Promise<any>} The data fetched from the socket controller.
+   */
+  async triggerQueryEvent () {
+    logger.debug(`Fetch data from "${this.eventName}..."`)
+
+    for (const socketController of this.socketControllers) {
+      if (socketController.hasEvent(this.eventName)) {
+        return await socketController.triggerQueryEvent(this.eventName, ...this.emitArgs)
+      }
+    }
+
+    throw new Error(`Event ${this.eventName} not found.`)
+  }
+
+  /**
    * Generates a SHA-1 hash of an input string.
    *
    * This function creates a jsSHA object, sets it up to use the SHA-1 algorithm
@@ -210,26 +229,6 @@ export default class Room {
     } catch (e) {
       socketRoom.emit('bindUpdated', this.name, { success: false, data: e.message })
     }
-  }
-
-  /**
-   * Triggers a query event to fetch data from associated socket controllers based on this room's event name.
-   * Iterates over the socket controllers associated with this room and triggers the query event if the controller
-   * has an event handler for the specified event name. Throws an error if no matching event handler is found.
-   *
-   * @return {Promise<any>} The data fetched from the socket controller.
-   */
-  async triggerQueryEvent () {
-    logger.debug(`Fetch data from "${this.eventName}..."`)
-
-    // Busca por controllers com o evento
-    for (const socketController of this.socketControllers) {
-      if (socketController.hasEvent(this.eventName)) {
-        return await socketController.triggerQueryEvent(this.eventName, ...this.emitArgs)
-      }
-    }
-
-    throw new Error(`Event ${this.eventName} not found.`)
   }
 
   /**

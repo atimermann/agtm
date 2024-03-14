@@ -18,7 +18,7 @@ export default class Room {
      * @param  {SocketController[]} socketControllers  - A list of socket controllers associated with this room.
      * @param  {Namespace}          nsp                - The Socket.io Namespace associated with this room.
      *
-     * @return {Room}                                 The newly created or existing room.
+     * @return {Room}                                  The newly created or existing room.
      *
      * @static
      */
@@ -29,8 +29,22 @@ export default class Room {
      * socket controller and triggering an update for those rooms.
      *
      * @param {SocketController} socketController  - The socket controller to use as a filter for updating rooms.
+     * @param {Socket|null}      socket            - If null, send event through this socket (The broadcast
+     *                                             method ensures that the message will be sent to all connected clients
+     *                                             except the socket that initiated the sending).
      */
-    static updateByController(socketController: SocketController): void;
+    static updateByController(socketController: SocketController, socket?: Socket | null): void;
+    /**
+     * Generates a SHA-1 hash of an input string.
+     *
+     * This function creates a jsSHA object, sets it up to use the SHA-1 algorithm
+     * with text inputs, then generates the hash of the provided input string.
+     * The result is returned as a hexadecimal string.
+     *
+     * @param  {string} input  - The input string for which the SHA-1 hash will be generated.
+     * @return {string}        The SHA-1 hash of the input, represented as a hexadecimal string.
+     */
+    static createHash(input: string): string;
     /**
      * The name of the room, typically derived from a combination of the event name and arguments for uniqueness.
      *
@@ -74,6 +88,14 @@ export default class Room {
      */
     showRoomsInfo(): Promise<void>;
     /**
+     * Triggers a query event to fetch data from associated socket controllers based on this room's event name.
+     * Iterates over the socket controllers associated with this room and triggers the query event if the controller
+     * has an event handler for the specified event name. Throws an error if no matching event handler is found.
+     *
+     * @return {Promise<any>} The data fetched from the socket controller.
+     */
+    triggerQueryEvent(): Promise<any>;
+    /**
      * Adds a socket to this room, joining the socket to the Socket.io room.
      * Logs the event of a socket joining the room and displays room information.
      * If cached data exists for this room, it sends the cached data to the newly joined socket;
@@ -85,16 +107,12 @@ export default class Room {
     /**
      * Updates the data for this room, caching the result, and emitting an update event to all sockets in the room.
      * If the room has no connected sockets, it clears the cached data and aborts the update.
-     */
-    update(): Promise<void>;
-    /**
-     * Triggers a query event to fetch data from associated socket controllers based on this room's event name.
-     * Iterates over the socket controllers associated with this room and triggers the query event if the controller
-     * has an event handler for the specified event name. Throws an error if no matching event handler is found.
      *
-     * @return {Promise<any>} The data fetched from the socket controller.
+     * @param {Socket|null} socket  - If null, send event through this socket (The broadcast
+     *                              method ensures that the message will be sent to all connected clients
+     *                              except the socket that initiated the sending).
      */
-    triggerQueryEvent(): Promise<any>;
+    update(socket?: Socket | null): Promise<void>;
     /**
      * Calculates the approximate size of a JavaScript object in bytes.
      * This function converts the object into a JSON string and then uses the TextEncoder

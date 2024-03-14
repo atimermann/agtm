@@ -1,14 +1,15 @@
 <template>
+  <!--suppress RequiredAttributes -->
   <DataTable
     :value="model"
     :loading="loading || model === null"
   >
-    <Column
-      v-for="col of schema"
-      :key="col.idKey"
-      :field="col.name"
-      :header="col.label"
-    />
+    <template v-for="col of schema" :key="col.idKey">
+      <Column
+        :field="col.name"
+        :header="col.label"
+      />
+    </template>
     <Column
       class="text-right"
     >

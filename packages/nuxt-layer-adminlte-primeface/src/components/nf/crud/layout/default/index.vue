@@ -12,9 +12,8 @@
     <div class="col-12">
       <NfCrudLayoutDefaultDataTable
         v-model="model"
-        :schema
+        :schema="gridSchema"
         :id-key
-        :debug
         :loading="loadingGrid"
         @edit="onEdit"
         @delete="onDelete"
@@ -34,7 +33,6 @@
       :values="formValues"
       :schema="formSchema"
       :handlers="handlers.form"
-      :debug
       :form-load
       @submit="onSubmit"
       @submitted="onSubmitted"
@@ -137,13 +135,6 @@ const props = defineProps({
     }
   },
   /**
-   * Debug mode, displays more information
-   */
-  debug: {
-    type: Boolean,
-    default: false
-  },
-  /**
    * Grid in loading mode
    */
   loadingGrid: {
@@ -160,7 +151,8 @@ const props = defineProps({
   },
 
   formLoad: {
-    type: Function
+    type: Function,
+    default: null
   }
 })
 
@@ -181,6 +173,13 @@ const formSchema = computed(() => {
     .map(schemaItem => setDefaultValueInSchema(schemaItem))
     .filter(schemaItem => !schemaItem.ignoreForm)
     .map(schemaItem => mapSchemaToFormSchema(schemaItem))
+})
+
+const gridSchema = computed(() => {
+  return props.schema
+    .map(schemaItem => setDefaultValueInSchema(schemaItem))
+    .filter(schemaItem => !schemaItem.ignoreGrid)
+    .map(schemaItem => mapSchemaToGridSchema(schemaItem))
 })
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -231,7 +230,7 @@ function setDefaultValueInSchema (schemaItem) {
  * @return {{$formkit: string, name, label}}
  */
 function mapSchemaToFormSchema (schemaItem) {
-  return (schemaItem.form.$el || schemaItem.form.$cmp)
+  return (schemaItem.form.$el)
     ? schemaItem.form
     : {
         name: schemaItem.name,
@@ -239,6 +238,21 @@ function mapSchemaToFormSchema (schemaItem) {
         $formkit: schemaItem.form.$formkit,
         ...schemaItem.form
       }
+}
+
+/**
+ * Maps default nfCrud schema to GridSchema
+ * Note: Maps only item by item, not the entire schema, it must be used within a loop.
+ *
+ * @param                                    schemaItem
+ * @return {{$formkit: string, name, label}}
+ */
+function mapSchemaToGridSchema (schemaItem) {
+  return {
+    name: schemaItem.name,
+    label: schemaItem.label,
+    ...schemaItem.grid
+  }
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

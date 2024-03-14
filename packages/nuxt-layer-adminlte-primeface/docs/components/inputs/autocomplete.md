@@ -15,11 +15,23 @@ encontrem e selecionem de uma lista de opções enquanto digitam, reduzindo a ne
 
 ## Props
 
-| Nome      | Tipo     | Descrição                                                                                    |
-|-----------|----------|----------------------------------------------------------------------------------------------|
-| `search`  | Function | Uma função que recebe o texto de entrada do usuário e retorna uma lista de opções sugeridas. |
-| `getItem` | Function | Uma função para recuperar um item específico baseado em seu id.                              |
-| `value`   | Any      | O valor atualmente selecionado pelo componente.                                              |
+| Nome        | Obrigatório | Padrão   | Tipo     | Descrição                                                                                       |
+|-------------|-------------|----------|----------|-------------------------------------------------------------------------------------------------|
+| `search`    | Obrigatório |          | Function | Uma função que recebe o texto de entrada do usuário e retorna uma lista de opções sugeridas.    |
+| `value`     | Obrigatório |          | Any      | O valor atualmente selecionado pelo componente.                                                 |
+| `getItem`   | Opcional    |          | Function | Uma função para recuperar um item específico baseado em seu id.                                 |
+| `output`    | Opcional    | 'object' | String   | Tipo de saída, se 'object' {label: string, value: any } ou 'literal': Retorna value diretamente |
+| `valueProp` | Opcional    | 'value'  | String   | Nome do atributo para representar value no input                                                |
+| `labelProp` | Opcional    | 'label'  | String   | Nome do atributo para representar o label no input                                              |
+
+Você pode passar um objeto plano em value com os seguintes atributos:
+
+* **label:** Será exibido para o usuario
+* **value:** será o valor efetivamente
+
+Autocomplete sempre trabalha com objeto com essas duas chaves.
+
+Caso forneça um valor numerico com id é obrigatório fornecer o metodo getItem para que o autocomplete carregue o label
 
 ## Exemplo de Uso
 

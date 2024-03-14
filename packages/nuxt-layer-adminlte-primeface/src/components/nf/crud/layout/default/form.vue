@@ -10,7 +10,9 @@
       <FormKitSchema :schema :data />
     </slot>
   </FormKit>
-  <pre v-if="debug" style="background-color: #ffe456">{{ formValues }}</pre>
+  <dev-only>
+    <pre style="background-color: #ffe456">{{ formValues }}</pre>
+  </dev-only>
 </template>
 
 <script setup>
@@ -42,13 +44,6 @@ const props = defineProps({
   formLoad: {
     type: Function,
     default: null
-  },
-  /**
-   * Debug mode, displays more information
-   */
-  debug: {
-    type: Boolean,
-    default: false
   }
 })
 const emit = defineEmits(['submit', 'submitted'])

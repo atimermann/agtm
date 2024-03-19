@@ -1,10 +1,9 @@
 /**
  * Created on 27/08/23
  *
- * /library/check-execution.mjs
- *
  * @author André Timermann <andre@timermann.com.br>
  *
+ * @file
  * Description: This module provides a function to check whether a module is being executed directly or imported.
  */
 import { pathToFileURL } from 'node:url'

@@ -203,6 +203,8 @@ export default class SocketServer {
       controller.nsp.on('connection', async socket => {
         await controller.newConnection(socket)
       })
+
+      // controller.fallback()
     }
   }
 

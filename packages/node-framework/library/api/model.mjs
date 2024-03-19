@@ -42,6 +42,17 @@
  * @typedef {import('./yup-validation.mjs').default} YupValidation
  * @typedef {{[key: string]: any}} TransformClass - Type definition for a class containing data transformation methods.
  * @typedef {{[key: string]: any}} ValidationClass - Type definition for a class containing data validation methods.
+ * @typedef { import("yup").ValidationError } ValidationError
+ */
+
+/**
+ * @typedef {object} ApiResponse
+ * @property {boolean}                  success    Indica se a criação foi bem-sucedida.
+ * @property {object|object[]}          [data]     O produto criado ou os detalhes do erro de validação.
+ * @property {string}                   [code]     Código do erro
+ * @property {string}                   [error]    Tipo de erro ex: VALIDATION_ERROR, DATABASE_ERROR
+ * @property {string}                   [message]  descrição do erro
+ * @property {object|ValidationError[]} [errors]   Detalhamento do erro
  */
 
 import ApiError from '../api/api-error.mjs'
@@ -63,7 +74,6 @@ const SET = 'Set'
  * @return {Promise<any>}                     - The validated data, potentially modified or as is if validation passes.
  */
 async function validate (data, ValidationClass, fnName) {
-  if (data === undefined) return
   if (!ValidationClass) return data
   logger.debug('ValidateClass found!')
   const validationFunction = ValidationClass[fnName]
@@ -86,7 +96,7 @@ async function validate (data, ValidationClass, fnName) {
  * @return {Promise<any | any[]>}                 - The transformed data, which can be either a single item or an array of items, depending on the input.
  */
 async function transform (type, data, TransformClass, fnName) {
-  if (data === undefined) return
+  if (data === undefined || data === null) return
   if (!TransformClass) return data
   logger.debug('TransformClass found!')
   const transformGetFunctionName = `${fnName}${type}`
@@ -110,13 +120,13 @@ async function transform (type, data, TransformClass, fnName) {
  * operations. Also, it handles errors thrown by the target function, specifically catching instances of ApiError and re-throwing them
  * after potentially transforming other types of errors into ApiError.
  *
- * @param  {string}               fnName  - The name of the function being wrapped. This is used for logging and to identify transformation functions.
- * @param  {Function}             fn      - The original target function to be wrapped.
- * @param  {{[key: string]: any}} target  - The target object on which the original function is a method.
- *
- * @return {Function}                     - A new async function that wraps the original function with additional behavior.
+ * @param  {string}               fnName    - The name of the function being wrapped. This is used for logging and to identify transformation functions.
+ * @param  {Function}             fn        - The original target function to be wrapped.
+ * @param  {{[key: string]: any}} target    - The target object on which the original function is a method.
+ * @param  {{[key: string]: any}} receiver  - The Proxy object, used create context on the original object
+ * @return {Function}                       - A new async function that wraps the original function with additional behavior.
  */
-function wrapAsyncFunction (fnName, fn, target) {
+function wrapAsyncFunction (fnName, fn, target, receiver) {
   const TransformClass = target.transform
   const ValidationClass = target.validation
 
@@ -130,7 +140,8 @@ function wrapAsyncFunction (fnName, fn, target) {
       const transformedData = await transform(SET, validatedData, TransformClass, fnName)
       // 03. Execute
       logger.debug(`03. Execute "${fnName}"...`)
-      const response = await fn.call(target, transformedData)
+      // Here we need to pass the receive as a context, which is nothing more than the proxy, so calls in the class itself also call the proxy
+      const response = await fn.call(receiver, transformedData)
       // 04. Transform GET
       logger.debug(`03. Transform Get "${fnName}"...`)
       return await transform(GET, response, TransformClass, fnName)
@@ -155,16 +166,22 @@ const proxyHandler = {
    * Intercepts property access on the target object.
    * If the property is a function, wraps it in an async function to catch and handle errors.
    *
-   * @param  {{[key: string]: any}} target  - The original object the proxy is for.
-   * @param  {string}               prop    - The name of the property being accessed.
+   * @param  {{[key: string]: any}} target    - The original object the proxy is for.
+   * @param  {string}               prop      - The name of the property being accessed.
+   * @param  {{[key: string]: any}} receiver  - The Proxy object, used create context on the original object
    *
-   * @return {Function|*}                   - If the property is a function, returns a wrapped async function. Otherwise, returns the property value directly.
+   * @return {Function|*}                     - If the property is a function, returns a wrapped async function. Otherwise, returns the property value directly.
    */
-  get (target, prop) {
+  get (target, prop, receiver) {
     const targetProp = target[prop]
 
     if (typeof targetProp === 'function') {
-      return wrapAsyncFunction(prop, targetProp, target)
+      const isPrivateMethod = prop.startsWith('$')
+      if (isPrivateMethod) {
+        return targetProp
+      }
+
+      return wrapAsyncFunction(prop, targetProp, target, receiver)
     }
 
     return targetProp
@@ -204,9 +221,9 @@ export default class Model {
    * Creates a proxy for a given class, applying predefined intercept behavior.
    * This method is intended to enhance classes with additional functionality like automatic error handling.
    *
-   * @param  {Function} targetClass  - The class to be proxied.
-   *
-   * @return {Model}                 A Proxy instance of the targetClass, with intercepts applied.
+   * @template {object} T
+   * @param  {T} targetClass  - The class to be proxied.
+   * @return {T}              - A Proxy instance of the targetClass, with intercepts applied.
    */
   static proxy (targetClass) {
     return new Proxy(targetClass, this.#handler)

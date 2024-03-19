@@ -2,35 +2,71 @@
 
 Node framework disponibiliza seguintes classe para auxiliar na criação de APIs:
 
-# Serviços de API do Node Framework
+# Models
 
 ## Visão Geral
 
-Os Serviços de API do Node Framework fornecem classes base para auxiliar no desenvolvimento tanto de APIs REST quanto de
-APIs Socket. Essas classes base incluem `ServiceService`, para interações com banco de dados, e `YupValidation`, para
-validação de dados, facilitando a criação de lógica do lado do servidor robusta e de fácil manutenção.
+Os Models no Node Framework fornecem classes base para auxiliar na interação com o banco de dados. Essas classes são
+envolvidas com um proxy (algo pareciso com um decorator) que adicionam alguns processos extras.
 
-## `Service`
+Todo método estático criado nessas classes ao ser chamada executam algumas tarefas antes e depois da execução.
 
-### Descrição
+Por exemplo, supondo que criemos a seguinte classe:
 
-`ServiceService` é projetado para simplificar as operações de consulta ao banco de dados usando Prisma. Ele abstrai a
-lógica de tentativa e captura (try-catch), oferecendo tratamento de erro uniforme e estruturas de retorno padronizadas
-para operações de consulta. Esta classe é particularmente hábil em distinguir erros de validação do Yup de erros de
-banco de dados do Prisma, permitindo que os desenvolvedores tratem esses tipos distintos de erro de maneira apropriada
-na lógica de sua API.
+```javascript
+import {PrismaClient} from '@prisma/client'
+import {Config, Model} from '@agtm/node-framework'
 
-### Método: `prismaQuery`
+import ProductValidation from './product.validation.mjs'
+import ProductTransform from './product.transform.mjs'
 
-- **Propósito**: Executa uma consulta ao banco de dados Prisma, gerenciando tanto erros de validação quanto erros de
-  banco de dados.
-- **Parâmetros**:
-  - `fn`: Uma função que realiza a operação de consulta Prisma. Deve ser uma função assíncrona ou retornar uma Promise.
-- **Retorno**: Uma Promise que resolve para um objeto indicando o resultado da operação. Em caso de sucesso, contém os
-  dados da consulta. Em caso de falha, inclui detalhes do erro, que podem ser originados de erro de validação do Yup ou
-  problemas do banco de dados Prisma.
+const prisma = new PrismaClient({datasourceUrl: Config.getDSN('prisma')})
 
-## `YupValidation`
+class ProductModel extends Model {
+  static validation = ProductValidation
+  static transform = ProductTransform
+
+  static async save(data) {
+    const response = data.id
+      ? await prisma.product.update({where: {id: data.id}, data})
+      : await prisma.product.create({data})
+    return this.get(response.id)
+  }
+}
+
+export default Model.proxy(ProductModel)
+```
+
+Quando o usuário executar o método estático: **ProductModel.save()**, as seguintes tarefas serão executacas:
+
+### 01. Validação
+
+* No atributo validation devemos definir uma classe de validação.
+* Casso o atributo estático **validation** esteja definido, e o método save() exista na classe **ProductValidation**:
+* o método **ProductValidation.save(data)** será chamado para realizar uma validação dos dados recebidos.
+* Caso um erro seja gerado será retornado uma resposta padrão **apiResponse** será retornado
+* Caso não ocorra nenhum segue para próxima etapa
+
+### 02. Transformação SET
+
+TODO:
+
+### 03. Execução do método
+
+TODO:
+
+### 04. Transformação GET
+
+TODO:
+
+**IMPORTANTE:**
+
+* Caso não deseje que o método passe por todos esses processo prefixe-o com "$".
+  * Exemplo: **Product.$create(data)**
+* Métodos privados (prefixo #) não são compativeis com Proxy e não irá funcionar (TODO: encontrar uma solução, por
+  enquanto usar $)
+
+# YupValidation
 
 ### Descrição
 
@@ -38,17 +74,11 @@ na lógica de sua API.
 abordagem estruturada para a validação de dados em toda a aplicação, garantindo que os dados de entrada atendam ao
 formato e restrições esperados antes do processamento.
 
-### Propriedades
+TODO: Detalhar explicação
 
-- `schema` (`YupSchema`): O esquema de validação Yup contra o qual os dados são validados.
+# API ERROR
 
-### Método: `validate`
-
-- **Propósito**: Valida os dados de acordo com o esquema Yup definido.
-- **Parâmetros**:
-  - `data`: Os dados a serem validados.
-- **Retorno**: Uma Promise que resolve para o resultado da validação. Lança um `ApiError` se o esquema não estiver
-  definido ou se a validação falhar, encapsulando os erros de validação.
+TODO:
 
 # Utilização
 
@@ -58,52 +88,4 @@ dados, contribuem para bases de código mais limpas e fáceis de manter.
 
 ### Exemplo
 
-Para usar esses serviços em sua API, defina seu esquema Yup em `YupValidation`, configure-o como o `schema` da classe e,
-em seguida, utilize `prismaQuery` dentro dos métodos de serviço para interagir com o banco de dados de maneira limpa e
-eficiente. Use `YupValidation.validate` para garantir que os payloads de dados aderem aos requisitos da sua aplicação
-antes de proceder com operações no banco de dados ou lógica de negócios.
-
-```javascript
-import {PrismaClient} from '@prisma/client'
-import {Config, Service} from '@agtm/node-framework'
-import ProductValidation from '~/apps/Inventory/services/product.validation.mjs'
-
-const prisma = new PrismaClient({datasourceUrl: Config.getDSN('prisma')})
-
-export default class ProductService extends Service {
-
-  static async create(data) {
-    return this.prismaQuery(async () => {
-      const validData = await ProductValidation.validate(data)
-      return prisma.product.create({data: validData})
-    })
-  }
-}
-```
-```javascript
-import { YupValidation } from '@agtm/node-framework'
-import * as Yup from 'yup'
-
-export default class ProductValidation extends YupValidation {
-
-  static schema = Yup.object().shape({
-    productCategoryId: Yup
-      .number()
-      .required()
-      .positive()
-      .integer(),
-    name: Yup
-      .string()
-      .required()
-      .max(255),
-    description: Yup
-      .string()
-      .max(255),
-    brand: Yup
-      .string()
-      .max(255),
-    tags: Yup.number().required()
-  })
-}
-
-```
+TODO:

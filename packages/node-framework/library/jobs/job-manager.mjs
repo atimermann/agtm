@@ -12,12 +12,16 @@
  * @typedef {import('../application.mjs').default} Application
  * @typedef {import('./../controller/jobs.mjs').default} JobsController
  * @typedef {{ [key: string]: Job }} JobDict
- *
+ */
+
+/**
  * @typedef {Function} JobFunction
  * A specialized function type for job setup or teardown functions. These functions are scoped to
  * specific application components and have a type indicating whether they are for setup or teardown.
- * @property {number}      type                   - The type of function, either SETUP_FUNCTION (0) or TEARDOWN_FUNCTION (1).
- *
+ * @property {number} type  - The type of function, either SETUP_FUNCTION (0) or TEARDOWN_FUNCTION (1).
+ */
+
+/**
  * @typedef {object} JobSetupAndTeardownFunction
  * Represents a setup or teardown function along with its scope.
  * This type is used for objects that define a function to run during job setup or teardown,

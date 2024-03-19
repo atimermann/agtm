@@ -204,6 +204,23 @@ export default class SocketController extends BaseController {
         await this.#callEvent(socket, event, args)
       })
     }
+
+    // // CatchAll
+    // TODO: Precisamos verificar se o evento existe em ALGUM dos namespace, ou seja tem q ficar independente de controller, ou seja não deve ficar aqui e sim em socket-server
+    // TODO: Iterar sobre os namspace https://socket.io/docs/v3/client-api/index.html#socketonanycallback
+    //
+    // socket.onAny((event) => {
+    //   console.log('-------------------------------------------------')
+    //   console.log(`got ${event}`)
+    //   console.log(Object.keys(this.indexedEvents))
+    //   console.log('-------------------------------------------------')
+    //
+    //   if (!event in this.indexedEvents) {
+    //     console.log('-------------------------------------------------')
+    //     console.log(' NÂO ENCONTRADO ')
+    //     console.log('-------------------------------------------------')
+    //   }
+    // })
   }
 
   /**
@@ -335,4 +352,11 @@ export default class SocketController extends BaseController {
       logger.error(error.stack)
     }
   }
+
+  // /**
+  //  *
+  //  */
+  // fallback () {
+  //
+  // }
 }

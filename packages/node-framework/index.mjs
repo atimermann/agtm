@@ -5,6 +5,8 @@
  *
  * @file Main entry point for the Server application, handling imports and exports of core functionalities.
  * @author André Timermann <andre@timermann.com.br>
+ *
+ * @typedef { import("./library/api/model.mjs").ApiResponse } ApiResponse
  */
 
 import Application from './library/application.mjs'

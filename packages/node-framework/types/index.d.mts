@@ -1,3 +1,9 @@
+/**
+ * **Created on 27/01/2023**
+ *
+ * index.mjs
+ */
+export type ApiResponse = import("./library/api/model.mjs").ApiResponse;
 import Application from './library/application.mjs';
 import Server from './library/server.mjs';
 import createLogger from './library/logger.mjs';

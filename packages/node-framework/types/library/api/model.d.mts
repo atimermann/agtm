@@ -28,11 +28,11 @@ export default class Model {
      * Creates a proxy for a given class, applying predefined intercept behavior.
      * This method is intended to enhance classes with additional functionality like automatic error handling.
      *
-     * @param  {Function} targetClass  - The class to be proxied.
-     *
-     * @return {Model}                 A Proxy instance of the targetClass, with intercepts applied.
+     * @template {object} T
+     * @param  {T} targetClass  - The class to be proxied.
+     * @return {T}              - A Proxy instance of the targetClass, with intercepts applied.
      */
-    static proxy(targetClass: Function): Model;
+    static proxy<T extends object>(targetClass: T): T;
 }
 /**
  * Created on 13/03/24
@@ -49,5 +49,35 @@ export type TransformClass = {
  */
 export type ValidationClass = {
     [key: string]: any;
+};
+/**
+ * Created on 13/03/24
+ */
+export type ValidationError = import("yup").ValidationError;
+export type ApiResponse = {
+    /**
+     * Indica se a criação foi bem-sucedida.
+     */
+    success: boolean;
+    /**
+     * O produto criado ou os detalhes do erro de validação.
+     */
+    data?: object | object[];
+    /**
+     * Código do erro
+     */
+    code?: string;
+    /**
+     * Tipo de erro ex: VALIDATION_ERROR, DATABASE_ERROR
+     */
+    error?: string;
+    /**
+     * descrição do erro
+     */
+    message?: string;
+    /**
+     * Detalhamento do erro
+     */
+    errors?: object | ValidationError[];
 };
 //# sourceMappingURL=model.d.mts.map

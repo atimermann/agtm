@@ -22,7 +22,7 @@ BUGS - URGENT
   - Verificar outros métodos do controller tb
   - remover do escodo do http_server
 
-
+- PAdronizar erros usando padrão: https://www.youtube.com/watch?v=4NfflZilTvk
 - configuração CORS
 - Suporte CDN https://github.com/niftylettuce/express-cdn
 - JS-2-DOC MARDKDOWN

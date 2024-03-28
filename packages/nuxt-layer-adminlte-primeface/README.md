@@ -133,7 +133,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
 # Primeiros passos
 
-Depois de tudo configurado, [entre aqui para começar desenvolver sua aplicação.](./docs/first-step.md)
+Depois de tudo configurado, [entre aqui para começar desenvolver sua aplicação.](./docs/guide/readme.md)
 
 # Componentes
 

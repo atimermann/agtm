@@ -27,7 +27,7 @@ export default defineNuxtPlugin(nuxtApp => {
     inputs: {
       // Keep in alphabetical order
       autocomplete: createInput(autocomplete, {
-        props: ['search', 'getItem', 'output', 'valueProp', 'labelProp']
+        props: ['search', 'getItem', 'output', 'valueProp', 'labelProp', 'onChange']
       }),
       taglist: createInput(taglist)
     }

@@ -9,7 +9,9 @@
   "module": "./src/index.mjs",
   "exports": {
     ".": "./nuxt.config.mjs",
-    "./admin": "./src/admin.mjs"
+    "./admin": "./src/admin.mjs",
+    "./img/*": "./src/assets/adminlte/img/*",
+    "./assets/*": "./src/assets/*"
   },
   "scripts": {
     "publish-patch": "npm version patch && npm publish --access public && git push",

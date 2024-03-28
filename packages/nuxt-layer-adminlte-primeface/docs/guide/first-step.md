@@ -1,5 +1,7 @@
 # Primeiros Passos
 
+**DEPRECATED: Atualizar e integrar com o README**
+
 Depois de instalar e configurar o template, podemos iniciar o desenvolvimento com alguma dicas iniciais importante:
 
 ## Prime vs Bootstrap

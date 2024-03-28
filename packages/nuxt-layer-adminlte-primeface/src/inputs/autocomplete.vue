@@ -8,6 +8,7 @@
     @complete="search"
     @item-select="select"
     @clear="clear"
+    @change="onChange"
   />
 </template>
 
@@ -15,7 +16,7 @@
 // ATTENTION, when adding props you need to register in plugns/formkit
 
 import AutoComplete from 'primevue/autocomplete'
-import { cloneDeep, isPlainObject } from 'lodash-es'
+import { cloneDeep, isPlainObject, isFunction } from 'lodash-es'
 import { watch, onMounted, ref } from '#imports'
 
 const props = defineProps({
@@ -25,8 +26,14 @@ const props = defineProps({
   }
 })
 
+defineEmits(['change'])
+
 if (!props.context.search) {
   throw new Error('Search props is required  in AutoComplete Input. Need restart.')
+}
+
+if (props.context.onChange && !isFunction(props.context.onChange)) {
+  throw new Error('onChange props must be a function.')
 }
 
 if (!['object', undefined, 'literal'].includes(props.context.output)) {
@@ -136,6 +143,15 @@ function select (e) {
  */
 function clear (e) {
   props.context.node.input(undefined)
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// EVENTOS
+// ---------------------------------------------------------------------------------------------------------------------
+function onChange () {
+  if (props.context.onChange) {
+    props.context.onChange(cloneDeep(value))
+  }
 }
 
 </script>

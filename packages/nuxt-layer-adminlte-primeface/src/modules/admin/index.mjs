@@ -30,6 +30,12 @@ export default defineNuxtModule({
       as: 'useMenuAdminStore',
       from: resolver.resolve('./stores/menu')
     })
+
+    addImports({
+      name: 'useLayoutAdminStore',
+      as: 'useLayoutAdminStore',
+      from: resolver.resolve('./stores/layout')
+    })
   }
 
 })

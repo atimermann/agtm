@@ -1,15 +1,22 @@
 <template>
   <Toast position="bottom-right" />
   <div class="login-box">
-    <div class="login-logo">
-      <div>{{ admin.logoLabel }}</div>
-    </div>
     <!-- /.login-logo -->
     <div class="card">
       <div class="card-body login-card-body">
-        <p class="login-box-msg">
-          Digite seus dados para entrar
-        </p>
+        <div class="login-logo">
+          <Image
+            v-if="layoutAdminStore.login.logoImage"
+            :src="layoutAdminStore.login.logoImage"
+            alt="Image"
+            width="250"
+          />
+          <div>{{ layoutAdminStore.login.logoLabel }}</div>
+        </div>
+
+        <!--        <p class="login-box-msg">-->
+        <!--          Digite seus dados para entrar-->
+        <!--        </p>-->
 
         <form @submit.prevent="login">
           <div class="input-group mb-3">
@@ -42,9 +49,10 @@
             <div class="col-8" />
             <!-- /.col -->
             <div class="col-4">
-              <button class="btn btn-primary btn-block">
-                Entrar
-              </button>
+              <Button @click="login"> Entrar</Button>
+<!--              <button class="btn btn-primary btn-block">-->
+<!--                Entrar-->
+<!--              </button>-->
             </div>
             <!-- /.col -->
           </div>
@@ -85,20 +93,22 @@ TODO: O cookie "auth" não tem o atributo "SameSite" com valor válido. Em breve
 */
 
 import Toast from 'primevue/toast'
+import Image from 'primevue/image'
+import Button from 'primevue/button';
 
 import { useToast } from 'primevue/usetoast'
-import { definePageMeta, navigateTo, ref, useAppConfig, useAuthAdminStore } from '#imports'
+import { definePageMeta, navigateTo, ref, useAuthAdminStore, useLayoutAdminStore } from '#imports'
 
-const AuthAdminStore = useAuthAdminStore()
+const authAdminStore = useAuthAdminStore()
+const layoutAdminStore = useLayoutAdminStore()
 
-const { admin } = useAppConfig()
 const toast = useToast()
 
 const usarname = ref('')
 const password = ref('')
 
 async function login () {
-  const auth = await AuthAdminStore.authenticate(usarname.value, password.value)
+  const auth = await authAdminStore.authenticate(usarname.value, password.value)
 
   if (auth.success) {
     const redirectPath = sessionStorage.getItem('redirectAfterLogin') || '/'

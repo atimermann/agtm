@@ -66,7 +66,8 @@ Antes de iniciar um novo modulo verifique o checklist abaixo:
 
 * Um modulo pode ser um composable ou uma store pinia, normalmente pinia é recomendável por facilitar a manutenção de
   estado.
-* Após criar nova store ou novo composable é necessário atualizar a exportação no arquivo src/admin.mjs
+* Após criar nova store ou novo composable é necessário atualizar a exportação no arquivo:
+  * **src/modules/admin/index.mjs**
 * Enquanto desenvolve as interface mantenha esta documentação aberta e atualizada, principalmente a refêrencia de
   métodos e propriedades.
 * Não esquecer de atualizar em nuxt.config.mjs os atributos do runtimeConfig

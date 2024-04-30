@@ -55,7 +55,9 @@ export const useLayoutAdminStore = defineStore('layoutAdmin', () => {
 
   /**
    * Configura o layout de uma vez.
-   * // TODO: além de configuração de estilo, passar também outros parametros como imagem
+   * // TODO: além de configuração de estilo, passar também outros parametros como imagem, idéia é configurar tudo de uma vez
+   * // TODO: Categorizar variaveis css dentro de options . ex: root.primaryColor = 'abc'
+   * // TODO: Criar uma typedef de options e validar com schema
    *
    * @param options  Parametros
    * @class

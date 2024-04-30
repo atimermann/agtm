@@ -1,4 +1,4 @@
-# useModuleNameStore
+# useLayoutStore
 
 **Tipo:** Store
 

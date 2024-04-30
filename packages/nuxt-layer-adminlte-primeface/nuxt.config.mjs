@@ -77,7 +77,7 @@ export default defineNuxtConfig({
   vite: {
     resolve: {
       alias: {
-        '@assets': join(currentDir, 'src', 'assets')
+        '#assets': join(currentDir, 'src', 'assets')
       }
     }
   },

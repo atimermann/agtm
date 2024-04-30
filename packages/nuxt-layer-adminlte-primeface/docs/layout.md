@@ -39,7 +39,7 @@ Crie um layout novo no seu projeto, por exemplo:
       <div class="float-right d-none d-sm-block">
         <div class="user-panel">
           <img
-              src="@assets/adminlte/img/user2-160x160.jpg"
+              src="#assets/adminlte/img/user2-160x160.jpg"
               class="img-circle elevation-2"
               alt="User Image"
           >

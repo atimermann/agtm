@@ -16,9 +16,10 @@
 
 ### runtimeConfig
 
-| Variável de ambiente       | Tipo   | Padrão | Descrição                             |
-|----------------------------|--------|--------|---------------------------------------|
-| NUXT_PUBLIC_ADMIN_AUTH_URL | String | N/A    | Endereço do servidor de autenticação. |
+| Propriedade  | Env                                 | Tipo     | Padrão | Descrição                                                                                                      |
+|--------------|-------------------------------------|----------|--------|----------------------------------------------------------------------------------------------------------------|
+| url          | NUXT_PUBLIC_ADMIN_AUTH_URL          | String   | ''     | Endereço do servidor de autenticação.                                                                          |
+
 
 ---
 

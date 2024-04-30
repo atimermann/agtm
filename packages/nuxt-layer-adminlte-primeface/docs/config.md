@@ -103,8 +103,6 @@ export default {
 
 | Propriedade | Descrição                                                                  | Tipo          | Padrão     | Exemplo                                         |
 |-------------|----------------------------------------------------------------------------|---------------|------------|-------------------------------------------------|
-| logoPath    | Caminho da logo                                                            | Texto         |            | (await import('~/assets/img/logo.png')).default |
-| logoLabel   | Texto com a logo, usado no login e no admin  (Normalmente nome do projeto) | Texto         | AdminLte 3 |                                                 |
 | menu        | Configuração do menu (Ver mais abaixo)                                     | Objeto (Menu) |            |                                                 |
 
 ## Menu

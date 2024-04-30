@@ -11,47 +11,65 @@ o layout pode alterar para cada cliente diferente
 
 ### appConfig
 
-| Atributo     | Tipo    | Padrão | Descrição                                    |
-|--------------|---------|--------|----------------------------------------------|
-| auth.enabled | Boolean | false  | Se o módulo de autenticação está habilitado. |
+| Atributo        | Tipo   | Padrão | Descrição               |
+|-----------------|--------|--------|-------------------------|
+| admin.logoLabel | String | ''     | Label exibida no menu . |
 
 ### runtimeConfig
 
-| Variável de ambiente       | Tipo   | Padrão | Descrição                             |
-|----------------------------|--------|--------|---------------------------------------|
-| NUXT_PUBLIC_ADMIN_AUTH_URL | String | N/A    | Endereço do servidor de autenticação. |
+| Variável de ambiente | Tipo | Padrão | Descrição |
+|----------------------|------|--------|-----------|
+
+Nenhum configuração disponível
 
 ---
 
 ## Atributos
 
-| Nome            | Tipo    | Descrição                                                                |
-|-----------------|---------|--------------------------------------------------------------------------|
-| `authenticated` | boolean | Indica se o usuário está atualmente autenticado.                         |
-| `scope`         | ?string | O escopo do token de acesso indicando quais permissões foram concedidas. |
+| Nome              | Tipo   | Padrão                         | Descrição                                                                                                                                                              |
+|-------------------|--------|--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `login.logoImage` | string | null                           | Imagem usada como logo na tela de login. Para obter o caminho correto utilizar import como no exemplo: (await import('#assets/adminlte/img/AdminLTELogo.png')).default |
+| `login.logoLabel` | string | useAppConfig().admin.logoLabel | Label exibita na tela de login                                                                                                                                         |
+| `menu.logoImage`  | sring  | ''                             | Imagem usada como logo no menu. Para obter o caminho correto utilizar import como no exemplo: (await import('#assets/adminlte/img/AdminLTELogo.png')).default          |
+| `login.logoLabel` | string | 'NLAP Control Panel'           | Label exibida no menu                                                                                                                                                  |
 
 ---
 
 ## Métodos
 
-### defineMenu()
+### configure()
 
-[DESCRIÇÃO]
+[TODO]
+
+### loadTheme()
+
+[TODO]
+
+### setLoginLogoImage()
+
+[TODO]
+
+### setLoginLogoLabel()
+
+[TODO]
+
+### setMenuLogoImage()
+
+[TODO]
+
+### setMenuLogoLabel()
+
+[TODO]
 
 #### Parâmetros
 
-| Nome | Tipo | Padrão | Descrição                                 |
-|------|------|--------|-------------------------------------------|
-| menu | Menu | N/A    | Objeto de menu a ser definido e indexado. |
+| Nome  | Tipo   | Padrão | Descrição               |
+|-------|--------|--------|-------------------------|
+| label | string | N/A    | Label exibida no menu . |
 
 #### Retorno
 
-| Nome             | Tipo    | Descrição         |
-|------------------|---------|-------------------|
-| response.success | Boolean | True se sucesso   |
-| response.status  | String  | status do retorno |
-
-ou VOID
+VOID
 
 #### Exemplo:
 

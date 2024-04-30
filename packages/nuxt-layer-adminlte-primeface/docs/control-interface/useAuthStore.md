@@ -53,9 +53,10 @@ Configurações necessárias para habilitar e configurar o módulo de autentica�
 
 Variáveis de ambiente necessárias para configurar o endereço do servidor de autenticação e o Client ID da aplicação.
 
-| Variável de ambiente             | Tipo   | Padrão | Descrição                             |
-|----------------------------------|--------|--------|---------------------------------------|
-| NUXT_PUBLIC_ADMIN_AUTH_URL       | String | N/A    | Endereço do servidor de autenticação. |
-| NUXT_PUBLIC_ADMIN_AUTH_CLIENT_ID | String | N/A    | Client ID da aplicação.               |
-
----
+| Propriedade  | Env                                 | Tipo     | Padrão | Descrição                                                                                                      |
+|--------------|-------------------------------------|----------|--------|----------------------------------------------------------------------------------------------------------------|
+| url          | NUXT_PUBLIC_ADMIN_AUTH_URL          | String   | ''     | Endereço do servidor de autenticação.                                                                          |
+| clientId     | NUXT_PUBLIC_ADMIN_AUTH_CLIENT_ID    | String   | ''     | ID que identifica o admin no servidor de autenticação.                                                         |
+| role.enabled | NUXT_PUBLIC_ADMIN_AUTH_ROLE_ENABLED | Bool     | false  | Ativa a autenticação baseada em roles. O usuário deve possuir uma ou mais roles específica para autenticar-se. |
+| role.path    | NUXT_PUBLIC_ADMIN_AUTH_ROLE_PATH    | String   | ''     | Localização da lista de roles no access_token. <br/>Exemplo: resource_access.adminui.roles                     |
+| role.roles   | NUXT_PUBLIC_ADMIN_AUTH_ROLE_ROLES   | String[] | []     | Define as roles exigidas para a autenticação do usuário no painel admin.                                       |

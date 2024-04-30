@@ -14,6 +14,7 @@
 
 # Funcionalidades
 
+* Gerar Documentação automaticamente apartir de JSDOC, principalmente par aos modulos (composable, store etc...)
 * Criar central de mensagem q centraliza erros, em vez de ir direto pro toast vai pra central de mensagem q ai sim
   dispara toast se usuario não tiver no silencioso
 * Documentar que para texto utilizar o adminlte/bootstap, criar um de para sobre oq é melhor usar no adminlte/bootstrap

@@ -13,7 +13,6 @@
               <li><strong>Personalização:</strong> Para personalizar a aparência do template, modifique o arquivo <code>src/app.vue</code> conforme suas preferências.</li>
               <li><strong>Configuração do Projeto:</strong> Configure as variáveis de ambiente e outras configurações essenciais no arquivo <code>.env</code>.</li>
             </ul>
-
           </template>
           <template #footer>
             Nuxt Layer AdminLTE + PrimeFace
@@ -26,7 +25,9 @@
             Interface de Controle
           </template>
           <template #content>
-            <Button @click="badge">Atualiza Marcador</button>
+            <Button @click="badge">
+              Atualiza Marcador
+            </button>
           </template>
         </NfCard>
       </div>
@@ -48,12 +49,11 @@
 
 <script setup>
 
-import {definePageMeta} from '#imports'
-import {useAdminStore} from '@/admin'
+import { definePageMeta, useMenuAdminStore } from '#imports'
 
 import Button from 'primevue/button'
 
-const admin = useAdminStore()
+const menuAdminStore = useMenuAdminStore()
 
 definePageMeta({
   layout: 'admin',
@@ -64,9 +64,9 @@ definePageMeta({
 // Interface de Controle
 let count = 0
 
-function badge() {
+function badge () {
   count++
-  admin.setBadge('dashboard', count)
+  menuAdminStore.setBadge('dashboard', count)
 }
 
 </script>

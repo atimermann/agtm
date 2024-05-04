@@ -4,6 +4,6 @@ export default {
     auth: {
       enabled: false
     },
-    logoLabel: 'NuxtLayerAdminLTE'
+    logoLabel: '{{PACKAGE_NAME}}'
   }
 }

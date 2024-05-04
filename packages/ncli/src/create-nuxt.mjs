@@ -35,10 +35,7 @@ try {
     process.exit(1)
   }
   /// //////////////////// /////////// VERIFICAÇÂO DE INCOMPATIBILIDADE ////////////////////////////////////////////////
-
-
-  console.log(`Script testado com Nuxt versão nuxi@3.10.2. Se der problema e estiver com pressa utilize essa versão!`)
-
+  console.log(`Script testado com Nuxt versão nuxi@10.3.2. Se der problema e estiver com pressa utilize essa versão!`)
 
   const questions = [
     {
@@ -106,6 +103,10 @@ try {
     PACKAGE_NUXT_VERSION: packageJSON.dependencies.nuxt,
     PACKAGE_VUE_VERSION: packageJSON.dependencies.vue,
     PACKAGE_VUE_ROUTER_VERSION: packageJSON.dependencies['vue-router']
+  })
+
+  await render(join(rootPath, 'src/app.config.ts'), {
+    PACKAGE_NAME: answers.name
   })
 
   // Configure .env

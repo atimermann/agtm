@@ -26,15 +26,6 @@ menuAdminStore.defineMenu({
         'pi',
         'pi-home'
       ]
-    },
-    {
-      id: 'exit',
-      title: 'Sair',
-      link: '/login',
-      iconClasses: [
-        'pi',
-        'pi-sign-out'
-      ]
     }
   ]
 })

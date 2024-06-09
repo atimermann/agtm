@@ -49,14 +49,17 @@
             <div class="col-8" />
             <!-- /.col -->
             <div class="col-4">
-              <Button @click="login"> Entrar</Button>
-<!--              <button class="btn btn-primary btn-block">-->
-<!--                Entrar-->
-<!--              </button>-->
+              <Button @click="login">
+                Entrar
+              </Button>
+              <!--              <button class="btn btn-primary btn-block">-->
+              <!--                Entrar-->
+              <!--              </button>-->
             </div>
             <!-- /.col -->
           </div>
         </form>
+
         <!--        {{ AuthStore }}-->
 
         <!--        <div class="social-auth-links text-center mb-3">-->
@@ -80,6 +83,7 @@
       <!-- /.login-card-body -->
     </div>
   </div>
+
   <!-- /.login-box -->
 </template>
 
@@ -94,7 +98,7 @@ TODO: O cookie "auth" não tem o atributo "SameSite" com valor válido. Em breve
 
 import Toast from 'primevue/toast'
 import Image from 'primevue/image'
-import Button from 'primevue/button';
+import Button from 'primevue/button'
 
 import { useToast } from 'primevue/usetoast'
 import { definePageMeta, navigateTo, ref, useAuthAdminStore, useLayoutAdminStore } from '#imports'

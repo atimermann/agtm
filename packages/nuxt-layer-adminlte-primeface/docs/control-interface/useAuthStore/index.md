@@ -2,7 +2,11 @@
 
 **Tipo:** Store
 
-Gerencia a autenticação do usuário. A autenticação é salva no localStorage.
+Módulo de autenticação do painel administrativo. Este módulo é responsável por autenticar e autorizar o usuário no
+servidor.
+ 
+Implementado com o keycloak em mente, seguindo padrão OpenId. Mais detalhes aqui: [Keycloak](./keycloak.md). 
+
 
 **Importante:** É necessário habilitar a função de autenticação em **auth.enabled** como descrito abaixo.
 

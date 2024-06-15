@@ -24,7 +24,11 @@
     "docker:build:major": "./scripts/build-image.sh major",
     "docker:build:prod": "./scripts/build-image.sh prod",
     "docker:run": "./scripts/docker.sh run",
-    "docker:shell": "./scripts/docker.sh shell"
+    "docker:shell": "./scripts/docker.sh shell",
+    "prisma": "DATABASE_URL=$(./scripts/generate-prisma-url.mjs) prisma",
+    "prisma:migrate": "DATABASE_URL=$(./scripts/generate-prisma-url.mjs) prisma migrate dev --name",
+    "prisma:generate": "DATABASE_URL=$(./scripts/generate-prisma-url.mjs) prisma generate",
+    "prisma:status": "DATABASE_URL=$(./scripts/generate-prisma-url.mjs) prisma migrate status"
   },
   "author": "{{PACKAGE_AUTHOR}}",
   "license": "ISC",

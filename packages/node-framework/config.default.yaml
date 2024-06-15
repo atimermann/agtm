@@ -52,7 +52,7 @@ httpServer:
 
 # Habilita Sistema Gerenciador de Jobs e Worker
 jobManager:
-  enabled: true
+  enabled: false
   # Array com lista de aplicações, apps e controlers habilitados, null para todos
   applicationsEnabled: null
   appsEnabled: null

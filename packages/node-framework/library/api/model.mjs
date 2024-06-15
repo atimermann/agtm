@@ -167,21 +167,21 @@ const proxyHandler = {
    * If the property is a function, wraps it in an async function to catch and handle errors.
    *
    * @param  {{[key: string]: any}} target    - The original object the proxy is for.
-   * @param  {string}               prop      - The name of the property being accessed.
+   * @param  {string}               propName      - The name of the property being accessed.
    * @param  {{[key: string]: any}} receiver  - The Proxy object, used create context on the original object
    *
    * @return {Function|*}                     - If the property is a function, returns a wrapped async function. Otherwise, returns the property value directly.
    */
-  get (target, prop, receiver) {
-    const targetProp = target[prop]
+  get (target, propName, receiver) {
+    const targetProp = target[propName]
 
     if (typeof targetProp === 'function') {
-      const isPrivateMethod = prop.startsWith('$')
+      const isPrivateMethod = propName.startsWith('$')
       if (isPrivateMethod) {
         return targetProp
       }
 
-      return wrapAsyncFunction(prop, targetProp, target, receiver)
+      return wrapAsyncFunction(propName, targetProp, target, receiver)
     }
 
     return targetProp

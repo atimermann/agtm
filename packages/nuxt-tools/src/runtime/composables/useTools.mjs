@@ -79,6 +79,9 @@ export default {
    * console.log(encryptedText);  // Outputs the encrypted text in hexadecimal format.
    */
   async encryptText (text, algorithm = 'SHA-256') {
+
+    // TODO: Só funciona com HTTPS, navegador bloquena crypto.subtle com http, retorna undefinet
+    // TODO: Criar um teste geral para evitar surpresas
     const encoder = new TextEncoder()
     const data = encoder.encode(text)
     const hashBuffer = await crypto.subtle.digest(algorithm, data)

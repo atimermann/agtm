@@ -90,6 +90,8 @@ export default function calculateProgressPercentage (currentCount, items, step =
  * @returns {Promise<any>} - Returns a Promise that resolves with the value returned by `fn`.
  * @throws {Error} - Throws an error if the time exceeds the specified `timeout`.
  *
+ * @deprecated Use import { setTimeout } from 'timers/promises' https://nodejs.org/api/timers.html#timerspromisessettimeoutdelay-value-options
+ *
  * @example
  * const testFunction = () => Math.random() > 0.9 ? 'done' : undefined;
  * try {

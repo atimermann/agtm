@@ -15,7 +15,8 @@
   },
   "homepage": "https://github.com/atimermann/agtm#readme",
   "workspaces": [
-    "public/*"
+    "public/*",
+    "private/*"
   ],
   "devDependencies": {
     "semantic-release": "^22.0.5"

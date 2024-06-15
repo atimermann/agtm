@@ -19,6 +19,7 @@
     "private/*"
   ],
   "devDependencies": {
-    "semantic-release": "^22.0.5"
+    "eslint-plugin-local": "^4.2.2",
+    "semantic-release": "^22.0.12"
   }
 }

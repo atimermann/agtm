@@ -5,6 +5,8 @@
  *
  * @file
  * module for loading composables, stores at compilation level in the project
+ *
+ * Nuxt Layer does not load stores automatically so a module for manual loading is needed
  */
 import { defineNuxtModule, addImports, createResolver } from 'nuxt/kit'
 

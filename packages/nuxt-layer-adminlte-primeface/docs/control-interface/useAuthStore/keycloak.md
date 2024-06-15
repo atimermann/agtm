@@ -16,7 +16,11 @@ E adicionar em Web Origins o endereço do seu painel administrativo, por exemplo
   "http://localhost:3030"
 ```
 
-Em produção você deve adicionar o endereço apropriado do seu painel administrativo.
+Em produção você deve adicionar endereço de cada dominio usado:
+
+Por exemplo:
+
+![Exemplo](weborigin.png)
 
 **Nota:** **Standard flow** permite a configuração de cors e **Direct Access Grants** permite a autenticação via usuário
 e senha.
@@ -57,4 +61,9 @@ NUXT_PUBLIC_ADMIN_AUTH_ROLE_ROLES=crontech-platform-application-access
 
 **AUTH_ROLE_PATH:** Localização da role dentro do keycloak, este é o caminho para roles de realm.
 **AUTH_ROLE_ROLES:** Nome da role que o usuário deve possuir para acessar o painel administrativo.
+
+![Exemplo](roles01.png)
+
+![Exemplo](roles02.png)
+
 

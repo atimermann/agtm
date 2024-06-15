@@ -1,0 +1,3 @@
+[submodule "nuxt-layer-adminlte-primeface"]
+	path = private/nuxt-layer-adminlte-primeface
+	url = git@github.com:atimermann/nuxt-layer-adminlte-primeface.git

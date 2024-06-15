@@ -40,7 +40,7 @@ build/Release
 
 # Dependency directories
 node_modules/
-jspm_packages/
+jspm_public/
 
 # TypeScript v1 declaration files
 typings/
@@ -156,7 +156,7 @@ Temporary Items
 .apdisk
 
 ############### NF MANAGER #####################
-/packages/nf-manager/src/public
-/packages/nf-manager/src/apps/main/assets
-/packages/nf-manager/storage
+/public/nf-manager/src/public
+/public/nf-manager/src/apps/main/assets
+/public/nf-manager/storage
 

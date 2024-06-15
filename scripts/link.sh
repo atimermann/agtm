@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd packages || exit 1
+cd public || exit 1
 for dir in */ ; do
   cd "$dir" || continue
   echo "npm link $dir"

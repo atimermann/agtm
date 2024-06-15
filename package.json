@@ -6,7 +6,6 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "npx eslint --ext .mjs,.js .",
     "link": "./scripts/link.sh"
   },
   "author": "André Timermann <andre@timermann.com.br>",
@@ -19,7 +18,6 @@
     "public/*"
   ],
   "devDependencies": {
-    "@nuxt/eslint-config": "^0.2.0",
     "dotenv-cli": "^7.3.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-local": "^1.0.0",

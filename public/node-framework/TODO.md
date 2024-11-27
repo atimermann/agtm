@@ -27,7 +27,7 @@ BUGS - URGENT
 - Suporte CDN https://github.com/niftylettuce/express-cdn
 - JS-2-DOC MARDKDOWN
 - Revisar cabeçalho de documentação dos arquivos (caminho mudou)
-- Migrar para Typescript (pelo menos documentação)
+- Migrar para Typescript NATIVO DO NODEJS (pelo menos documentação)
 - Estruturar e definir melhor config com DOT ENV (foi atualizado muitas versões)
 - CONVERTER TODA CONFIGURAÇÃO PARA ENV, deixar um padrão e converter para ENV verificar se dá pra chamar this.config('
   server.timezone') e em .env ser SERVER_TIMEZONE
@@ -35,9 +35,6 @@ BUGS - URGENT
 - Parametrizar Cors
 - Tratar erro em um unico local, atualmente definido em Controller: socket.#registerEventForSocket
   - Replicar para API REST
-
-
-    
 
 ************************************************************************************************************************
 JOBS
@@ -138,17 +135,26 @@ Socket
 *[ok]  Atualmente uma nova conexão é feita ao conectar em cada página vamos mudar e centralizar isso
 *[ok]  Vamos criar um composable global ou Store para geranciar, a conexão é feita uma vez ao iniciar
 *[ok]  sempre que houver necessidade de comunicação comunicamos com esse composable/store/plugin global
+
 * Esse componente será responsavel por gerenciar cache, resposta, atualizações:
   *[ok]  A pagina faz getCategoryByName('name=123')
   *[ok]  O componente registra a requisição, executa e salva o resultado internamente em um cache
   *[ok]  O valor do cache é retornado
   *[ok]  o backend pode enviar uma atualização de dados, neste caso é feita uma nova consulta atualizando o cache
   *[ok]  Atualizando os componentes automaticamente por reatividade
-* Toda nova página necessário definir quais eventos vão ouvir, ao sair da página esses eventos são desativados
+* Toda nova (página) necessário definir quais eventos vão ouvir, ao sair da página esses eventos são desativados
   automaticamente( NUXT )
   *[ok]  socket.on('eventoNome', meuCallback);
   *[ok]  socket.off('eventoNome', meuCallback);
-  *[ok]  Toda vez e uma nova página for acessada, vai haver uma nova configuração de listeners para serem ouvido desligando
+  *[ok]  Toda vez e uma nova página for acessada, vai haver uma nova configuração de listeners para serem ouvido
+  desligando
   os outros, pode ser usado:
   *[ok]  socket.off();
   *[ok]  Também é feito pré-cache, necessário definir a requisição previamente para ser usada posteriormente
+
+************************************************************************************************************************
+NOVA CAMADA DE ENDPOINTS BASEADO NO NEST, porém simplificado
+************************************************************************************************************************* 
+
+* Todo endpoint tem: validação, transformação de entrada, consulta, transformação de saída, retorno, gestão de
+  erro, documentação 

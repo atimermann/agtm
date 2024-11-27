@@ -10,6 +10,7 @@
 
 import Application from './application.mjs'
 import HttpServer from './http-server.mjs'
+import HttpServer2 from './http/http-server2.ts'
 import SocketServer from './socket/socket-server.mjs'
 
 import JobManager from './jobs/job-manager.mjs'
@@ -25,6 +26,7 @@ import { sentenceCase } from 'change-case'
 import createLogger from './logger.mjs'
 import { readFileSync } from 'node:fs'
 import ResourceMonitor from './resource-monitor.mjs'
+import ConsoleLogger from "./loggers/consoleLogger.ts";
 const logger = createLogger('Init')
 
 export default {
@@ -111,6 +113,17 @@ export default {
     if (Config.get('socket.enabled', 'boolean')) {
       await SocketServer.run(application)
     }
+
+    // New HTTP server implementation based on Fastify and inspired by NestJS
+    if (Config.get('httpServer2.enabled', 'boolean')) {
+
+      // TODO: Reimplementar console logger usando padrão Injeção de dependencia
+      const logger = new ConsoleLogger();
+      const httpServer2 = new HttpServer2(logger);
+      httpServer2.run();
+
+    }
+
   },
 
   /**

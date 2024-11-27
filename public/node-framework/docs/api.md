@@ -3,7 +3,7 @@
 Node framework disponibiliza seguintes classe para auxiliar na criação de APIs:
 
 # Models
-
+<!-- WARN: Deprecated, usar o Prisma -->
 ## Visão Geral
 
 Os Models no Node Framework fornecem classes base para auxiliar na interação com o banco de dados. Essas classes são

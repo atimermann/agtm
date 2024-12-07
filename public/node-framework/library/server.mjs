@@ -10,7 +10,7 @@
 
 import Application from './application.mjs'
 import HttpServer from './http-server.mjs'
-import HttpServer2 from './http/http-server2.ts'
+import HttpServer2 from './http/httpServer2.ts'
 import SocketServer from './socket/socket-server.mjs'
 
 import JobManager from './jobs/job-manager.mjs'
@@ -116,12 +116,9 @@ export default {
 
     // New HTTP server implementation based on Fastify and inspired by NestJS
     if (Config.get('httpServer2.enabled', 'boolean')) {
-
-      // TODO: Reimplementar console logger usando padrão Injeção de dependencia
       const logger = new ConsoleLogger();
       const httpServer2 = new HttpServer2(logger);
-      httpServer2.run();
-
+      httpServer2.run(application);
     }
 
   },

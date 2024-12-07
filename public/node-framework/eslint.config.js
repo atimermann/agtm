@@ -7,6 +7,8 @@ export default [
   { files: ["**/*.{js,mjs,cjs,ts}"] },
   {
     languageOptions: { globals: globals.browser },
+    // Adiciona o plugin para regras de estilo
+    plugins: {},
     rules: {
       "@typescript-eslint/consistent-type-imports": [
         "error",
@@ -15,6 +17,8 @@ export default [
           disallowTypeAnnotations: true, // Opcional: impede `type` redundante em declarações
         },
       ],
+      "@typescript-eslint/no-inferrable-types": "error",
+      "@typescript-eslint/no-explicit-any": "error"
     },
   },
   pluginJs.configs.recommended,

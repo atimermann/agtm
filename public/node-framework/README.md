@@ -1,3 +1,7 @@
+# TODO: Atualizar documentação
+- Tipo deve ser importado com type no node
+
+
 # Projeto Node Framework
 
 Framework minimalista para nodejs com objetivo de disponibilizar uma base de código pronta para o rápido inicio de

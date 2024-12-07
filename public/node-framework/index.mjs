@@ -9,20 +9,21 @@
  * @typedef { import("./library/api/model.mjs").ApiResponse } ApiResponse
  */
 
-import Application from './library/application.mjs'
-import ApplicationController from './library/application-controller.mjs'
-import Server from './library/server.mjs'
-import createLogger from './library/logger.mjs'
-import Config from './library/config.mjs'
-import JobsController from './library/controller/jobs.mjs'
-import SocketController from './library/controller/socket.mjs'
-import HttpController from './library/controller/http.mjs'
-import CoreController from './library/controller/core.mjs'
-import checkExecution from './library/check-execution.mjs'
-import JobManager from './library/jobs/job-manager.mjs'
-import WorkerManager from './library/jobs/worker-manager.mjs'
-import YupValidation from './library/api/yup-validation.mjs'
-import Model from './library/api/model.mjs'
+import Application from "./library/application.mjs"
+import ApplicationController from "./library/application-controller.mjs"
+import Server from "./library/server.mjs"
+import createLogger from "./library/logger.mjs"
+import Config from "./library/config.mjs"
+import JobsController from "./library/controller/jobs.mjs"
+import SocketController from "./library/controller/socket.mjs"
+import HttpController from "./library/controller/http.mjs"
+import CoreController from "./library/controller/core.mjs"
+import checkExecution from "./library/check-execution.mjs"
+import JobManager from "./library/jobs/job-manager.mjs"
+import WorkerManager from "./library/jobs/worker-manager.mjs"
+import YupValidation from "./library/api/yup-validation.mjs"
+import Model from "./library/api/model.mjs"
+
 
 const logger = createLogger()
 
@@ -41,5 +42,10 @@ export {
   JobManager,
   WorkerManager,
   YupValidation,
-  Model
+  Model,
 }
+
+////////////////////////////////////
+// New format
+////////////////////////////////////
+export { HttpRouter } from "./library/http/httpRouter.ts"

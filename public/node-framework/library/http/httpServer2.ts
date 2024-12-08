@@ -6,7 +6,6 @@ import * as fs from "node:fs/promises"
 import cors from "@fastify/cors"
 
 import { HttpRouter } from "./httpRouter.ts"
-import type { HttpRouterInterface } from "./httpRouter.interface.ts"
 import type { FastifyInstance } from "fastify"
 import ApiGenerator from "./apiGenerator.ts"
 
@@ -20,9 +19,14 @@ export type UserClassFileDescription = {
 }
 
 export default class HttpServer {
-  protected logger: LoggerInterface
-  protected readonly server: FastifyInstance
+  private readonly logger: LoggerInterface
+  private readonly server: FastifyInstance
 
+  /**
+   * Construtor
+   *
+   * @param logger
+   */
   constructor(logger: LoggerInterface) {
     this.logger = logger
 
@@ -39,6 +43,9 @@ export default class HttpServer {
 
   /**
    * Inicia Servidor httpServer2 (baseado no Fastify, especializado em API Rest)
+
+   * @param application   Application Legada
+   * @param port          Porta do servidor (TODO Mudar para carregar do config/env)
    */
   async run(application, port = 3001) {
     await this.server.register(cors, {
@@ -47,7 +54,12 @@ export default class HttpServer {
     })
 
     this.server.get("/ping", async (request, reply) => {
-      return { message: "Server is running!", time: reply.elapsedTime, ip: request.ip, protocol: request.protocol }
+      return {
+        message: "Server is running!",
+        time: reply.elapsedTime,
+        ip: request.ip,
+        protocol: request.protocol,
+      }
     })
 
     await this.generateAutoRoutes()
@@ -65,9 +77,9 @@ export default class HttpServer {
   }
 
   /**
-   *  Carrega todos os rounters definidos pelos apps
+   *  Carrega todos os rotas definidos pelos apps
    */
-  protected async loadRouters() {
+  private async loadRouters() {
     const files = await this.findUserClassFilesInAppDir(APP_DIR, /\.routes\.ts$/)
 
     for (const fileDescription of files) {
@@ -93,8 +105,10 @@ export default class HttpServer {
    *
    *  TODO: Simplificar / Reformatar / separar em métodos ou até criar uma classe só pra ele
    *
+   * @param AppDirPath    Caminho do diretório onde os apps estão localizados
+   * @param filePattern   Expressã regular que define extensão dos arquivos que serão carregados
    */
-  protected async findUserClassFilesInAppDir(
+  private async findUserClassFilesInAppDir(
     AppDirPath: string,
     filePattern: RegExp,
   ): Promise<UserClassFileDescription[]> {
@@ -108,7 +122,9 @@ export default class HttpServer {
       const appName = appDirectory.name
 
       if (appDirectory.isDirectory()) {
-        const appDirectoryEntries = await fs.readdir(join(AppDirPath, appDirectory.name), { withFileTypes: true })
+        const appDirectoryEntries = await fs.readdir(join(AppDirPath, appDirectory.name), {
+          withFileTypes: true,
+        })
 
         for (const appDirectoryEntry of appDirectoryEntries) {
           const appDirectoryEntryPath = join(AppDirPath, appDirectory.name, appDirectoryEntry.name)
@@ -147,8 +163,10 @@ export default class HttpServer {
 
   /**
    *  Imprime tabela de referencia de id para cada rota, pode ser usada para configurar o schema
+   *
+   * @param userClassFileDescriptions   Descritor do arquivo carregado
    */
-  protected logIdSchemaMap(userClassFileDescriptions: UserClassFileDescription[]) {
+  private logIdSchemaMap(userClassFileDescriptions: UserClassFileDescription[]) {
     userClassFileDescriptions.forEach((item) => {
       this.logger.info("------------ ID Schema Map --------------------")
       this.logger.info(`App:    ${item.app}`)
@@ -161,7 +179,7 @@ export default class HttpServer {
   /**
    * Gera rotas automaticamente baseado nos arquivos .auto.ts, estentendo caso necessário
    */
-  protected async generateAutoRoutes() {
+  private async generateAutoRoutes() {
     const files = await this.findUserClassFilesInAppDir(APP_DIR, /\.auto\.json$/)
 
     for (const fileDescription of files) {

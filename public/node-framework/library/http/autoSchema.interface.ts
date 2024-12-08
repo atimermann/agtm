@@ -1,29 +1,36 @@
 export interface AutoSchema {
-  model: string;
-  key: string;
-  route: string;
-  fields: FieldSchema[];
-  ui?: UISchema;
+  model: string
+  key: string
+  route: string
+  fields: FieldSchema[]
+  ui?: UISchema
 }
 
 export interface FieldSchema {
-  name: string;
-  dbName?: string;
-  type: string;
-  unique?: boolean;
-  required?: boolean;
-  create?: boolean;
-  update?: boolean;
-  view?: boolean;
-  properties?: any;
+  name: string
+  dbName?: string
+  type: string
+  unique?: boolean
+  required?: boolean
+  create?: boolean
+  update?: boolean
+  view?: boolean
+  /**
+   * Propriedades de validação usado pelo front
+   */
+  properties: PropertySchema
+}
+
+export interface PropertySchema {
+  label?: string
 }
 
 export interface UISchema {
   createButton?: {
-    label: string;
-  };
+    label: string
+  }
   form?: {
-    newTitle: string;
-    updateTitle: string;
-  };
+    createTitle: string
+    updateTitle: string
+  }
 }

@@ -157,7 +157,9 @@ export default class DynamicController extends HttpController {
    * @param request
    * @param reply
    */
-  async dynamicSchema(request: FastifyRequest, reply: FastifyReply) {}
+  async dynamicSchema() {
+    return this.autoSchema.mapAuthSchemaToCrudSchema()
+  }
 
   /**
    * Importa PrismaClient do diretório do projeto do usuário

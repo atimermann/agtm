@@ -1,5 +1,7 @@
 import type { AutoSchema, FieldSchema } from "./autoSchema.interface.ts"
 import type { UserClassFileDescription } from "./httpServer2.ts"
+import { sentenceCase } from "change-case"
+import type { CrudSchema } from "./crudSchema.interface.js"
 
 export class AutoSchemaHandler {
   readonly schema: AutoSchema
@@ -9,8 +11,22 @@ export class AutoSchemaHandler {
     return new AutoSchemaHandler(autoSchema)
   }
 
-  protected static async loadSchema(fileDescription: UserClassFileDescription): Promise<AutoSchema> {
-    return (await import(fileDescription.path, { with: { type: "json" } })).default
+  protected static async loadSchema(
+    fileDescription: UserClassFileDescription,
+  ): Promise<AutoSchema> {
+    const schema = {
+      fields: [],
+      ...(await import(fileDescription.path, { with: { type: "json" } })).default,
+    }
+
+    schema.fields = schema.fields.map((schemaElement: FieldSchema) => ({
+      create: true,
+      update: true,
+      view: true,
+      properties: {},
+      ...schemaElement,
+    }))
+    return schema
   }
 
   constructor(schema: AutoSchema) {
@@ -37,6 +53,36 @@ export class AutoSchemaHandler {
   }
 
   public getViewFields(): string[] {
-    return this.schema.fields.filter((field) => field.view !== false).map((field) => field.dbName || field.name)
+    return this.schema.fields
+      .filter((field) => field.view !== false)
+      .map((field) => field.dbName || field.name)
+  }
+
+  public mapAuthSchemaToCrudSchema(): CrudSchema {
+    const crudSchema: CrudSchema = {
+      ...this.schema.ui,
+      fields: [],
+    }
+
+    //////////////////////////////////////////////////
+    // MAP FIELDS
+    //////////////////////////////////////////////////
+    for (const field of this.schema.fields) {
+      if (!field.create && !field.update && !field.view) continue
+
+      const crudField = {
+        name: field.name,
+        label: field.properties.label || sentenceCase(field.name),
+        ignoreGrid: !field.view,
+        ignoreForm: !field.create && !field.update,
+      }
+
+      crudSchema.fields.push({
+        ...crudField,
+        ...field.properties,
+      })
+    }
+
+    return crudSchema
   }
 }

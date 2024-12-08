@@ -159,18 +159,3 @@ export class HttpRouter implements HttpRouterInterface {
   }
 }
 
-// 1. Rate Limiting       -> Evitar abusos e ataques de força bruta.
-// 2. Autenticação        -> Garantir acesso apenas a usuários legítimos.
-// 3. Validação de Dados  -> Certificar que os dados são válidos e seguros.
-// 4. Processamento de Dados de Entrada (POST/PUT)
-// 5. Consulta            -> Obter informações necessárias do banco ou API.
-// 6. Processamento de Dados de Saída (GET)
-// 7. Tratamento de Erro  -> Lidar com exceções e retornar mensagens consistentes.
-
-// Fastify componentes order load:
-// https://fastify.dev/docs/latest/Guides/Getting-Started/#loading-order-of-your-plugins
-// └── plugins (from the Fastify ecosystem)
-// └── your plugins (your custom plugins)
-// └── decorators
-// └── hooks
-// └── your services

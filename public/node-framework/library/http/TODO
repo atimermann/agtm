@@ -1,0 +1,52 @@
+////////////////////////////////////////////////////////////////////////////////
+TODO:
+////////////////////////////////////////////////////////////////////////////////
+ - Autenticar usuario com keycloak
+ - [OK] Validar dados  (Usar schema padrão, ver integração com PRISMA)
+ - Processar dados (Criar um service padronizado para isso)
+ - [OK] Tratar erros (Seguir as padrões de REST API para erros semânticos)
+    o Fastify já tem um tratamento de erro padrão
+ - Rate Limite padronizado
+ - Cors configurado
+ - Criar erros customizado em função e em um arquivo separado .validator.ts
+ - Documentar com Swagger padronizado
+ - Versionar
+ - Tudo que for padrão deixar numa lib
+ - Teste Unitário
+
+////////////////////////////////////////////////////////////////////////////////
+ TODO 2:
+ ////////////////////////////////////////////////////////////////////////////////
+ - retorna uma lista indexada de erros para facilitar trabalho do front
+    - usar errorHandler do fastify
+
+ PROJECT AUTO API:
+
+ - verifica se existe um [NOME_RECURSO].auto.ts
+ - verifica se existe um [NOME_RECURSO].routes.ts (se não existir gera automaticamente) se exisitir estente
+ - Verifica se existe um [NOME_RECURSO].controller.ts (se não existir gera automaticamente) se existir estente
+ - Gera schema fastify automaticamente
+ - Cria consultas automaticamente, ou se já existir o controller, disponibiliza para uso
+ - Cria uma rota que gera um .jso
+ n pronto para o front gerar o crud automaticamente
+
+
+////////////////////////////////////////////////////////////////////////////////
+// TODO 3
+////////////////////////////////////////////////////////////////////////////////
+
+ // 1. Rate Limiting       -> Evitar abusos e ataques de força bruta.
+ // 2. Autenticação        -> Garantir acesso apenas a usuários legítimos.
+ // 3. Validação de Dados  -> Certificar que os dados são válidos e seguros.
+ // 4. Processamento de Dados de Entrada (POST/PUT)
+ // 5. Consulta            -> Obter informações necessárias do banco ou API.
+ // 6. Processamento de Dados de Saída (GET)
+ // 7. Tratamento de Erro  -> Lidar com exceções e retornar mensagens consistentes.
+
+ // Fastify componentes order load:
+ // https://fastify.dev/docs/latest/Guides/Getting-Started/#loading-order-of-your-plugins
+ // └── plugins (from the Fastify ecosystem)
+ // └── your plugins (your custom plugins)
+ // └── decorators
+ // └── hooks
+ // └── your services

@@ -7,6 +7,7 @@ import type { HttpRouterInterface } from "./httpRouter.interface.ts"
 import { HttpRouter } from "./httpRouter.ts"
 import DynamicController from "./dynamicController.ts"
 import { AutoSchemaHandler } from "./autoSchemaHandler.ts"
+import { AutoToHttpSchemaMapper } from "./mapper/autoToHttpSchemaMapper.ts"
 
 export default class ApiGenerator {
   protected logger: LoggerInterface
@@ -45,7 +46,22 @@ export default class ApiGenerator {
     await controllerInstance.setup()
 
     ////////////////////////////////////////////////////////////////////////////
-    // 03. CREATE ROUTE
+    // 03. CREATE SCHEMA HANDLER
+    ////////////////////////////////////////////////////////////////////////////
+
+    // const httpSchemaPath = fileDescription.path.replace(/\.auto\.json$/, ".schema.ts")
+    //
+    // this.logger.debug(`Loading http server schema(Fastify): "${controllerPath}"...`)
+    // const httpSchemarExist = existsSync(httpSchemaPath)
+    //
+    // const httpSchema = httpSchemarExist
+    //   ? await this.loadAndInitializeSchema(httpSchemaPath)
+    //   :
+
+    const httpSchema = new AutoToHttpSchemaMapper(autoSchema)
+
+    ////////////////////////////////////////////////////////////////////////////
+    // 04. CREATE ROUTE
     ////////////////////////////////////////////////////////////////////////////
     const routerPath = fileDescription.path.replace(/\.auto\.json$/, ".router.ts")
     this.logger.debug(`Loading router: "${routerPath}"...`)
@@ -58,10 +74,10 @@ export default class ApiGenerator {
 
     const routerInstance = routingExist
       ? await this.loadAndInitializeRouter(routerPath)
-      : new HttpRouter(this.server, this.logger, fileDescription, controllerInstance)
+      : new HttpRouter(this.server, this.logger, controllerInstance, httpSchema.mapSchema())
 
     ////////////////////////////////////////////////////////////////////////////
-    // 04. CONFIGURE ROUTE
+    // 05. CONFIGURE ROUTE
     ////////////////////////////////////////////////////////////////////////////
 
     // Create auto route
@@ -71,9 +87,9 @@ export default class ApiGenerator {
 
     routerInstance.post(`/${routeName}`, "dynamicCreate")
     routerInstance.get(`/${routeName}`, "dynamicGetAll")
-    routerInstance.get(`/${routeName}/:id`, "dynamicGet")
-    routerInstance.put(`/${routeName}/:id`, "dynamicUpdate")
-    routerInstance.delete(`/${routeName}/:id`, "dynamicDelete")
+    routerInstance.get(`/${routeName}/:id(\\d+)`, "dynamicGet")
+    routerInstance.put(`/${routeName}/:id(\\d+)`, "dynamicUpdate")
+    routerInstance.delete(`/${routeName}/:id(\\d+)`, "dynamicDelete")
     routerInstance.get(`/${routeName}/schema`, "dynamicSchema")
 
     ////////////////////////////////////////////////////////////////////////////

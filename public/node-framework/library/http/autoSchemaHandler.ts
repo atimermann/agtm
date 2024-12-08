@@ -45,6 +45,10 @@ export class AutoSchemaHandler {
    */
   public generateSelectField() {
     const prismaSelectFields = {}
+
+    // Chave
+    prismaSelectFields[this.schema.key] = true
+
     for (const field of this.schema.fields) {
       if (field.view === false) continue
       prismaSelectFields[field.dbName || field.name] = true
@@ -58,11 +62,24 @@ export class AutoSchemaHandler {
       .map((field) => field.dbName || field.name)
   }
 
-  public mapAuthSchemaToCrudSchema(): CrudSchema {
+  /**
+   * Mapeia o formato padrão Auto SChema para o formato de schema utilizado pelo Crud do Frontend
+   * TODO: Conerter o método em um mapper
+   */
+  public mapAutoSchemaToCrudSchema(): CrudSchema {
     const crudSchema: CrudSchema = {
       ...this.schema.ui,
       fields: [],
     }
+
+    //////////////////////////////////////////////////
+    // Adiciona Chave
+    //////////////////////////////////////////////////
+    crudSchema.fields.push({
+      label: this.schema.key,
+      name: this.schema.key,
+      ignoreForm: true,
+    })
 
     //////////////////////////////////////////////////
     // MAP FIELDS

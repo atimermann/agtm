@@ -7,35 +7,28 @@
 import type { HttpRouterInterface } from "./httpRouter.interface.ts"
 import type { FastifyInstance } from "fastify"
 import type { LoggerInterface } from "../loggers/logger.interface.ts"
-import type { UserClassFileDescription } from "./httpServer2.js"
-import type { HttpControllerInterface } from "./httpController.interface.js"
+import type { HttpControllerInterface } from "./httpController.interface.ts"
+import type { AutoToHttpSchemaMapper } from "./mapper/autoToHttpSchemaMapper.ts"
 
 export class HttpRouter implements HttpRouterInterface {
   protected readonly logger: LoggerInterface
   protected readonly server: FastifyInstance
-  protected readonly routerDescription: UserClassFileDescription
   protected controller: HttpControllerInterface
-  protected schema
+  protected httpSchema: AutoToHttpSchemaMapper
 
   constructor(
     server: FastifyInstance,
     logger: LoggerInterface,
-    routerDescription: UserClassFileDescription,
     controller: HttpControllerInterface,
+    httpSchema: AutoToHttpSchemaMapper,
   ) {
     this.logger = logger
     this.server = server
-    this.routerDescription = routerDescription
     this.controller = controller
+    this.httpSchema = httpSchema
   }
 
   async setup(): Promise<void> {}
-
-  // async init() {
-  //   this.controller = await this.loadController()
-  //   this.schema = await this.loadFullSchema()
-  //   this.loadCommonSchema()
-  // }
 
   // TODO: Criar o método "all" se necessário (suporta todos os métodos)
 
@@ -78,25 +71,6 @@ export class HttpRouter implements HttpRouterInterface {
     this.createRoute("PATCH", path, handlerName)
     return this
   }
-
-  // /**
-  //  * Dynamically loads and instance the controller class based on the router.
-  //  * Throws an error if the controller file is not found.
-  //  */
-  // private async loadController(): Promise<HttpControllerInterface> {
-  //   const controllerPath = this.routerDescription.path.replace(/\/([^/]+)\.routes\.ts$/, "/$1.controller.ts")
-  //   this.logger.debug(`Carregando controller "${controllerPath}"...`)
-  //
-  //   try {
-  //     const ControllerClass = (await import(controllerPath)).default
-  //     return new ControllerClass()
-  //   } catch (error) {
-  //     if (error.code === "ERR_MODULE_NOT_FOUND") {
-  //       this.logger.error(`Controlador não encontrado no caminho: ${controllerPath}`)
-  //     }
-  //     throw error
-  //   }
-  // }
 
   // private async loadFullSchema() {
   //   const schemaPath = this.routerDescription.path.replace(/\/([^/]+)\.routes\.ts$/, "/$1.schema.json")
@@ -142,20 +116,18 @@ export class HttpRouter implements HttpRouterInterface {
       throw new Error(errMsg)
     }
 
-    // if (this.schema[handlerName]) {
-    //   this.logger.debug(`Carregando schema para ${handlerName}. ID: ${this.routerDescription.id}`)
-    // }
+    if (this.httpSchema[handlerName]) {
+      this.logger.debug(`Carregando schema para ${handlerName}.`)
+    }
 
     // Ref: https://fastify.dev/docs/latest/Reference/Routes/#routes-options
     this.server.route({
       method,
       url,
-      // schema: this.schema[handlerName],
+      schema: this.httpSchema[handlerName],
       handler: async (request, reply) => {
         return this.controller[handlerName](request, reply)
       },
     })
-
   }
 }
-

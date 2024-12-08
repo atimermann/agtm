@@ -1,4 +1,3 @@
-// TODO: Converte AutoSchema To Fastify Validator Schema (lá no router)
 /**
  * Controller usado para criação de rotas auto gereadas dinamicas
  */
@@ -10,7 +9,7 @@ import type { AutoSchemaHandler } from "./autoSchemaHandler.ts"
 import type { FieldSchema } from "./autoSchema.interface.ts"
 
 interface ParamInterface {
-  id: string
+  id: number
 }
 
 type Dict = { [key: string]: unknown }
@@ -80,13 +79,14 @@ export default class DynamicController extends HttpController {
 
     const entity = await this.prisma.findFirst({
       select: this.autoSchema.generateSelectField(),
-      where: { id: parseInt(id), deletedAt: null },
+      where: { id, deletedAt: null },
     })
 
     // TODO: usar erro padronizado estudar no fastify
     if (!entity) {
       return reply.status(404).send({
         error: "Not Found",
+        message: `Route GET:${request.url} not found`,
       })
     }
 
@@ -109,7 +109,7 @@ export default class DynamicController extends HttpController {
           ...data,
           updatedAt: new Date(),
         },
-        where: { id: parseInt(id), deletedAt: null },
+        where: { id, deletedAt: null },
       })
 
       return this.filterResult(queryResult)
@@ -136,7 +136,7 @@ export default class DynamicController extends HttpController {
 
     try {
       const queryResult = await this.prisma.update({
-        where: { id: parseInt(id), deletedAt: null },
+        where: { id, deletedAt: null },
         data: { deletedAt: new Date() },
       })
 
@@ -158,7 +158,7 @@ export default class DynamicController extends HttpController {
    * @param reply
    */
   async dynamicSchema() {
-    return this.autoSchema.mapAuthSchemaToCrudSchema()
+    return this.autoSchema.mapAutoSchemaToCrudSchema()
   }
 
   /**

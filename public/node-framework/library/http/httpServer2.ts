@@ -66,10 +66,14 @@ export default class HttpServer {
     // TODO: validar se rota já foi carregado pelo autoRoute
     await this.loadRouters()
 
+    this.server.get("/info", async (request, reply) => {
+      return "TODO: Exibe todos os dados das rotas, controllers, schemas carregado para depuração"
+    })
+
     try {
       // Inicia o servidor
       await this.server.listen({ port, host: "0.0.0.0" })
-      this.logger.info(`Server started on http://localhost:${port}`)
+      this.logger.info(`Server started on http://0.0.0.0:${port}`)
     } catch (err) {
       this.logger.error("Error starting server: " + err)
       process.exit(1)

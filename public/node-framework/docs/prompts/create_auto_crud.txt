@@ -1,3 +1,5 @@
+Dado a interface abaixo que representa um json que descreve um crud completo:
+
 export interface AutoSchema {
   model: string
   key: string
@@ -10,10 +12,6 @@ export interface FieldSchema {
   name: string
   dbName?: string
   type: string
-  /**
-   * Se for chave estrangeira, nome da relation definida no Prisma
-   */
-  relation?: string
   unique?: boolean
   required?: boolean
   create?: boolean
@@ -38,3 +36,7 @@ export interface UISchema {
     updateTitle: string
   }
 }
+
+Crie um json do modelo do prisma abaixo, lembrando que:
+
+TODO: finalizar um gerador de JSON

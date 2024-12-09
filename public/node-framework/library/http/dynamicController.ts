@@ -52,6 +52,9 @@ export default class DynamicController extends HttpController {
    */
   async dynamicCreate(request: FastifyRequest) {
     const data = await this.loadDataFromBody(true, request.body)
+
+    this.logger.debug(`Create "${request.url}":\n "${JSON.stringify(data, undefined, '  ')}"`)
+
     const queryResult = await this.prisma.create({ data })
     return this.filterResult(queryResult)
   }
@@ -168,7 +171,9 @@ export default class DynamicController extends HttpController {
   private async importPrismaClient() {
     const pathToPrismaClient = join(process.cwd(), "node_modules", "@prisma/client")
     const PrismaClient = (await import(`${pathToPrismaClient}/default.js`)).PrismaClient
-    return new PrismaClient()
+    return new PrismaClient({
+      log: ["query", "info", "warn", "error"],
+    })
   }
 
   /**
@@ -192,6 +197,19 @@ export default class DynamicController extends HttpController {
       if (value === undefined) continue
 
       await this.validateUnique(field, value)
+
+      /**
+       * Tratamento relation N-1:
+       * REF: https://www.prisma.io/docs/orm/prisma-schema/data-model/relations#associate-an-existing-record-to-another-existing-record
+       */
+      if (field.relation) {
+        data[field.relation] = {
+          connect: {
+            id: body[field.name],
+          },
+        }
+        continue
+      }
 
       data[field.dbName || field.name] = body[field.name]
     }

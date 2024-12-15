@@ -1,6 +1,6 @@
 {
   "name": "@agtm/node-framework",
-  "version": "9.0.8",
+  "version": "9.0.9",
   "description": "Framework nodejs baseado no ExpressJs",
   "types": "./types/index.d.mts",
   "type": "module",
@@ -36,6 +36,7 @@
     "figlet": "^1.8.0",
     "filesize": "^10.1.6",
     "helmet": "^8.0.0",
+    "jssha": "^3.3.1",
     "lodash-es": "^4.17.21",
     "morgan": "^1.10.0",
     "node-cron": "^3.0.3",

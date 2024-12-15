@@ -1,6 +1,6 @@
 {
   "name": "@agtm/node-framework",
-  "version": "9.0.6",
+  "version": "9.0.8",
   "description": "Framework nodejs baseado no ExpressJs",
   "types": "./types/index.d.mts",
   "type": "module",
@@ -24,15 +24,25 @@
   "main": "./index.mjs",
   "dependencies": {
     "@agtm/util": "^4.4.0",
+    "@airbnb/node-memwatch": "^3.0.0",
     "@fastify/cors": "^10.0.1",
     "@ladjs/consolidate": "^1.0.4",
+    "blessed": "^0.1.81",
     "change-case": "^5.4.4",
+    "compression": "^1.7.5",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
     "fastify": "^5.1.0",
     "figlet": "^1.8.0",
+    "filesize": "^10.1.6",
+    "helmet": "^8.0.0",
     "lodash-es": "^4.17.21",
+    "morgan": "^1.10.0",
     "node-cron": "^3.0.3",
     "pluralize": "^8.0.0",
     "pretty-bytes": "^6.1.1",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "winston": "^3.17.0"
   },
   "files": [

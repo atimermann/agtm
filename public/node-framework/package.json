@@ -1,6 +1,6 @@
 {
   "name": "@agtm/node-framework",
-  "version": "9.0.5",
+  "version": "9.0.6",
   "description": "Framework nodejs baseado no ExpressJs",
   "types": "./types/index.d.mts",
   "type": "module",
@@ -25,12 +25,15 @@
   "dependencies": {
     "@agtm/util": "^4.4.0",
     "@fastify/cors": "^10.0.1",
+    "@ladjs/consolidate": "^1.0.4",
     "change-case": "^5.4.4",
     "fastify": "^5.1.0",
     "figlet": "^1.8.0",
     "lodash-es": "^4.17.21",
+    "node-cron": "^3.0.3",
     "pluralize": "^8.0.0",
-    "pretty-bytes": "^6.1.1"
+    "pretty-bytes": "^6.1.1",
+    "winston": "^3.17.0"
   },
   "files": [
     "library",

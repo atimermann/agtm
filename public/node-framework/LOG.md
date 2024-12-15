@@ -25,9 +25,11 @@ Documentar que a idéia é partir do crud automatico e ir estendendo oq mudar, c
 * Criar um esquema de validação com AJV para as interfaces e gerar interface automaticamente
 *
 * PROXIMAS TAREFAS:
-  * CONFIGURAR BANCO DE DADOS LOCAL
+  *[OK] CONFIGURAR BANCO DE DADOS LOCAL
   * IMPLEMENTAR SISTEMA TE TENANT BASICO
     * Vamos ter q salvar imagem, configurar minIO, vamos deixar por texto por enquanto
+  * Montar telas do Ricardo (definido lógica panel)
+  * Subir versão 
 
   * CRIAR Um MÒDULO DEPURAÇÃO:
     * Visualizar todas as rotas/controllers/schema criado
@@ -35,6 +37,8 @@ Documentar que a idéia é partir do crud automatico e ir estendendo oq mudar, c
       banco
       ou ler do banco até chegar ao usuário, passando pela autenticação, transformação etc... inclindo log das query
       executada, tempo de execução
+  
+  * Cancelar VPS
 
 
   * Criar versionamento visual auto deploy
@@ -42,3 +46,18 @@ Documentar que a idéia é partir do crud automatico e ir estendendo oq mudar, c
   * AutoCrud vai ser o padrão, se precisar estende
 
   * Implementar um editor de Auto Schema
+
+### 13/12/2024
+
+* Postgres local configurado com kubernetes e atualizado script de inicialização para carregar banco automaticamente
+
+TODO:
+  * Agora falta carregar os dados iniciais, usar metodos do projeto para chamar "Actions..." que cria usuário por comando
+
+
+### 15/12/2024
+
+TODO:
+  * Vamos usar schema ainda pra validação da api, separado do auto.json para casos especificos, gerenciar isso
+  * Permitir destaivar a rota padrão no auto.json exemplo: desabilita create e delete
+  * Refatorar httpServer2 meio bagunçado depois de tantas mudanças

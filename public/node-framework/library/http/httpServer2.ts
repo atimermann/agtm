@@ -64,7 +64,8 @@ export default class HttpServer {
 
     await this.generateAutoRoutes()
     // TODO: validar se rota já foi carregado pelo autoRoute
-    await this.loadRouters()
+    // TODO: AutoRoute vai ser o padrão
+    // await this.loadRouters()
 
     this.server.get("/info", async (request, reply) => {
       return "TODO: Exibe todos os dados das rotas, controllers, schemas carregado para depuração"
@@ -134,35 +135,68 @@ export default class HttpServer {
           const appDirectoryEntryPath = join(AppDirPath, appDirectory.name, appDirectoryEntry.name)
 
           if (appDirectoryEntry.name === "http") {
-            const httpFiles = await fs.readdir(appDirectoryEntryPath, {
-              withFileTypes: true,
-            })
-
-            for (const httpFile of httpFiles) {
-              const httpFilePath = join(appDirectoryEntryPath, httpFile.name)
-
-              // Loading Router:
-              if (!httpFile.isDirectory() && filePattern.test(httpFile.name)) {
-                this.logger.debug(`Loading user file class: '${httpFile.name}'...`)
-
-                const routerId = `${appName}/${httpFile.name}`
-                this.logger.info(`ID: "${routerId}`)
-
-                userClassFileDescriptions.push({
-                  id: routerId,
-                  path: httpFilePath,
-                  app: appName,
-                })
-              }
-            }
+            await this.findUsereClassFilesInDirectory(
+              appDirectoryEntryPath,
+              filePattern,
+              userClassFileDescriptions,
+              appName,
+            )
           }
         }
       }
     }
 
     this.logIdSchemaMap(userClassFileDescriptions)
-
     return userClassFileDescriptions
+  }
+
+  /**
+   *  Carrega descrição de todos os arquivos de um diretório especifico e subdiretórios
+   *
+   *   TODO: Simplificar / Reformatar / separar em métodos ou até criar uma classe só pra ele
+   *
+   * @param targetDirectory             Diretório alvo
+   * @param filePattern                 Padrão de extensão de arquivo para buscar
+   * @param userClassFileDescriptions   Descritor de arquivos encontrado (vai ser modificado)
+   * @param appName                     Nome do App
+   * @private
+   */
+  private async findUsereClassFilesInDirectory(
+    targetDirectory: string,
+    filePattern: RegExp,
+    userClassFileDescriptions: UserClassFileDescription[],
+    appName: string,
+  ) {
+    const httpFiles = await fs.readdir(targetDirectory, {
+      withFileTypes: true,
+    })
+    this.logger.debug(`Entering directory: '${targetDirectory}'...`)
+
+    for (const httpFile of httpFiles) {
+      const httpFilePath = join(targetDirectory, httpFile.name)
+
+      if (httpFile.isDirectory()) {
+        await this.findUsereClassFilesInDirectory(
+          httpFilePath,
+          filePattern,
+          userClassFileDescriptions,
+          appName,
+        )
+      }
+
+      if (!httpFile.isDirectory() && filePattern.test(httpFile.name)) {
+        this.logger.debug(`Loading user file class: '${httpFile.name}'...`)
+
+        const routerId = `${appName}/${httpFile.name}`
+        this.logger.info(`ID: "${routerId}`)
+
+        userClassFileDescriptions.push({
+          id: routerId,
+          path: httpFilePath,
+          app: appName,
+        })
+      }
+    }
   }
 
   /**
@@ -185,7 +219,6 @@ export default class HttpServer {
    */
   private async generateAutoRoutes() {
     const files = await this.findUserClassFilesInAppDir(APP_DIR, /\.auto\.json$/)
-
     for (const fileDescription of files) {
       const apiGenerator = new ApiGenerator(this.logger, this.server)
       await apiGenerator.generate(fileDescription)

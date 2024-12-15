@@ -7,19 +7,19 @@
 import type { HttpRouterInterface } from "./httpRouter.interface.ts"
 import type { FastifyInstance } from "fastify"
 import type { LoggerInterface } from "../loggers/logger.interface.ts"
-import type { HttpControllerInterface } from "./httpController.interface.ts"
 import type { AutoToHttpSchemaMapper } from "./mapper/autoToHttpSchemaMapper.ts"
+import type { ApiController } from "./apiController.js"
 
 export class HttpRouter implements HttpRouterInterface {
   protected readonly logger: LoggerInterface
   protected readonly server: FastifyInstance
-  protected controller: HttpControllerInterface
+  protected controller: ApiController
   protected httpSchema: AutoToHttpSchemaMapper
 
   constructor(
     server: FastifyInstance,
     logger: LoggerInterface,
-    controller: HttpControllerInterface,
+    controller: ApiController,
     httpSchema: AutoToHttpSchemaMapper,
   ) {
     this.logger = logger

@@ -56,10 +56,18 @@ export class AutoSchemaHandler {
     return prismaSelectFields
   }
 
-  public getViewFields(): string[] {
-    return this.schema.fields
+  /**
+   * Retorna lista de campos configurado para ser exibido na view
+   *
+   * @param key Força retorno do valor da chave primária
+   */
+  public getViewFields(key = true): string[] {
+    const viewFields = this.schema.fields
       .filter((field) => field.view !== false)
       .map((field) => field.dbName || field.name)
+
+    if (key) viewFields.push(this.schema.key)
+    return viewFields
   }
 
   /**

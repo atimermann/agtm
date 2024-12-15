@@ -5,7 +5,7 @@ import { existsSync } from "fs"
 import type { FastifyInstance } from "fastify"
 import type { HttpRouterInterface } from "./httpRouter.interface.ts"
 import { HttpRouter } from "./httpRouter.ts"
-import DynamicController from "./dynamicController.ts"
+import { ApiController } from "./apiController.ts"
 import { AutoSchemaHandler } from "./autoSchemaHandler.ts"
 import { AutoToHttpSchemaMapper } from "./mapper/autoToHttpSchemaMapper.ts"
 
@@ -35,13 +35,11 @@ export default class ApiGenerator {
     // 02. CREATE CONTROLLER
     ////////////////////////////////////////////////////////////////////////////
     const controllerPath = fileDescription.path.replace(/\.auto\.json$/, ".controller.ts")
+    const controllerInstance = await this.loadAndInitializeApiController(controllerPath, autoSchema)
 
-    this.logger.debug(`Loading controller: "${controllerPath}"...`)
-    const controllerExist = existsSync(controllerPath)
-
-    const controllerInstance = controllerExist
-      ? await this.loadAndInitializeController(controllerPath)
-      : new DynamicController(autoSchema, this.logger)
+    if (controllerInstance.__INSTANCE__ !== "__HttpController") {
+      throw new TypeError(`The controller "${controllerPath}" it is not "HttpController" instance!`)
+    }
 
     await controllerInstance.setup()
 
@@ -72,9 +70,11 @@ export default class ApiGenerator {
       this.logger.debug(`Router not defined! Generating auto route for "${fileDescription.id}"...`)
     }
 
-    const routerInstance = routingExist
-      ? await this.loadAndInitializeRouter(routerPath)
-      : new HttpRouter(this.server, this.logger, controllerInstance, httpSchema.mapSchema())
+    const routerInstance = await this.loadAndInitializeRouter(
+      routerPath,
+      controllerInstance,
+      httpSchema.mapSchema(),
+    )
 
     ////////////////////////////////////////////////////////////////////////////
     // 05. CONFIGURE ROUTE
@@ -85,34 +85,40 @@ export default class ApiGenerator {
     // const capitalizeRoute: string = capitalize(routeName)
     // const pluralizeRoute = pluralize(capitalizeRoute)
 
-    routerInstance.post(`/${routeName}`, "dynamicCreate")
-    routerInstance.get(`/${routeName}`, "dynamicGetAll")
-    routerInstance.get(`/${routeName}/:id(\\d+)`, "dynamicGet")
-    routerInstance.put(`/${routeName}/:id(\\d+)`, "dynamicUpdate")
-    routerInstance.delete(`/${routeName}/:id(\\d+)`, "dynamicDelete")
-    routerInstance.get(`/${routeName}/schema`, "dynamicSchema")
+    routerInstance.post(`/${routeName}`, "create")
+    routerInstance.get(`/${routeName}`, "getAll")
+    routerInstance.get(`/${routeName}/:id(\\d+)`, "get")
+    routerInstance.put(`/${routeName}/:id(\\d+)`, "update")
+    routerInstance.delete(`/${routeName}/:id(\\d+)`, "delete")
+    routerInstance.get(`/${routeName}/schema`, "schema")
+
+    await routerInstance.setup()
 
     ////////////////////////////////////////////////////////////////////////////
     // FIM
     ////////////////////////////////////////////////////////////////////////////
-
-    this.logger.info("================================> OK <===============================>")
-    this.logger.info("================================> OK <===============================>")
-    this.logger.info("================================> OK <===============================>")
-    this.logger.info("================================> OK <===============================>")
   }
 
   /**
    * Importa e instancia a classe do router existente.
    *
    * @param routerPath
+   * @param controllerInstance
+   * @param httpSchema
    */
-  private async loadAndInitializeRouter(routerPath: string): Promise<HttpRouterInterface> {
+  private async loadAndInitializeRouter(
+    routerPath: string,
+    controllerInstance: ApiController,
+    httpSchema: AutoToHttpSchemaMapper,
+  ): Promise<HttpRouterInterface> {
     try {
-      const { default: RouterClass } = await import(resolve(routerPath))
-      const routerInstance = new RouterClass(this.server, this.logger) as HttpRouterInterface
-      await routerInstance.setup()
-      return routerInstance
+      this.logger.debug(`Loading controller: "${routerPath}"...`)
+
+      const RouterClass = existsSync(routerPath)
+        ? (await import(resolve(routerPath))).default
+        : HttpRouter
+
+      return new RouterClass(this.server, this.logger, controllerInstance, httpSchema)
     } catch (error) {
       this.logger.error(`Failed to load router: "${routerPath}".`)
       throw error
@@ -120,14 +126,23 @@ export default class ApiGenerator {
   }
 
   /**
-   * Importa e iniciancia novos controllers
+   * Importa e iniciancia novos controllers (Gerado automaticamente ou userspace)
+   *
    * @param controllerPath
-   * @private
+   * @param autoSchema
    */
-  private async loadAndInitializeController(controllerPath: string): Promise<DynamicController> {
+  private async loadAndInitializeApiController(
+    controllerPath: string,
+    autoSchema: AutoSchemaHandler,
+  ): Promise<ApiController> {
     try {
-      const { default: ControllerClass } = await import(resolve(controllerPath))
-      return new ControllerClass()
+      this.logger.debug(`Loading controller: "${controllerPath}"...`)
+
+      const ControllerClass = existsSync(controllerPath)
+        ? (await import(resolve(controllerPath))).default
+        : ApiController
+
+      return new ControllerClass(autoSchema, this.logger)
     } catch (error) {
       this.logger.error(`Failed to load router: "${controllerPath}".`)
       throw error

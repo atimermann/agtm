@@ -24,7 +24,6 @@ import WorkerManager from "./library/jobs/worker-manager.mjs"
 import YupValidation from "./library/api/yup-validation.mjs"
 import Model from "./library/api/model.mjs"
 
-
 const logger = createLogger()
 
 export {
@@ -49,3 +48,5 @@ export {
 // New format
 ////////////////////////////////////
 export { HttpRouter } from "./library/http/httpRouter.ts"
+export { ApiController } from "./library/http/apiController.ts"
+export { AutoCrudService } from "./library/http/autoCrudService.ts"

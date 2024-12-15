@@ -1,6 +1,6 @@
 {
   "name": "@agtm/node-framework",
-  "version": "8.6.1",
+  "version": "9.0.0",
   "description": "Framework nodejs baseado no ExpressJs",
   "types": "./types/index.d.mts",
   "type": "module",
@@ -9,9 +9,9 @@
   },
   "scripts": {
     "check": "npm run tsc ; npm run lint ; npm run test",
-    "publish-patch": "npm version patch && npm publish --access public && git push",
-    "publish-minor": "npm version minor && npm publish --access public && git push",
-    "publish-major": "npm version major && npm publish --access public && git push",
+    "publish-patch": "npm run tsc ; npm version patch && npm publish --access public && git push",
+    "publish-minor": "npm run tsc ; npm version minor && npm publish --access public && git push",
+    "publish-major": "npm run tsc ; npm version major && npm publish --access public && git push",
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
     "lint": "npx eslint --ext .mjs,.js --fix .",
     "lint:test": "npx eslint  --ext .mjs,.js .",

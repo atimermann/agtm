@@ -1,4 +1,4 @@
-import type { LoggerInterface } from "./logger.interface"
+import type { LoggerInterface } from "./logger.interface.js"
 
 export default class ConsoleLogger implements LoggerInterface {
   info(message: string): void {

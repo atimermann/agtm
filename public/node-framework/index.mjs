@@ -47,6 +47,6 @@ export {
 ////////////////////////////////////
 // New format
 ////////////////////////////////////
-export { HttpRouter } from "./library/http/httpRouter.ts"
-export { ApiController } from "./library/http/apiController.ts"
-export { AutoCrudService } from "./library/http/autoCrudService.ts"
+export { HttpRouter } from "./library/http/httpRouter.js"
+export { ApiController } from "./library/http/apiController.js"
+export { AutoCrudService } from "./library/http/autoCrudService.js"

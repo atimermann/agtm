@@ -4,10 +4,10 @@
  * URL Builder: https://fastify.dev/docs/latest/Reference/Routes/#url-building
  *
  */
-import type { HttpRouterInterface } from "./httpRouter.interface.ts"
+import type { HttpRouterInterface } from "./httpRouter.interface.js"
 import type { FastifyInstance } from "fastify"
-import type { LoggerInterface } from "../loggers/logger.interface.ts"
-import type { AutoToHttpSchemaMapper } from "./mapper/autoToHttpSchemaMapper.ts"
+import type { LoggerInterface } from "../loggers/logger.interface.js"
+import type { AutoToHttpSchemaMapper } from "./mapper/autoToHttpSchemaMapper.js"
 import type { ApiController } from "./apiController.js"
 
 export class HttpRouter implements HttpRouterInterface {

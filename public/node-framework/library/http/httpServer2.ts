@@ -1,13 +1,13 @@
-import type { LoggerInterface } from "../loggers/logger.interface.ts"
+import type { LoggerInterface } from "../loggers/logger.interface.js"
 import Fastify from "fastify"
 import { resolve, join, relative } from "node:path"
 import * as fs from "node:fs/promises"
 
 import cors from "@fastify/cors"
 
-import { HttpRouter } from "./httpRouter.ts"
+import { HttpRouter } from "./httpRouter.js"
 import type { FastifyInstance } from "fastify"
-import ApiGenerator from "./apiGenerator.ts"
+import ApiGenerator from "./apiGenerator.js"
 
 const APP_DIR = resolve(process.cwd(), "src/apps")
 

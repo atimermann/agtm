@@ -2,10 +2,10 @@
  * Controller base, gera rota dinamicas
  */
 
-import { AutoCrudService } from "./autoCrudService.ts"
+import { AutoCrudService } from "./autoCrudService.js"
 import type { FastifyReply, FastifyRequest } from "fastify"
-import type { LoggerInterface } from "../loggers/logger.interface.ts"
-import type { AutoSchemaHandler } from "./autoSchemaHandler.ts"
+import type { LoggerInterface } from "../loggers/logger.interface.js"
+import type { AutoSchemaHandler } from "./autoSchemaHandler.js"
 
 interface ParamInterface {
   id: number

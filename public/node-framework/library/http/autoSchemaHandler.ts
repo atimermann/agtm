@@ -1,5 +1,5 @@
-import type { AutoSchema, FieldSchema } from "./autoSchema.interface.ts"
-import type { UserClassFileDescription } from "./httpServer2.ts"
+import type { AutoSchema, FieldSchema } from "./autoSchema.interface.js"
+import type { UserClassFileDescription } from "./httpServer2.js"
 import { sentenceCase } from "change-case"
 import type { CrudSchema } from "./crudSchema.interface.js"
 

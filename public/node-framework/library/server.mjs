@@ -26,7 +26,7 @@ import { sentenceCase } from 'change-case'
 import createLogger from './logger.mjs'
 import { readFileSync } from 'node:fs'
 import ResourceMonitor from './resource-monitor.mjs'
-import ConsoleLogger from "./loggers/consoleLogger.ts";
+import ConsoleLogger from "./loggers/consoleLogger.js";
 const logger = createLogger('Init')
 
 export default {

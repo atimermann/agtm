@@ -1,13 +1,13 @@
-import type { LoggerInterface } from "../loggers/logger.interface.ts"
-import type { UserClassFileDescription } from "./httpServer2.ts"
+import type { LoggerInterface } from "../loggers/logger.interface.js"
+import type { UserClassFileDescription } from "./httpServer2.js"
 import { resolve } from "node:path"
 import { existsSync } from "fs"
 import type { FastifyInstance } from "fastify"
-import type { HttpRouterInterface } from "./httpRouter.interface.ts"
-import { HttpRouter } from "./httpRouter.ts"
-import { ApiController } from "./apiController.ts"
-import { AutoSchemaHandler } from "./autoSchemaHandler.ts"
-import { AutoToHttpSchemaMapper } from "./mapper/autoToHttpSchemaMapper.ts"
+import type { HttpRouterInterface } from "./httpRouter.interface.js"
+import { HttpRouter } from "./httpRouter.js"
+import { ApiController } from "./apiController.js"
+import { AutoSchemaHandler } from "./autoSchemaHandler.js"
+import { AutoToHttpSchemaMapper } from "./mapper/autoToHttpSchemaMapper.js"
 
 export default class ApiGenerator {
   protected logger: LoggerInterface
@@ -34,7 +34,7 @@ export default class ApiGenerator {
     ////////////////////////////////////////////////////////////////////////////
     // 02. CREATE CONTROLLER
     ////////////////////////////////////////////////////////////////////////////
-    const controllerPath = fileDescription.path.replace(/\.auto\.json$/, ".controller.ts")
+    const controllerPath = fileDescription.path.replace(/\.auto\.json$/, ".controller.js")
     const controllerInstance = await this.loadAndInitializeApiController(controllerPath, autoSchema)
 
     if (controllerInstance.__INSTANCE__ !== "__HttpController") {
@@ -47,7 +47,7 @@ export default class ApiGenerator {
     // 03. CREATE SCHEMA HANDLER
     ////////////////////////////////////////////////////////////////////////////
 
-    // const httpSchemaPath = fileDescription.path.replace(/\.auto\.json$/, ".schema.ts")
+    // const httpSchemaPath = fileDescription.path.replace(/\.auto\.json$/, ".schema.js")
     //
     // this.logger.debug(`Loading http server schema(Fastify): "${controllerPath}"...`)
     // const httpSchemarExist = existsSync(httpSchemaPath)
@@ -61,7 +61,7 @@ export default class ApiGenerator {
     ////////////////////////////////////////////////////////////////////////////
     // 04. CREATE ROUTE
     ////////////////////////////////////////////////////////////////////////////
-    const routerPath = fileDescription.path.replace(/\.auto\.json$/, ".router.ts")
+    const routerPath = fileDescription.path.replace(/\.auto\.json$/, ".router.js")
     this.logger.debug(`Loading router: "${routerPath}"...`)
 
     const routingExist = existsSync(routerPath)
@@ -101,7 +101,7 @@ export default class ApiGenerator {
 
   /**
    * Importa e instancia a classe do router existente.
-   *
+   * TODO: Tratar tipo correto do httpSchema
    * @param routerPath
    * @param controllerInstance
    * @param httpSchema
@@ -109,7 +109,7 @@ export default class ApiGenerator {
   private async loadAndInitializeRouter(
     routerPath: string,
     controllerInstance: ApiController,
-    httpSchema: AutoToHttpSchemaMapper,
+    httpSchema: any,
   ): Promise<HttpRouterInterface> {
     try {
       this.logger.debug(`Loading controller: "${routerPath}"...`)

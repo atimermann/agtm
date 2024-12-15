@@ -1,4 +1,4 @@
-import type { AutoSchemaHandler } from "../autoSchemaHandler.ts"
+import type { AutoSchemaHandler } from "../autoSchemaHandler.js"
 
 export class AutoToHttpSchemaMapper {
   private autoSchema: AutoSchemaHandler

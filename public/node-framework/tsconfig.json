@@ -1,13 +1,14 @@
 // Apenas para a IDE, o node ignora configuração aqui
 {
   "compilerOptions": {
-    "module": "ESNext",
+    "module": "NodeNext",
     "target": "ESNext",
     "moduleResolution": "NodeNext",
     // Habilita a importação explícita de arquivos .ts
-    "allowImportingTsExtensions": true,
+    "allowImportingTsExtensions": false,
     // Gera apenas arquivos de declaração (.d.ts)
-    "emitDeclarationOnly": true,
+    // Necessário pois o node não suporta typescritp nos modulos, vamos ter q compilar
+    "emitDeclarationOnly": false,
     // Requerido em projetos compostos
     "composite": true,
     "allowSyntheticDefaultImports": true

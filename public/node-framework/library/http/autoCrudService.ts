@@ -1,9 +1,9 @@
-import type { LoggerInterface } from "../loggers/logger.interface.ts"
+import type { LoggerInterface } from "../loggers/logger.interface.js"
 import { join } from "node:path"
-import { AutoSchemaHandler } from "./autoSchemaHandler.ts"
-import type { FieldSchema } from "./autoSchema.interface.ts"
-import ConsoleLogger from "../loggers/consoleLogger.ts"
-import type { UserClassFileDescription } from "./httpServer2.ts"
+import { AutoSchemaHandler } from "./autoSchemaHandler.js"
+import type { FieldSchema } from "./autoSchema.interface.js"
+import ConsoleLogger from "../loggers/consoleLogger.js"
+import type { UserClassFileDescription } from "./httpServer2.js"
 
 export class AutoCrudService {
   private logger: LoggerInterface

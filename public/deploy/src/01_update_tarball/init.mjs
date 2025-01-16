@@ -1,0 +1,9 @@
+
+//
+// # - Pegar código do nuxt-layer q já é parcialmente funcional
+// # - Separar Etapas por scripts numerados 01_
+// # - Tudo muito bem logado para usuário, por exemplo versão, atual, qual versão nova, qual arquivo modificado etc...
+// # - Questionarios...
+//
+
+//

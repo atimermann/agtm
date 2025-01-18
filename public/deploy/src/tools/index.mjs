@@ -96,3 +96,4 @@ export function getEnvVars () {
 
   return envVars
 }
+

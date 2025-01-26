@@ -23,7 +23,8 @@ export async function generateMenu(basePath, getLabel) {
   log.message("")
   displayProjectInfo()
 
-  while (true) {
+  let exit = false
+  while (!exit) {
     const s = spinner()
     s.start("Fetching menu...")
     const menuData = await getMenuData(basePath, getLabel)
@@ -36,15 +37,15 @@ export async function generateMenu(basePath, getLabel) {
     }
 
     let success = false
-
     while (!success) {
       const choice = await renderMenu(menuItens)
 
       if (choice === "Q") {
+        exit = true
         break
       }
 
-      const success = runScript(join(basePath, choice), "init.mjs")
+      success = runScript(join(basePath, choice), "init.mjs")
     }
   }
 
@@ -168,7 +169,7 @@ function runScript(dirPath, scriptName) {
 
   if (!fs.existsSync(scriptPath)) {
     console.log(`${scriptName} not found in ${scriptPath}`)
-    return true
+    return false
   }
 
   const result = spawnSync("node", [scriptPath], {
@@ -184,4 +185,6 @@ function runScript(dirPath, scriptName) {
     console.error(`Script ${scriptPath} exited with code ${result.status}`)
     return false
   }
+
+  return true
 }

@@ -24,12 +24,7 @@ export class ApiController {
     this.autoCrudService = new AutoCrudService(autoSchema, logger)
   }
 
-  /**
-   * Configuração inicial do controller
-   */
-  async setup() {
-    await this.autoCrudService.setup()
-  }
+
 
   /**
    * Controller padrão para criar novo registro
@@ -73,7 +68,7 @@ export class ApiController {
 
     try {
       return this.autoCrudService.update(id, request.body)
-    } catch (error) {
+    } catch (error: any) {
       if (error.code === "P2025") {
         // TODO: usar erro padronizado estudar no fastify
         return reply.status(404).send({
@@ -93,7 +88,7 @@ export class ApiController {
 
     try {
       return this.autoCrudService.delete(id)
-    } catch (error) {
+    } catch (error: any) {
       if (error.code === "P2025") {
         // TODO: usar erro padronizado estudar no fastify
         return reply.status(404).send("Not Found")

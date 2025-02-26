@@ -1,0 +1,140 @@
+DOC:
+
+- Criar um resumo do fastify e das funcionalidades usadas
+- Servidor tem uma rota GET ping para teste
+- Servidor terá uma rota /info para depuração futura
+- Procura todos os arquivos .auto.json e retorna um "fileDescriptor" UserClassFileDescription
+- Chama uma instancia ApiGenerator
+    => Cria um schemaHandler
+    => Cria um Controller
+    => Cria um Router
+    => Configura um Router
+- Documentar o ciclo de vida q ilustra
+
+- Router tem methor, url, schema, handler https://fastify.dev/docs/latest/Reference/Routes/#routes-options
+- Schema é um JSON, mais aqui: https://fastify.dev/docs/latest/Reference/Validation-and-Serialization/
+- Também podemos ter parsers, validators
+- Tem inumeros configurações q podemos fazer em cada rota: https://fastify.dev/docs/latest/Reference/Routes/#routes-options
+
+TODO:
+
+- findUsereClassFilesInDirectory separar em um serviço próprio
+- Gerar um javascript mais limpo e deixar o debugger apontar para o typescript
+
+09/02/2025
+
+- Problema configuração TypeScript
+- Configurar corretamente o .prettier no node-framework, para quebrar linhas apenas quando passar de 120 caracteres
+- Comecei usar o TSX, documentar melhor agora não to usando mais o nodemon
+- Controller, routes customizado não está carregando revisar
+- Criar uma documentação com print de como depurar com TSX e o phpstorm
+
+15/02/2025
+
+------------------------------------------------------------------
+Temos 3 entidades principais:
+------------------------------------------------------------------
+
+- ROUTER
+      - Router é o EntryPoint
+      - Recebe um server
+      - Recebe um Controller
+            - Router apenas faz a rota e executa a mesma rota definida no controller
+            - Por string o nome do método que vai ser executado nessa rota
+            - Muito importante esta documentação
+            - Renomer para routerHandlerName
+      - Recebe um Schema
+            - Schema deve ser o mesmo nome do controller
+      - Recebe um Logger
+- CONTROLLER
+- SCHEMA
+    - Parseia os dados de entrada
+    - Valida os dados de entrada
+    - Serializa e valida os dados de saíde
+
+
+
+------------------------------------------------------------------
+Outras entidades importantes
+------------------------------------------------------------------
+
+- AUTO (API GENERATOR)
+    - Além disso temos o auto parar gerar tudo automaticamente auto.json
+    - auto.json
+    - Instancia APIGENERATOR
+      - Gerar todos as dependencias do ROUTER
+        - SCHEMA
+        - Controller
+        - Router
+
+- DESCRIPTOR
+    - Classe usada internamente para identificar automaticamente arquivos da api e descreve-los, usado para autoloading de rotas de api
+
+- SWAGGER
+    Gera documentação swagger automaticamente
+
+
+- SCHEMA MAPPER
+    - O Schema do fastfy é complexo, vamos criar o nosso e mapear
+    - Em casos avançasdos podemos usar o original
+
+- TRATAMENTO DE ERRO (ERROR HANDLER)
+   - Error Handling (https://fastify.dev/docs/latest/Reference/Validation-and-Serialization/#error-handling)
+   - Acompanhar testes desde o inicio e documentar padrão de erros semantico
+
+- CONFIGURAÇÂO
+    - Configuração central do servidor como cors entre ouros
+
+- MIDLEWARE
+  - para definir autenticação pro exemplo ou
+  - prefixo de rota para versão api/v1
+
+------------------------------------------------------------------
+TODO:
+------------------------------------------------------------------
+- Precisamos de uma classe de descritor (Descriptor) dos arquivos e uma que carregar esses descriptor
+- Precisamos de interface??
+- Criar um skafoldins q use o TSX
+- Middleware
+- Documentar a migração do Schema nosso simplificado pro schema padrão do fastify complexo
+  - https://fastify.dev/docs/latest/Reference/Validation-and-Serialization/
+
+* Documentar o validatorByInterface, como funciona, e como usa-lo por exemplo no autoSchema
+
+- Validar se todos os logger tá tipoado com a interface em vez do serviço
+- Criar template no php storm para classe type script com assinatura padrão com data
+  - Verificar os arquivos faltando
+- Documentar oq é um descriptor e como é usado
+- Revisar e definir os logs relevante separando por info e debug e erro
+- Ver como é tratado erros genericos (tem q ter um catch all para debugar e retornar usuário dependendo ambiente prod ou dev)
+- Validar logs onde for necessário
+- Logger q é o mais usado deixar sempre na frente no contrutor
+- Cuidado com a confusão entre AutoSchema e AutoSchemaInterface (AutoSchema é a classe)
+- Revisar tratamento de erro e log de erro, tá dificil de visualizar
+- Estudar/Documentar Typescript Partial, Record
+- Verificar o erro do prisma, ele gera log automaticamente, revisar essa configuração
+
+
+- Esquema original do fastify é muito feio, temos q rever isso
+ {
+        params: {
+          type: "object",
+          properties: {
+            id: { type: "integer" },
+          },
+          required: ["id"],
+        },
+      }
+
+- documentar ts-json-schema-generator e o Novo sistema avançado que valida uma estrutura de dados em tempo de execução com definição de interface através do ts-json-schema-generator
+
+------------------------------------------------------------------
+ERROS
+------------------------------------------------------------------
+
+= PROBLEMA DE PRESSÃO DE DISK NO KUBERNETE DESENVOLVIMENTO LOCAL, tive q reiniciar o k3s, criar um log no sistema para
+mostrar essa informação
+== Problema do diretório do PV já existir em /tmp/postgres-pv
+
+
+

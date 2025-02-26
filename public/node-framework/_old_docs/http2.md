@@ -4,13 +4,13 @@ Inspirado na organização e padrão do NESTJS, fornece uma forma rápida de imp
 
 Principais objetivos:
 
-* ~~Implementado com typescript nativo do nodejs (apartir 22)~~ Não funciona com modules no nodejs ainda
+* Implementado com typescript nativo do nodejs (apartir 22)
 * Estrutura de pasta padronizada
-* Uso de injeção de dependência
+* Uso de injeção de dependencia
 * Suporte a configuração de api com Schema
 * Auto Generator: Ferramenta que gera toda uma api rapidamente à partir de um schema ***.auto.json**
 * Incorpora todas as ajudas e funcionalidades do Fastify
-* Configuração de servidor automático
+* Configuração de servidor automatico
 
 TODO:
 
@@ -21,12 +21,3 @@ TODO:
   * Automatico: define toda o endpoint apartir do schema
   * Manual: Implementa todas as classes necessária para aplicação
   * Misto: Define automaticamente a partir de um schema, mas permite customizar comportamentos mais comples (Idealmente usando DDD)
-
-
-## Pontos chaves do Fastify para entender o funcionamento do http2 no node Framework
-
-* Schema 
-  * https://fastify.dev/docs/latest/Guides/Fluent-Schema/
-  * https://fastify.dev/docs/latest/Guides/Getting-Started/#validate-your-data
-  * https://fastify.dev/docs/latest/Guides/Getting-Started/#serialize-your-data
-* 

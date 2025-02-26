@@ -1,6 +1,6 @@
 {
   "name": "@agtm/node-framework",
-  "version": "9.0.9",
+  "version": "9.0.10",
   "description": "Framework nodejs baseado no ExpressJs",
   "types": "./types/index.d.mts",
   "type": "module",
@@ -21,7 +21,7 @@
   },
   "author": "André Timermann <andre@timermann.com.br>",
   "license": "ISC",
-  "main": "./index.mjs",
+  "main": "./index.ts",
   "dependencies": {
     "@agtm/util": "^4.4.0",
     "@airbnb/node-memwatch": "^3.0.0",
@@ -48,7 +48,7 @@
   },
   "files": [
     "library",
-    "index.mjs",
+    "index.ts",
     "config.default.yaml",
     "config.development.yaml",
     "config.production.yaml",
@@ -75,6 +75,7 @@
     "eslint": "^9.15.0",
     "globals": "^15.12.0",
     "prettier": "^3.4.1",
+    "ts-json-schema-generator": "^2.3.0",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.16.0"
   }

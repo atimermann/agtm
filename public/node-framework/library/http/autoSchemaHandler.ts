@@ -1,7 +1,7 @@
-import type { AutoSchema, FieldSchema } from "./autoSchema.interface.js"
-import type { UserClassFileDescription } from "./httpServer2.js"
+import type { AutoSchema, FieldSchema } from "./interfaces/autoSchema.interface.ts"
+import type { UserClassFileDescription } from "./httpServer2.ts"
 import { sentenceCase } from "change-case"
-import type { CrudSchema } from "./crudSchema.interface.js"
+import type { CrudSchema } from "./interfaces/crudSchema.interface.ts"
 
 export class AutoSchemaHandler {
   readonly schema: AutoSchema
@@ -14,6 +14,8 @@ export class AutoSchemaHandler {
   protected static async loadSchema(
     fileDescription: UserClassFileDescription,
   ): Promise<AutoSchema> {
+
+
     const schema = {
       fields: [],
       ...(await import(fileDescription.path, { with: { type: "json" } })).default,

@@ -1,4 +1,4 @@
-import type { LoggerInterface } from "../loggers/logger.interface.js"
+import type { LoggerInterface } from "../loggers/logger.interface.ts"
 import Fastify from "fastify"
 import { resolve, join, relative } from "node:path"
 import * as fs from "node:fs/promises"
@@ -47,9 +47,9 @@ export default class HttpServer {
    * @param application   Application Legada
    * @param port          Porta do servidor (TODO Mudar para carregar do config/env)
    */
-  async run(application, port = 3001) {
+  async run(application: any, port = 3001) {
     await this.server.register(cors, {
-      // Permite todas as origens
+      // Permite todas as origens, TODO: parametrizar CORS
       origin: true,
     })
 
@@ -62,10 +62,10 @@ export default class HttpServer {
       }
     })
 
-    await this.generateAutoRoutes()
     // TODO: validar se rota já foi carregado pelo autoRoute
     // TODO: AutoRoute vai ser o padrão
     // await this.loadRouters()
+    await this.generateAutoRoutes()
 
     this.server.get("/info", async (request, reply) => {
       return "TODO: Exibe todos os dados das rotas, controllers, schemas carregado para depuração"
@@ -78,6 +78,18 @@ export default class HttpServer {
     } catch (err) {
       this.logger.error("Error starting server: " + err)
       process.exit(1)
+    }
+  }
+
+  /**
+   * Gera rotas automaticamente baseado nos arquivos .auto.ts, estendendo caso necessário
+   */
+  private async generateAutoRoutes() {
+    const files = await this.findUserClassFilesInAppDir(APP_DIR, /\.auto\.json$/)
+
+    for (const fileDescription of files) {
+      const apiGenerator = new ApiGenerator(this.logger, this.server)
+      await apiGenerator.generate(fileDescription)
     }
   }
 
@@ -98,20 +110,29 @@ export default class HttpServer {
         continue
       }
 
-      // TODO: Carregar controller e schema antes de eniar para router
-      // const routerClass: HttpRouterInterface = new RouterClass(this.server, this.logger, fileDescription)
-      // await routerClass.setup()
+      // TODO: Carregar controller e schema antes de enviar para router
+      const routerClass = new RouterClass(this.server, this.logger, fileDescription)
+      await routerClass.setup()
       this.logger.debug(`Loaded routes from '${path}' for app '${app}'`)
     }
   }
 
+
+
+
+
+
+
+
+
+
   /**
-   *  Carrega Descrição de todos os arquivos usados para instanciar clases do usuário
+   *  Carrega Descrição de todos os arquivos usados para instanciar classes do usuário
    *
    *  TODO: Simplificar / Reformatar / separar em métodos ou até criar uma classe só pra ele
    *
    * @param AppDirPath    Caminho do diretório onde os apps estão localizados
-   * @param filePattern   Expressã regular que define extensão dos arquivos que serão carregados
+   * @param filePattern   Expressão regular que define extensão dos arquivos que serão carregados
    */
   private async findUserClassFilesInAppDir(
     AppDirPath: string,
@@ -214,14 +235,5 @@ export default class HttpServer {
     this.logger.info("--------------------------------------------------")
   }
 
-  /**
-   * Gera rotas automaticamente baseado nos arquivos .auto.ts, estentendo caso necessário
-   */
-  private async generateAutoRoutes() {
-    const files = await this.findUserClassFilesInAppDir(APP_DIR, /\.auto\.json$/)
-    for (const fileDescription of files) {
-      const apiGenerator = new ApiGenerator(this.logger, this.server)
-      await apiGenerator.generate(fileDescription)
-    }
-  }
+
 }

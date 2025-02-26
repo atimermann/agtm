@@ -10,7 +10,7 @@
 
 import Application from "./application.mjs"
 import HttpServer from "./http-server.mjs"
-import HttpServer2 from "./http/httpServer2.js"
+import HttpServer2 from "./httpV2/httpServer.js"
 import SocketServer from "./socket/socket-server.mjs"
 
 import JobManager from "./jobs/job-manager.mjs"
@@ -26,8 +26,15 @@ import { sentenceCase } from "change-case"
 import createLogger from "./logger.mjs"
 import { readFileSync } from "node:fs"
 import ResourceMonitor from "./resource-monitor.mjs"
-import ConsoleLogger from "./loggers/consoleLogger.js"
+import ConsoleLogger from "./loggers/consoleLogger.js" // Old
+
+import LoggerService from "./services/loggerService.ts"
+
+// TODO: Old
 const logger = createLogger("Init")
+
+// TODO new
+const loggerService = new LoggerService();
 
 export default {
   /**
@@ -117,9 +124,8 @@ export default {
 
     // New HTTP server implementation based on Fastify and inspired by NestJS
     if (Config.get("httpServer2.enabled", "boolean")) {
-      const logger = new ConsoleLogger()
-      const httpServer2 = new HttpServer2(logger)
-      httpServer2.run(application)
+      const httpServer2 = new HttpServer2(loggerService)
+      await httpServer2.run(application)
     }
   },
 

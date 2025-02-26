@@ -27,8 +27,7 @@ TODO:
  - Verifica se existe um [NOME_RECURSO].controller.ts (se não existir gera automaticamente) se existir estente
  - Gera schema fastify automaticamente
  - Cria consultas automaticamente, ou se já existir o controller, disponibiliza para uso
- - Cria uma rota que gera um .jso
- n pronto para o front gerar o crud automaticamente
+ - Cria uma rota que gera um .json pronto para o front gerar o crud automaticamente
 
 
 ////////////////////////////////////////////////////////////////////////////////

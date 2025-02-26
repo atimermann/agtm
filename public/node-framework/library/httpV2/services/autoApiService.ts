@@ -1,16 +1,47 @@
-import type { LoggerInterface } from "../loggers/logger.interface.js"
+/**
+ * Created on 24/02/2025
+ *
+ * @author André Timermann <andre@timermann.com.br>
+ *
+ * @file
+ * Responsável automatizar os controllers, gerando as consultas ao banco de dados automaticamente de acordo com o
+ *  AutoSchema
+ *
+ */
+import type LoggerService from "../../services/loggerService.ts"
+import type AutoSchema from "../autoSchema.ts"
+import type { AutoSchemaInterface } from "../interfaces/autoSchema/autoSchema.interface.ts"
+import type { FieldSchemaInterface } from "../interfaces/autoSchema/fieldsSchema.interface.ts"
+
 import { join } from "node:path"
-import { AutoSchemaHandler } from "./autoSchemaHandler.js"
-import type { FieldSchema } from "./interfaces/autoSchema.interface.js"
-import ConsoleLogger from "../loggers/consoleLogger.js"
-import type { UserClassFileDescription } from "./httpServer2.js"
 
-export class AutoCrudService {
-  private logger: LoggerInterface
-  private prismaIntance: any
-  private readonly autoSchema: AutoSchemaHandler
+export class AutoApiService {
+  private logger: LoggerService
+  private prismaInstance?: Record<string, any>
+  private readonly autoSchema: AutoSchema
 
-  constructor(autoSchema: AutoSchemaHandler, logger: LoggerInterface) {
+// ##################################################################################################################################
+//   PAREI AQUI: Já refiz todas as rotas mas GET pra frente não funcionar REVISAR E VER OQUE ESTÀ DANDO PROBLEMA
+//   COM ISSO A GENTE FINALIZA O CONTROLLER
+//   TALVEZ VALE DAR UMA REVISADA
+//
+//   EM SEGUIDA PARTIR PARA O FASTFYSCHEMA
+//   REORGANIZAR REOUTESERVICE EM VARIOS METODOS ORGANIZAR
+// ##################################################################################################################################
+
+  /**
+   * Gera nova instancia à partir do caminho do schema
+   */
+  static async createFromSchema(
+    logger: LoggerService,
+    autoSchema: AutoSchema,
+  ): Promise<AutoApiService> {
+    const autoApi = new AutoApiService(logger, autoSchema)
+    autoApi.prismaInstance = await autoApi.importPrismaClient()
+    return autoApi
+  }
+
+  constructor(logger: LoggerService, autoSchema: AutoSchema) {
     this.autoSchema = autoSchema
     this.logger = logger
   }
@@ -19,18 +50,14 @@ export class AutoCrudService {
    * Retorna instancia do prisma com a entidade definida
    */
   get prisma() {
-    return this.prismaIntance[this.autoSchema.schema.model]
-  }
-
-  async setup() {
-    this.prismaIntance = await this.importPrismaClient()
+    return this.prismaInstance ? this.prismaInstance[this.autoSchema.model] : null
   }
 
   async create(rawData: unknown) {
     const data = await this.loadDataFromBody(true, rawData)
 
     this.logger.debug(
-      `Create "${this.autoSchema.schema.model}":\n "${JSON.stringify(data, undefined, "  ")}"`,
+      `Create "${this.autoSchema.model}":\n "${JSON.stringify(data, undefined, "  ")}"`,
     )
 
     const queryResult = await this.prisma.create({ data })
@@ -38,9 +65,7 @@ export class AutoCrudService {
   }
 
   async getAll() {
-    const modelName = this.autoSchema.schema.model
-
-    const queryResult = await this.prismaIntance[modelName].findMany({
+    const queryResult = await this.prisma.findMany({
       select: this.autoSchema.generateSelectField(),
       where: { deletedAt: null },
     })
@@ -48,7 +73,7 @@ export class AutoCrudService {
     return this.filterResult(queryResult)
   }
 
-  async get(id: unknown) {
+  async get(id: number) {
     return await this.prisma.findFirst({
       select: this.autoSchema.generateSelectField(),
       where: { id, deletedAt: null },
@@ -79,7 +104,7 @@ export class AutoCrudService {
   }
 
   async getCrudSchema() {
-    return this.autoSchema.mapAutoSchemaToCrudSchema()
+    return this.autoSchema.mapApiSchemaToCrudSchema()
   }
 
   /**
@@ -122,9 +147,9 @@ export class AutoCrudService {
    * @param body      Corpo da requisição
    */
   private async loadDataFromBody(isCreate: boolean, body: any) {
-    const data = {}
+    const data: Record<string, any> = {}
 
-    for (const field of this.autoSchema.schema.fields) {
+    for (const field of this.autoSchema.fields) {
       // Ignora campos create ou update
       if (isCreate && field.create === false) continue
       if (!isCreate && field.update === false) continue
@@ -139,6 +164,7 @@ export class AutoCrudService {
 
       /**
        * Tratamento relation N-1:
+       * TODO Separar nova função
        * REF: https://www.prisma.io/docs/orm/prisma-schema/data-model/relations#associate-an-existing-record-to-another-existing-record
        */
       if (field.relation) {
@@ -167,7 +193,7 @@ export class AutoCrudService {
    * @param field     Campo a ser validado
    * @param value     Valor do campo
    */
-  private validateRequired(isCreate: boolean, field: FieldSchema, value: unknown) {
+  private validateRequired(isCreate: boolean, field: FieldSchemaInterface, value: unknown) {
     // TODO: Tentar usar um gerador de erro padrão, para retornar no padrão do fastify (ou criar se nao existir)
     if (field.required && isCreate && (value === undefined || value === null)) {
       throw new Error(`The "${field.name}" field is required.`)
@@ -184,27 +210,9 @@ export class AutoCrudService {
    * @param field Campo a ser validado
    * @param value Valor do campo
    */
-  private async validateUnique(field: FieldSchema, value: unknown) {
+  private async validateUnique(field: FieldSchemaInterface, value: unknown) {
     if (field.unique) {
       // TODO: Validar se o registro já existe
     }
-  }
-
-  /**
-   * Gera nova instancia à partir do caminho do schema
-   */
-  static async createFromSchema(schemaPath: string) {
-    const logger = new ConsoleLogger()
-
-    const fileDescription: UserClassFileDescription = {
-      app: "",
-      id: "",
-      path: schemaPath,
-    }
-    const autoSchema = await AutoSchemaHandler.createFromFile(fileDescription)
-    const service = new AutoCrudService(autoSchema, logger)
-    await service.setup()
-
-    return service
   }
 }

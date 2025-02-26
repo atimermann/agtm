@@ -11,7 +11,7 @@
  * @typedef {import('../application.mjs').default} Application
  */
 
-import { logger } from '../../index.mjs'
+import { logger } from '../../index.js'
 import JobManager from './job-manager.mjs'
 
 /**

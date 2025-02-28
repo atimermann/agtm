@@ -6,7 +6,7 @@ import type { CrudSchema } from "../http/interfaces/crudSchema.interface.js"
 import { sentenceCase } from "change-case"
 
 const autoSchemaValidator = new ValidatorByInterface(
-  "library/httpV2/interfaces/autoSchema/autoSchema.interface.ts",
+  "library/http/interfaces/autoSchema/autoSchema.interface.ts",
   "AutoSchemaInterface",
 )
 
@@ -19,8 +19,6 @@ export default class AutoSchema {
     autoSchemaValidator.validate(schema)
     this.schema = schema
   }
-
-
 
   /**
    * Nome da Rota
@@ -120,4 +118,11 @@ export default class AutoSchema {
 
     return crudSchema
   }
+
+  // /**
+  //  * Get the list of fields from the schema.
+  //  */
+  // public getCreateFieldsName(): string[] {
+  //   return this.schema.fields.filter((field) => field.create === true).map((field) => field.name)
+  // }
 }

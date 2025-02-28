@@ -1,36 +1,51 @@
-/**
- * Controller base, gera rota dinamicas
- */
-
-import { AutoCrudService } from "./autoCrudService.js"
+import type { LoggerInterface } from "../loggers/logger.interface.ts"
 import type { FastifyReply, FastifyRequest } from "fastify"
-import type { LoggerInterface } from "../loggers/logger.interface.js"
-import type { AutoSchemaHandler } from "./autoSchemaHandler.js"
+import type AutoSchema from "./autoSchema.ts"
+
+import { AutoApiService } from "./services/autoApiService.js"
 
 interface ParamInterface {
   id: number
 }
 
 export class ApiController {
-  private readonly autoSchema: AutoSchemaHandler
-  private logger: LoggerInterface
-  private autoCrudService: AutoCrudService
+  protected readonly logger: LoggerInterface
+  protected autoApiService?: AutoApiService
+  protected autoSchema?: AutoSchema
 
-  public __INSTANCE__ = "__HttpController"
+  public __INSTANCE__ = "__ApiController"
 
-  constructor(autoSchema: AutoSchemaHandler, logger: LoggerInterface) {
-    this.autoSchema = autoSchema
+  constructor(logger: LoggerInterface) {
     this.logger = logger
-    this.autoCrudService = new AutoCrudService(autoSchema, logger)
   }
 
+  /**
+   * Configuração inicial do controller (INTERNO: Não deve ser estendido pelo usuário)
+   * e chama Setup definido pelo usuário
+   */
+  private async init(autoSchema?: AutoSchema) {
+    if (autoSchema) {
+      this.autoApiService = await AutoApiService.createFromSchema(this.logger, autoSchema)
+    }
 
+    this.autoSchema = autoSchema
+    await this.setup()
+  }
+
+  /**
+   * Méthod de configuração do controller para usuário
+   */
+  async setup() {}
 
   /**
    * Controller padrão para criar novo registro
    */
   async create(request: FastifyRequest) {
-    return this.autoCrudService.create(request.body)
+    if (!this.autoApiService) {
+      throw new Error("Invalid controller. It should be used only for automatic routes.")
+    }
+    // TODO: Validar retorno padrão, usar reply
+    return this.autoApiService.create(request.body)
   }
 
   /**
@@ -38,16 +53,25 @@ export class ApiController {
    *
    **/
   async getAll() {
-    return this.autoCrudService.getAll()
+    if (!this.autoApiService) {
+      throw new Error("Invalid controller. It should be used only for automatic routes.")
+    }
+
+    return this.autoApiService.getAll()
   }
 
   /**
    * Controller padrão para retornar um registro baseado no id
    */
   async get(request: FastifyRequest, reply: FastifyReply) {
+    if (!this.autoApiService) {
+      throw new Error("Invalid controller. It should be used only for automatic routes.")
+    }
+
+    // TODO: tipo e entrada por Fastfyschema
     const { id } = request.params as ParamInterface
 
-    const entity = this.autoCrudService.get(id)
+    const entity = this.autoApiService.get(id)
 
     // TODO: usar erro padronizado estudar no fastify
     if (!entity) {
@@ -64,10 +88,13 @@ export class ApiController {
    * Controller padrão para atualizar registro automaticamente
    **/
   async update(request: FastifyRequest, reply: FastifyReply) {
+    if (!this.autoApiService) {
+      throw new Error("Invalid controller. It should be used only for automatic routes.")
+    }
     const { id } = request.params as ParamInterface
 
     try {
-      return this.autoCrudService.update(id, request.body)
+      return this.autoApiService.update(id, request.body)
     } catch (error: any) {
       if (error.code === "P2025") {
         // TODO: usar erro padronizado estudar no fastify
@@ -84,10 +111,13 @@ export class ApiController {
    * Remove registro
    */
   async delete(request: FastifyRequest, reply: FastifyReply) {
+    if (!this.autoApiService) {
+      throw new Error("Invalid controller. It should be used only for automatic routes.")
+    }
     const { id } = request.params as ParamInterface
 
     try {
-      return this.autoCrudService.delete(id)
+      return this.autoApiService.delete(id)
     } catch (error: any) {
       if (error.code === "P2025") {
         // TODO: usar erro padronizado estudar no fastify
@@ -102,6 +132,9 @@ export class ApiController {
    * Gera um CrudSchema usado pelo front end para gerar crud automaticamente
    */
   async schema() {
-    return this.autoCrudService.getCrudSchema()
+    if (!this.autoApiService) {
+      throw new Error("Invalid controller. It should be used only for automatic routes.")
+    }
+    return this.autoApiService.getCrudSchema()
   }
 }

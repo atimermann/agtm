@@ -10,7 +10,6 @@
  */
 import type LoggerService from "../../services/loggerService.ts"
 import type AutoSchema from "../autoSchema.ts"
-import type { AutoSchemaInterface } from "../interfaces/autoSchema/autoSchema.interface.ts"
 import type { FieldSchemaInterface } from "../interfaces/autoSchema/fieldsSchema.interface.ts"
 
 import { join } from "node:path"
@@ -19,15 +18,6 @@ export class AutoApiService {
   private logger: LoggerService
   private prismaInstance?: Record<string, any>
   private readonly autoSchema: AutoSchema
-
-// ##################################################################################################################################
-//   PAREI AQUI: Já refiz todas as rotas mas GET pra frente não funcionar REVISAR E VER OQUE ESTÀ DANDO PROBLEMA
-//   COM ISSO A GENTE FINALIZA O CONTROLLER
-//   TALVEZ VALE DAR UMA REVISADA
-//
-//   EM SEGUIDA PARTIR PARA O FASTFYSCHEMA
-//   REORGANIZAR REOUTESERVICE EM VARIOS METODOS ORGANIZAR
-// ##################################################################################################################################
 
   /**
    * Gera nova instancia à partir do caminho do schema

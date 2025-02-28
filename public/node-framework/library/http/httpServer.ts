@@ -19,21 +19,24 @@ export default class HttpServer {
   private readonly server: FastifyInstance
   private readonly router: RouteService
 
-  constructor(logger: LoggerService) {
+  constructor(logger: LoggerService, server?: FastifyInstance, router?: RouteService) {
     this.logger = logger
 
-    // TODO: Configurar Fastify para usar nosso logger
-    this.server = Fastify({
-      logger: true,
-      ajv: {
-        customOptions: {
-          // Permite exibir todos os erros de validação
-          allErrors: true,
+    // Configura Fastify, reutilizando o logger fornecido
+    this.server =
+      server ??
+      Fastify({
+        logger: true,
+        ajv: {
+          customOptions: {
+            // Permite exibir todos os erros de validação
+            allErrors: true,
+          },
         },
-      },
-    })
+      })
 
-    this.router = new RouteService(logger, this.server)
+    // Instancia o roteador, permitindo injeção para testes
+    this.router = router ?? new RouteService(logger, this.server)
   }
 
   /**

@@ -46,7 +46,7 @@ export default class ValidatorByInterface {
    * Gera um **JSON Schema** em tempo de execução para validar objetos dinamicamente.
    *
    * @param interfacePath Caminho da interface **relativo à raiz do `node-framework`**.
-   *                      Exemplo: `library/httpV2/interfaces/autoSchema/autoSchema.interface.ts`
+   *                      Exemplo: `library/http/interfaces/autoSchema/autoSchema.interface.ts`
    *
    * @param typeName  Tipo da interface para ser gerado validator (ou nome da interface)
    *

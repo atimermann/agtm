@@ -18,8 +18,7 @@ DOC:
 
 TODO:
 
-- findUsereClassFilesInDirectory separar em um serviço próprio
-- Gerar um javascript mais limpo e deixar o debugger apontar para o typescript
+-[OK] findUsereClassFilesInDirectory separar em um serviço próprio
 
 09/02/2025
 
@@ -63,7 +62,7 @@ Outras entidades importantes
     - auto.json
     - Instancia APIGENERATOR
       - Gerar todos as dependencias do ROUTER
-        - SCHEMA
+        - SCHEMA (ApiSchema)
         - Controller
         - Router
 
@@ -75,7 +74,7 @@ Outras entidades importantes
 
 
 - SCHEMA MAPPER
-    - O Schema do fastfy é complexo, vamos criar o nosso e mapear
+    - O Schema do fastfy é complexo, vamos criar o nosso e mapear  (https://fastify.dev/docs/latest/Reference/Validation-and-Serialization/
     - Em casos avançasdos podemos usar o original
 
 - TRATAMENTO DE ERRO (ERROR HANDLER)
@@ -92,8 +91,8 @@ Outras entidades importantes
 ------------------------------------------------------------------
 TODO:
 ------------------------------------------------------------------
-- Precisamos de uma classe de descritor (Descriptor) dos arquivos e uma que carregar esses descriptor
-- Precisamos de interface??
+-[OK] Precisamos de uma classe de descritor (Descriptor) dos arquivos e uma que carregar esses descriptor
+
 - Criar um skafoldins q use o TSX
 - Middleware
 - Documentar a migração do Schema nosso simplificado pro schema padrão do fastify complexo
@@ -103,7 +102,7 @@ TODO:
 
 - Validar se todos os logger tá tipoado com a interface em vez do serviço
 - Criar template no php storm para classe type script com assinatura padrão com data
-  - Verificar os arquivos faltando
+  - Verificar os arquivos faltando essa assinatura
 - Documentar oq é um descriptor e como é usado
 - Revisar e definir os logs relevante separando por info e debug e erro
 - Ver como é tratado erros genericos (tem q ter um catch all para debugar e retornar usuário dependendo ambiente prod ou dev)
@@ -127,7 +126,10 @@ TODO:
       }
 
 - documentar ts-json-schema-generator e o Novo sistema avançado que valida uma estrutura de dados em tempo de execução com definição de interface através do ts-json-schema-generator
+- remover http antigo q esta ali só por referencia
 
+- Analizar diferenças de validação entre fastify e o prisma (os dois realizam validação?), ver diferença produção e desenvolvimento, ver log de produção com erro pra rastrear
+- Implementar Swagger automaticamemte
 ------------------------------------------------------------------
 ERROS
 ------------------------------------------------------------------

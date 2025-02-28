@@ -10,7 +10,7 @@
 
 import Application from "./application.mjs"
 import HttpServer from "./http-server.mjs"
-import HttpServer2 from "./httpV2/httpServer.js"
+import HttpServer2 from "./http/httpServer.js"
 import SocketServer from "./socket/socket-server.mjs"
 
 import JobManager from "./jobs/job-manager.mjs"

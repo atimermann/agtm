@@ -2,7 +2,6 @@ import ValidatorByInterface from "../utils/validatorByInterface.js"
 import type { LoggerInterface } from "../loggers/logger.interface.js"
 import type { AutoSchemaInterface } from "./interfaces/autoSchema/autoSchema.interface.ts"
 import type { FieldSchemaInterface } from "./interfaces/autoSchema/fieldsSchema.interface.ts"
-import type { CrudSchema } from "../http/interfaces/crudSchema.interface.js"
 import { sentenceCase } from "change-case"
 
 const autoSchemaValidator = new ValidatorByInterface(
@@ -82,8 +81,8 @@ export default class AutoSchema {
    * Mapeia o formato padrão Auto SChema para o formato de schema utilizado pelo Crud do Frontend
    * TODO: Converter o método em um mapper
    */
-  public mapApiSchemaToCrudSchema(): CrudSchema {
-    const crudSchema: CrudSchema = {
+  public mapApiSchemaToCrudSchema(): any {
+    const crudSchema: any = {
       ...this.schema.ui,
       fields: [],
     }

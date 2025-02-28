@@ -1,32 +1,86 @@
-## HTTP 2 (Fastify)
+# Documentação do Módulo HTTP2
 
-Inspirado na organização e padrão do NESTJS, fornece uma forma rápida de implementar APIs REST.
+O HTTP2 é um novo módulo do node-framework responsável pela implementação de APIs utilizando como engine o Fastify. Seu
+foco é a criação de APIs REST robustas, rápidas e fáceis de implementar.
 
-Principais objetivos:
+Inspirado na organização e nos padrões do NestJS, este módulo fornece uma maneira acelerada de desenvolver e estruturar
+APIs REST. Abaixo, estão descritas as principais características e componentes que formam esse módulo.
 
-* ~~Implementado com typescript nativo do nodejs (apartir 22)~~ Não funciona com modules no nodejs ainda
-* Estrutura de pasta padronizada
-* Uso de injeção de dependência
-* Suporte a configuração de api com Schema
-* Auto Generator: Ferramenta que gera toda uma api rapidamente à partir de um schema ***.auto.json**
-* Incorpora todas as ajudas e funcionalidades do Fastify
-* Configuração de servidor automático
+O Grande trunfo desse módulo é permitir criação de apis à partir de definições em arquivos schemas, permitindo criar e
+subir novas api em tempo reduzido. E além disso tem suporte a geração de CRUD, fornecendo schemas para o front-end.
 
-TODO:
+## Principais Características
 
-* Melhorar documentação
-* Local: library/http
-* Bootstrao: httpServer2.ts
-* Documentar os 3 metodos de implementação:
-  * Automatico: define toda o endpoint apartir do schema
-  * Manual: Implementa todas as classes necessária para aplicação
-  * Misto: Define automaticamente a partir de um schema, mas permite customizar comportamentos mais comples (Idealmente usando DDD)
+- Implementado em TypeScript nativo (a partir da versão 22 do Node.js). **Observação:** Requer o uso do TSX
+  provisoriamente.
+- Estrutura de pastas padronizada para facilitar a organização do projeto.
+- Utiliza injeção de dependência internamente
+- **Auto Generator:** Gera uma API completa automaticamente a partir de arquivos *.auto.json. Além de schemas para o
+  front gerar crud automaticamente
+- Compatível com todas as funcionalidades nativas do Fastify, permitindo extensões e plugins.
+- Configuração de servidor automatizada, pronta para uso com poucas configurações iniciais.
+- Focado em velocidade
+
+## Requisitos iniciais
+
+- Este módulo utiliza o Fastify para criação do servidor HTTP, é importante entender seu funcionamento para aproveitar todas as caractéristicas que este modulo tem a oferecer
+Veja o básico sobre o Fastfy aqui: REF: [Fastfy](fastify.md)
+
+## Componentes Chaves
+
+`Server - Router - Controller - SCHEMA - AUTO`
+
+### 01 - Server
+REF: [Server](server.md)
+
+- Classe responsável por configurar e inicializar o Fastify, sendo o ponto de entrada do servidor HTTP.
+- Carrega configurações do servidor por meio de variáveis de ambiente (por exemplo, via .env).
+- Disponibiliza rotas de monitoramento e teste, como /ping e /info.
+- Garante a inicialização de middlewares como o CORS e a definição de rotas básicas.
+
+### 02 - Router
+REF: [Router](router.md)
+
+- Gerenciado internamente pelo RouteService (e instâncias de ApiRouter), onde a API é efetivamente configurada.
+- Ponto de entrada para a definição das rotas da aplicação.
+- Cada rota define o endpoint, o controller responsável e esquemas de validação (schemas).
+- Carrega e instancia automaticamente:
+  Controllers (lógica de negócios de cada rota).
+  Schemas de validação, quando definidos em arquivos .auto.json.
+*  Permite configurar rotas de forma manual ou automática (por meio de *.auto.json).
+
+### 03. Controller
+REF: [Controller](controller.md)
+
+- São classes que implementado a lógica por trás de cada rota.
+- Cada Controller está vinculado a uma ou mais rota.
+- De forma simplificada controller são conjunto de métodos que são chamado para determinada rota
+
+### 04. API Schema (fastfy)
+REF: [apiSchema](apiSchema.md)
+
+- Ainda não totalmente implementado neste módulo.
+- Representará, no futuro, os Schemas Fastify para validações de entrada, saída e serialização.
+- Por enquanto passamos o schema diretamente na rota
+
+### 05. Auto Schema
+REF: [autoSchema](autoSchema.md)
+
+- Permite a geração automática de uma API completa (CRUD e afins) a partir de um arquivo .auto.json.
+- Funciona em conjunto com AutoSchemaService e AutoApiService.
+
+### 06. Documentação com Swagger
+REF: [swagger](swagger.md)
+
+- Não implementado ainda
+- Geração automática de documentação com swagger
+
+## Arquitetura
+
+A titulo de manutenção, veja aqui documentação detalhada sobre a implementação do modulo http2 no node-framework
+REF: [Arquitetura](arquitetura.md)
 
 
-## Pontos chaves do Fastify para entender o funcionamento do http2 no node Framework
+## Guia de inicio
 
-* Schema 
-  * https://fastify.dev/docs/latest/Guides/Fluent-Schema/
-  * https://fastify.dev/docs/latest/Guides/Getting-Started/#validate-your-data
-  * https://fastify.dev/docs/latest/Guides/Getting-Started/#serialize-your-data
-* 
+REF: [Guia de inicio](guia.md)

@@ -1,3 +1,14 @@
+/**
+ * Created on 28/02/2025
+ *
+ * @author
+ *   André Timermann <andre@timermann.com.br>
+ *
+ * @file
+ *   Classe abstrata `ApiController` usada para implementar os métodos chamado pela rota que funcionam como o handler
+ *   do fastify. Também implementa os controladores padrão do gerador de api automatico
+ *
+ */
 import type { LoggerInterface } from "../loggers/logger.interface.ts"
 import type { FastifyReply, FastifyRequest } from "fastify"
 import type AutoSchema from "./autoSchema.ts"

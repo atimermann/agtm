@@ -1,3 +1,15 @@
+/**
+ * Created on 26/02/2025
+ *
+ * @author
+ *   André Timermann <andre@timermann.com.br>
+ *
+ * @file
+ *   Classe `AutoSchemaService` responsável por carregar e instanciar
+ *   schemas automáticos a partir de arquivos JSON, garantindo a validação
+ *   e estrutura correta dos dados.
+ *
+ */
 import type { AutoSchemaInterface } from "../interfaces/autoSchema/autoSchema.interface.ts"
 import type { LoggerInterface } from "../../loggers/logger.interface.ts"
 

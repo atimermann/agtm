@@ -1,3 +1,19 @@
+/**
+ * Created on 26/02/2025
+ *
+ * @author
+ *   André Timermann <andre@timermann.com.br>
+ *
+ * @file
+ *   Classe `AutoSchema` responsável por mapear e validar o schema de configurações de API
+ *   (implementado via `AutoSchemaInterface`), fornecendo métodos auxiliares para processamento e acesso informações
+ *   do schema
+ *
+ * Descrição:
+ *   - Realiza validação inicial do schema (por meio de `ValidatorByInterface`).
+ *   - Disponibiliza getters específicos para atributos essenciais (rota, model, chave primária, lista de campos).
+ *
+ */
 import ValidatorByInterface from "../utils/validatorByInterface.js"
 import type { LoggerInterface } from "../loggers/logger.interface.js"
 import type { AutoSchemaInterface } from "./interfaces/autoSchema/autoSchema.interface.ts"

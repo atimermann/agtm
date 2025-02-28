@@ -4,7 +4,7 @@
  * @author André Timermann <andre@timermann.com.br>
  *
  * @file
- * Servidor HTTP para apis criado com fastify
+ * Servidor HTTP para criação apis com fastify
  *
  */
 import type LoggerService from "../services/loggerService.ts"

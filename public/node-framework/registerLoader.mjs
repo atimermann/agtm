@@ -17,11 +17,11 @@
  *     import config from "~/config";
  *     ```
  * - O alias **`~`** é um alias padrão que normalmente aponta para a pasta `src/` do projeto.
- * - Os aliases são definidos no arquivo **`package.json`** dentro da seção `"_moduleAliases"`:
+ * - Os aliases são definidos no arquivo **`package.json`** dentro da sessão `"alias"`:
  *     ```json
  *     {
- *       "_moduleAliases": {
- *         "~": "./src"
+ *       "alias": {
+ *         "~": "src"
  *       }
  *     }
  *     ```

@@ -20,18 +20,19 @@ subir novas api em tempo reduzido. E além disso tem suporte a geração de CRUD
 - Compatível com todas as funcionalidades nativas do Fastify, permitindo extensões e plugins.
 - Configuração de servidor automatizada, pronta para uso com poucas configurações iniciais.
 - Focado em velocidade
+- Segue o padrão Open API
 
 ## Requisitos iniciais
 
 - Este módulo utiliza o Fastify para criação do servidor HTTP, é importante entender seu funcionamento para aproveitar todas as caractéristicas que este modulo tem a oferecer
-Veja o básico sobre o Fastfy aqui: REF: [Fastfy](fastify.md)
+Veja o básico sobre o Fastfy aqui: REF: [Fastfy](http2/fastify.md)
 
 ## Componentes Chaves
 
 `Server - Router - Controller - SCHEMA - AUTO`
 
 ### 01 - Server
-REF: [Server](server.md)
+REF: [Server](http2/server.md)
 
 - Classe responsável por configurar e inicializar o Fastify, sendo o ponto de entrada do servidor HTTP.
 - Carrega configurações do servidor por meio de variáveis de ambiente (por exemplo, via .env).
@@ -70,7 +71,7 @@ REF: [autoSchema](autoSchema.md)
 - Funciona em conjunto com AutoSchemaService e AutoApiService.
 
 ### 06. Documentação com Swagger
-REF: [swagger](swagger.md)
+REF: [swagger](http2/swagger.md)
 
 - Não implementado ainda
 - Geração automática de documentação com swagger
@@ -78,9 +79,9 @@ REF: [swagger](swagger.md)
 ## Arquitetura
 
 A titulo de manutenção, veja aqui documentação detalhada sobre a implementação do modulo http2 no node-framework
-REF: [Arquitetura](arquitetura.md)
+REF: [Arquitetura](http2/arquitetura.md)
 
 
 ## Guia de inicio
 
-REF: [Guia de inicio](guia.md)
+REF: [Guia de inicio](http2/guia.md)

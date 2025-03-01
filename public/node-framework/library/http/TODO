@@ -95,3 +95,10 @@ TODO 1:
 
 [  ] Analizar diferenças de validação entre fastify e o prisma (os dois realizam validação?), ver diferença produção e desenvolvimento, ver log de produção com erro pra rastrear
 [  ] Implementar Swagger automaticamemte
+
+
+////////////////////////////////////////////////////////////////////////////////
+// TODO 5
+////////////////////////////////////////////////////////////////////////////////
+[  ] - Versionamento de API (Estudar e implementar)
+[  ] -

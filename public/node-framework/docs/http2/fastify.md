@@ -1,6 +1,6 @@
 # Fastify
 
-
+* Tudo no Fastify é plugin
 
 
 ## Pontos chaves do Fastify para entender o funcionamento do http2 no node Framework

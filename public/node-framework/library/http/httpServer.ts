@@ -14,12 +14,20 @@ import RouteService from "./services/routeService.ts"
 import Fastify from "fastify"
 import cors from "@fastify/cors"
 
+import { SwaggerPlugin } from "./plugins/swagger.ts"
+
 export default class HttpServer {
   private readonly logger: LoggerService
   private readonly server: FastifyInstance
   private readonly router: RouteService
+  private swaggerPlugin: SwaggerPlugin
 
-  constructor(logger: LoggerService, server?: FastifyInstance, router?: RouteService) {
+  constructor(
+    logger: LoggerService,
+    server?: FastifyInstance,
+    router?: RouteService,
+    swaggerPlugin?: SwaggerPlugin,
+  ) {
     this.logger = logger
 
     // Configura Fastify, reutilizando o logger fornecido
@@ -37,16 +45,22 @@ export default class HttpServer {
 
     // Instancia o roteador, permitindo injeção para testes
     this.router = router ?? new RouteService(logger, this.server)
+
+    // Plugins
+    this.swaggerPlugin = swaggerPlugin ?? new SwaggerPlugin(this.server, this.logger)
   }
 
   /**
    * Inicia o servidor HTTP, configurando CORS, rotas e iniciando o servidor.
    */
   async run() {
+    await this.swaggerPlugin.setup()
     await this.configureCors()
     await this.createPingRoute()
     await this.router.createRoutes()
     await this.createInfoRoute()
+
+    await this.server.ready()
     await this.runServer()
   }
 

@@ -10,3 +10,11 @@ de rota ou de um esquema de  Swagger/OpenAPI existente.
 Documentação de configuração:
 https://github.com/fastify/fastify-swagger-ui?tab=readme-ov-file
 
+## Configuração
+
+Vem desativado por padrão, habilite nas configurações:
+
+```yaml
+swagger:
+  enabled: false
+```

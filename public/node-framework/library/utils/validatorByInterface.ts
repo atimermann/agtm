@@ -21,6 +21,9 @@ import { dirname, resolve } from "node:path"
 import tsj from "ts-json-schema-generator"
 import { fileURLToPath } from "node:url"
 
+import type { Config } from "ts-json-schema-generator"
+import type { LoggerInterface } from "#/loggers/logger.interface.js"
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
@@ -38,7 +41,8 @@ export default class ValidatorByInterface {
   private ajv
   private readonly schema: tsj.Schema
   private readonly schemaValidator: any
-  private interfaceName: string
+  private readonly interfaceName: string
+  private readonly interfacePath: string
 
   /**
    * Cria um validator à partir de uma interface TypeScript.
@@ -54,6 +58,7 @@ export default class ValidatorByInterface {
    */
   constructor(interfacePath: string, typeName: string) {
     const interfaceResolvedPath = resolve(__dirname, ROOT_RELATIVE_PATH, interfacePath)
+    this.interfacePath = interfacePath
 
     if (!existsSync(interfaceResolvedPath)) {
       throw new Error(`Interface file not found: ${interfaceResolvedPath}`)
@@ -62,8 +67,7 @@ export default class ValidatorByInterface {
     // @ts-ignore
     this.ajv = new Ajv()
 
-    /** @type {import('ts-json-schema-generator/src/Config').Config} */
-    const generatorSchemaConfig = {
+    const generatorSchemaConfig: Config = {
       path: resolve(interfaceResolvedPath),
       tsconfig: TS_CONFIG_PATH,
       type: typeName,
@@ -79,21 +83,64 @@ export default class ValidatorByInterface {
    * Valida um objeto contra o esquema gerado a partir da interface TypeScript.
    *
    * @param objectToValidate Objeto a ser validado.
+   * @param logger  Objeto de log
+   *
    * @returns `true` se o objeto for válido, caso contrário lança um erro com detalhes.
    *
    * @throws {TypeError} Se o objeto não for válido de acordo com o JSON Schema gerado.
    */
-  validate(objectToValidate: any): boolean {
+  validate(objectToValidate: any, logger?: LoggerInterface): boolean {
     if (this.schemaValidator(objectToValidate)) {
       return true
     }
+
+    this.logErrors(logger)
 
     throw new TypeError(`Invalid object for interface "${this.interfaceName}"`, {
       cause: this.schemaValidator.errors,
     })
   }
 
-  private generateAjvSchemaByInterfaceCode(generatorConfig) {
+  /**
+   * Imprime erro se objeto de logger for passado em validate
+   *
+   * @param logger
+   */
+  logErrors(logger: LoggerInterface | undefined) {
+    if (!logger) return
+
+    const errorMessages: string[] = [
+      "----------------------------------- START VALIDATOR ERRORS--------------------------------",
+      `Validation failed for interface "${this.interfaceName}":`,
+      `Path: "${this.interfacePath}":`,
+      "Erros:",
+    ]
+
+    for (const error of this.schemaValidator.errors ?? []) {
+      errorMessages.push(
+        `-------------------------------------------`,
+        `Instance Path:   ${error.instancePath || "(root)"}`,
+        `Schema Path:     ${error.schemaPath}`,
+        `Keyword:         ${error.keyword}`,
+        `Message:         ${error.message}`,
+        `Params:\n${JSON.stringify(error.params, null, 2)}`,
+      )
+    }
+
+    errorMessages.push(
+      "--------------------------------- END ERRORS ---------------------------------------------",
+    )
+
+    logger.error("\n" + errorMessages.join("\n"))
+  }
+
+  /**
+   * Gera um schema no padrão AJV baseado na interface disponibilizada pelo usuário
+   *
+   * @param generatorConfig
+   * @private
+   */
+  private generateAjvSchemaByInterfaceCode(generatorConfig: Config) {
     return tsj.createGenerator(generatorConfig).createSchema(generatorConfig.type)
   }
 }

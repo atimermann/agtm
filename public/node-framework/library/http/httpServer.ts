@@ -15,6 +15,7 @@ import Fastify from "fastify"
 import cors from "@fastify/cors"
 
 import { SwaggerPlugin } from "./plugins/swagger.ts"
+import Config from "#/config.ts"
 
 export default class HttpServer {
   private readonly logger: LoggerService

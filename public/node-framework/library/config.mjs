@@ -1,4 +1,6 @@
 /**
+ * ************* LEGADO: NÃO EXCLUIR, não foi transpilado à partir do config.ts ***************************
+ *
  * Created on 06/07/2023
  *
  * @file

@@ -8,61 +8,66 @@
  *
  */
 import type { FastifyInstance } from "fastify"
-import type { LoggerInterface } from "../../loggers/logger.interface.ts"
+import type { LoggerInterface } from "#/loggers/logger.interface.js"
+import type { SwaggerConfig } from "#/http/interfaces/swaggerConfig.interface.js"
+
+import Config from "#/config.js"
+import ValidatorByInterface from "#/utils/validatorByInterface.js"
+
+const swaggerConfigValidator = new ValidatorByInterface(
+  "library/http/interfaces/swaggerConfig.interface.ts",
+  "SwaggerConfig",
+)
 
 export class SwaggerPlugin {
   private readonly server: FastifyInstance
   private readonly logger: LoggerInterface
+  private readonly config: SwaggerConfig
 
-  constructor(server: FastifyInstance, logger: LoggerInterface) {
+  constructor(server: FastifyInstance, logger: LoggerInterface, config?: SwaggerConfig) {
     this.server = server
     this.logger = logger
+    this.config = config ?? Config.getYaml("swagger")
+    swaggerConfigValidator.validate(this.config, this.logger)
   }
 
   async setup() {
     try {
+      // ################################################################################################################
+      //       PAREI AQUI
+      //
+      //       - precisamos adicionar configuração para habilitar ou não o swagger
+      //       - configuação para definir rota padrão
+      //       - Existem muitas configurações no swagger, pensar melhor maneira de documentar, não é caso de usar variavel de ambiente é caso de uma configuração fixa
+      //       => Pode ser YAML no sistema padrão ou criar uma configuração json só pro swagger ou ainda criar uma configuração simplificada
+      //       => configuração de rotas especificas vai vir da configuração da rota q pode ser gerado automaticamente
+      // TEM Q SER SIMPLES
+      // ################################################################################################################
+
       // Referencia de documentação: https://swagger.io/specification/#schema-1
       await this.server.register(import("@fastify/swagger"), {
-        openapi: {
-          openapi: "3.0.0",
-          // https://swagger.io/specification/#info-object
-          info: {
-            title: "Node Framework",
-            summary: "API documentation",
-            description: "Api de teste para node framework",
-            version: "0.1.0",
-          },
-          externalDocs: {
-            url: "https://swagger.io",
-            description: "Find more info here",
-          },
-        },
+        openapi: this.config.openapi,
       })
 
       // Refêrencia de documentação: https://github.com/fastify/fastify-swagger-ui?tab=readme-ov-file#api
       await this.server.register(import("@fastify/swagger-ui"), {
-        theme: {
-          title: "Node Framework",
-        },
-        routePrefix: "/docs",
-        uiConfig: {
-          docExpansion: "none",
-          deepLinking: false,
-        },
-        uiHooks: {
-          onRequest: function (request, reply, next) {
-            next()
-          },
-          preHandler: function (request, reply, next) {
-            next()
-          },
-        },
-        staticCSP: true,
-        transformStaticCSP: (header) => header,
-        transformSpecification: (swaggerObject, request, reply) => {
-          return swaggerObject
-        },
-        transformSpecificationClone: true,
+        routePrefix: this.config.routePrefix,
+        theme: this.config.theme,
+        uiConfig: this.config.uiConfig,
+        // uiHooks: {
+        //   onRequest: function (request, reply, next) {
+        //     next()
+        //   },
+        //   preHandler: function (request, reply, next) {
+        //     next()
+        //   },
+        // },
+        // staticCSP: true,
+        // transformStaticCSP: (header) => header,
+        // transformSpecification: (swaggerObject, request, reply) => {
+        //   return swaggerObject
+        // },
+        // transformSpecificationClone: true,
       })
     } catch (error: any) {
       this.logger.error(`Error registering Swagger plugin: ${error.message}`)

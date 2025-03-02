@@ -1,15 +1,24 @@
 ---
-# Configuração do Servidor HTTP Express
+################################################################################################
+# HTTP Server 2: Novo servidor HTTP baseado no fastify (substitui o express) Exclusivo para API
+################################################################################################
+httpServer2:
+  enabled: false
+#  TODO: Definir outros atributos
+
+################################################################################################
+# Servidor HTTP LEGADO baseado no express, pode ser usado para renderizar página no backend
+################################################################################################
 # body-parser: https://github.com/expressjs/body-parser
 httpServer:
   enabled: true
   # Para servidor ficar acessivel em todas as redes incluindo internet use 0.0.0.0
-  hostname: '127.0.0.1'
+  hostname: "127.0.0.1"
   port: 3001
   urlenconded:
-    limit: '10mb'
+    limit: "10mb"
   json:
-    limit: '10mb'
+    limit: "10mb"
   log:
     # Ref: https://github.com/expressjs/morgan
     format: ':remote-addr - :remote-user ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"'
@@ -22,16 +31,16 @@ httpServer:
   #          : http://DOMAIN:PORT/static/myApp/myApplication/index.html
   # Alterando staticPath, ao acessar http://DOMAIN:PORT/static os arquivos estáticos serão carregados diretamente do diretório especificado em staticPath
   #   Exemplo staticPath: 'public/myApp/myApplication' e staticRoute: '/' ao acessar http://DOMAIN:PORT/ index.html será carregado diretamente
-  staticPath: 'public'
+  staticPath: "public"
 
   # Rota para acesso a recursos estáticos
-  staticRoute: '/static'
+  staticRoute: "/static"
 
   # Caso utilize um CDN em vez do diretório local estatico, habilitar aqui e definir cdnUrl para url base do CDN
   cdn: false
 
   # Url do CDN
-  cdnUrl: ''
+  cdnUrl: ""
 
   # Acessa arquivos estático do pacote (node-pkg): Necessário adicionar no package: "assets":  ["apps/**/views/*", "public"]
   # Deve ser desativado para acesso via CDN, ou se for utilizar o diretório public para arquivos enviados pelo usuário (upload)
@@ -39,18 +48,20 @@ httpServer:
   # Ao desativar não esqueça remover no package.json a entrada "public" em pkg.assets
   loadStaticFromPackage: false
 
-  helmet: {}
+  helmet: { }
 
-  customStaticRoutes: []
+  customStaticRoutes: [ ]
 
   timezone: "America/Sao_Paulo"
 
   https:
     enabled: false
-    key: 'key.pem'
-    cert: 'cert.pem'
+    key: "key.pem"
+    cert: "cert.pem"
 
+################################################################################################
 # Habilita Sistema Gerenciador de Jobs e Worker
+################################################################################################
 jobManager:
   enabled: false
   # Array com lista de aplicações, apps e controlers habilitados, null para todos
@@ -61,17 +72,21 @@ jobManager:
     json:
       enabled: true # Obrigratório para log ser carregado pelo processo pai
 
-
+################################################################################################
 # Carrega monitor automaticamente (necessário servidor socket e transport socket ativo)
+################################################################################################
 monitor:
   enabled: false
-  socketServer: 'http://localhost:4001/logger'
+  socketServer: "http://localhost:4001/logger"
 
+################################################################################################
+# Logger
+################################################################################################
 logger:
   # Habilita envio de log por socket (Web e monitor)
   socket:
     enabled: true
-    namespace: '/logger'
+    namespace: "/logger"
 
   # Habilita Log em console
   console:
@@ -100,16 +115,15 @@ socket:
   mode: standalone
   # Chaves usado no modo https e http2
   keys:
-    cert: '/path/to/my/cert.pem'
-    key: '/path/to/my/key.pem'
+    cert: "/path/to/my/cert.pem"
+    key: "/path/to/my/key.pem"
   # https://socket.io/docs/v4/handling-cors/
   cors:
-    origin: '*'
+    origin: "*"
   # https://socket.io/docs/v4/how-it-works/#upgrade-mechanism
-  transports: ["polling", "websocket"]
+  transports: [ "polling", "websocket" ]
   # Demais opções https://socket.io/docs/v4/server-options
-  options: {}
-
+  options: { }
 
 ################################################################################################
 # Módulo de monitoramento de recurso, util para detecção de memory Leak
@@ -127,3 +141,28 @@ resourceMonitor:
     detailSizeLimit: 10000
     # Elementos com mais nodes criados que detailSizeLimit serão exibidos em detalhes
     detailNodesLimit: 20
+
+################################################################################################
+# Swagger, Habilita documentação automática com interface Web
+# Nota: Exclusivo para uso com HTTPSERVER2 ( httpServer2.enabled = true)
+################################################################################################
+swagger:
+  enabled: false
+  # Ref: https://github.com/fastify/fastify-swagger-ui?tab=readme-ov-file#api
+  routePrefix: "/docs"
+  theme:
+    title: "Node Framework API"
+  uiConfig:
+    docExpansion: "none"
+    deepLinking: false
+  # Ref: https://swagger.io/specification/#schema-1
+  openapi:
+    openapi: "3.0.0"
+    info:
+      title: "Node Framework API"
+      summary: "API documentation"
+      description: "Lista de endpoint do projeto"
+      version: "0.1.0"
+    externalDocs:
+      url: "https://swagger.io"
+      description: "Encontra mais informações aqui"

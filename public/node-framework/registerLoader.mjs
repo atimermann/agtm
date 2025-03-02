@@ -32,9 +32,16 @@
  * - Permite o uso de **módulos TypeScript com aliases** sem warnings do Node.js.
  *
  *  **Com isso, o servidor TypeScript pode rodar com suporte a alias de forma limpa e otimizada!**
+ *
+ *  O Alias é configurado em aliases.mjs
  */
 
 import { register } from "node:module";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url"
+import { dirname, resolve } from "node:path"
 
-register("esm-module-alias/loader", pathToFileURL("./"));
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+register(resolve(__dirname, './aliases.mjs'), pathToFileURL("./"));
+

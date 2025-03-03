@@ -26,7 +26,7 @@ import { ApiRouter } from "../apiRouter.ts"
 import { ApiController } from "../apiController.ts"
 
 import type { UserClassFileDescription } from "./userApiFilesService.ts"
-import type { FastifyInstance } from "fastify"
+import type { FastifyInstance, FastifySchema } from "fastify"
 import type LoggerService from "../../services/loggerService.ts"
 
 export default class RouteService {
@@ -140,7 +140,7 @@ export default class RouteService {
 
     const controller = new ControllerClass(this.logger)
 
-    this.validateInstance(controller, "__ApiController", controllerDescriptor);
+    this.validateInstance(controller, "__ApiController", controllerDescriptor)
 
     await controller.init(autoSchema)
 
@@ -154,17 +154,20 @@ export default class RouteService {
    * @param expectedType The expected type name (e.g., "__ApiController" or "__ApiRouter").
    * @param descriptor The file descriptor, if available.
    */
-  private validateInstance(instance: any, expectedType: string, descriptor?: UserClassFileDescription) {
-    if (instance.__INSTANCE__ === expectedType) return;
+  private validateInstance(
+    instance: any,
+    expectedType: string,
+    descriptor?: UserClassFileDescription,
+  ) {
+    if (instance.__INSTANCE__ === expectedType) return
 
-    const typeName = expectedType.replace("__", ""); // Remove underscores for better readability
+    const typeName = expectedType.replace("__", "") // Remove underscores for better readability
     const message = descriptor
       ? `${typeName} "${descriptor.id}" is not a valid "${typeName}" instance!`
-      : `${typeName} is not a valid "${typeName}" instance!`;
+      : `${typeName} is not a valid "${typeName}" instance!`
 
-    throw new TypeError(message);
+    throw new TypeError(message)
   }
-
 
   /**
    * Configures API router from user descriptor or creates default
@@ -178,12 +181,10 @@ export default class RouteService {
 
     const router = new RouterClass(this.logger, this.server, controller, routerDescriptor)
 
-    this.validateInstance(router, "__ApiRouter", routerDescriptor);
+    this.validateInstance(router, "__ApiRouter", routerDescriptor)
 
     return router
   }
-
-
 
   /**
    * Configures automatic CRUD routes based on schema
@@ -191,7 +192,10 @@ export default class RouteService {
   private configureAutoRoutes(router: ApiRouter, autoSchema: any) {
     const routeName: string = autoSchema.routeName
 
-    const idParamSchema = {
+    const idParamSchema: FastifySchema = {
+      description: "post some data",
+      tags: ["user", "product"],
+      summary: "qwerty",
       params: {
         type: "object",
         properties: {

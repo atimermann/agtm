@@ -19,6 +19,7 @@ const swaggerConfigValidator = new ValidatorByInterface(
   "SwaggerConfig",
 )
 
+
 export class SwaggerPlugin {
   private readonly server: FastifyInstance
   private readonly logger: LoggerInterface
@@ -46,14 +47,14 @@ export class SwaggerPlugin {
 
       // Referencia de documentação: https://swagger.io/specification/#schema-1
       await this.server.register(import("@fastify/swagger"), {
-        openapi: this.config.openapi,
+        openapi: this.config.openapi as any,
       })
 
       // Refêrencia de documentação: https://github.com/fastify/fastify-swagger-ui?tab=readme-ov-file#api
       await this.server.register(import("@fastify/swagger-ui"), {
         routePrefix: this.config.routePrefix,
         theme: this.config.theme,
-        uiConfig: this.config.uiConfig,
+        uiConfig: this.config.uiConfig as any,
         // uiHooks: {
         //   onRequest: function (request, reply, next) {
         //     next()

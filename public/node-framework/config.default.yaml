@@ -166,3 +166,8 @@ swagger:
     externalDocs:
       url: "https://swagger.io"
       description: "Encontra mais informações aqui"
+    tags:
+      - name: 'user'
+        description: 'Endpoints relacionados a usuários'
+      - name: 'product'
+        description: 'Endpoints relacionados a produtos'

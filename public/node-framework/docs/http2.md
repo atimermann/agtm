@@ -25,7 +25,7 @@ subir novas api em tempo reduzido. E além disso tem suporte a geração de CRUD
 ## Requisitos iniciais
 
 - Este módulo utiliza o Fastify para criação do servidor HTTP, é importante entender seu funcionamento para aproveitar todas as caractéristicas que este modulo tem a oferecer
-Veja o básico sobre o Fastfy aqui: REF: [Fastfy](http2/fastify.md)
+Veja o básico sobre o Fastfy aqui: REF: [Fastify](http2/fastify.md)
 
 ## Componentes Chaves
 

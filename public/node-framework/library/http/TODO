@@ -76,7 +76,7 @@ TODO 1:
 [  ] Logger q é o mais usado deixar sempre na frente no contrutor
 - Cuidado com a confusão entre AutoSchema e AutoSchemaInterface (AutoSchema é a classe)
 [  ] Revisar tratamento de erro e log de erro, tá dificil de visualizar
-[  ] Estudar/Documentar Typescript Partial, Record
+[  ] Estudar/Documentar Typescript Partial, Record, Omit
 [  ] Verificar o erro do prisma, ele gera log automaticamente, revisar essa configuração
 
 [  ] Esquema original do fastify é muito feio, temos q rever isso

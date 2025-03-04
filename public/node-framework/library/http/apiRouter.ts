@@ -17,13 +17,14 @@ import type {
   RouteOptions,
 } from "fastify"
 import type { UserClassFileDescription } from "./services/userApiFilesService.ts"
+import { ApiRouterInterface } from "#/http/interfaces/apiRouter.interface.js"
 
 /**
  * Ao criar uma nova rota, é possível referenciar o method no controller ou criar um callback fastify diretamente
  */
 type RouteHandler = (request: FastifyRequest, reply: FastifyReply) => Promise<any> | any
 
-export class ApiRouter {
+export class ApiRouter implements ApiRouterInterface {
   private readonly logger: LoggerInterface
   private readonly server: FastifyInstance
   private readonly controller: ApiControllerInterface

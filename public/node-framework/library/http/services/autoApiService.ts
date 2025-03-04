@@ -14,7 +14,7 @@ import type { FieldSchemaInterface } from "../interfaces/autoSchema/fieldsSchema
 
 import { join } from "node:path"
 
-export class AutoApiService {
+export default class AutoApiService {
   private logger: LoggerService
   private prismaInstance?: Record<string, any>
   private readonly autoSchema: AutoSchema

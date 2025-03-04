@@ -56,7 +56,8 @@ mostrar essa informação
 
 03/03/2025
 
-* Aprendi a usar no Typescript: Omit, Partial, Record, documentar: Estudar/Documentar Typescript Partial, Record, Omit
+* Aprendi a usar no Typescript: Omit, Partial, Record, documentar: Estudar/Documentar Typescript Partial, Record,
+  Omit, ! (exclamaão para dizer q vai ser definido depois)
 * Finalização versão básica do sistema com geração Automática baseado em schema. Agora oque falta:
   * Refinar configuração do Fastifyschema à partir do AutoSchema (
     /home/andre/projetos/@agtm/public/node-framework/docs/http2/autoSchema.md)
@@ -67,7 +68,16 @@ mostrar essa informação
   * Definir padrões de erro baseado no Fastify. Será muito importante por exemplo para validação de formulário no
     front-end
     Front-end deve conhecer a linguagem de erro do back, para enviar o erro corretamente para o campo certo
+    * TER EM MENTE Já diferença entre ambientes DEV/PROD
+    * Em prod não pode exibir erro de consulta para o usuario
   * Criar um Service só para gerar schema do front-end para crud, pode ser chamar CrudSchemaService ou crudShema.api
   * formatar logs
   * Configurar autenticação com keycloak
- 
+
+04/03/2025
+
+* Implementado um tratamento de erro customizado seguindo padrão **O RFC 7807** e customizado para retornar erros em um
+  array para fácil tratamento no front-end
+  * Se necessário traduzir no futuro a tradução deve ser feita no AJV com localize.pt_BR (chatGPT)
+  * Por padrão o fastify apenas retorna erros em inglês
+* Implementar tradução de erro para PT_BR

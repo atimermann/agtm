@@ -20,6 +20,7 @@ export interface JsonSchema {
   type: "object"
   required: string[]
   properties: Record<string, { type: string }>
+  additionalProperties: boolean
 }
 
 export class AutoToOpenApiSchemaMapper {
@@ -120,6 +121,9 @@ export class AutoToOpenApiSchemaMapper {
       type: "object",
       required: [],
       properties: {},
+      // Configuração abaixo não funciona pois está sendo usado o AJV com atributo removeAdditional
+      // https://fastify.dev/docs/latest/Reference/Validation-and-Serialization/#validator-compiler
+      additionalProperties: false
     }
 
     for (const field of this.autoSchema.fields) {

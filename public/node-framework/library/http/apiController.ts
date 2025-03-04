@@ -13,7 +13,7 @@ import type { LoggerInterface } from "../loggers/logger.interface.ts"
 import type { FastifyReply, FastifyRequest } from "fastify"
 import type AutoSchema from "./autoSchema.ts"
 
-import { AutoApiService } from "./services/autoApiService.js"
+import AutoApiService from "./services/autoApiService.js"
 
 interface ParamInterface {
   id: number

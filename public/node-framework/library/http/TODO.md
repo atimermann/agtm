@@ -102,4 +102,5 @@ desenvolvimento, ver log de produção com erro pra rastrear
 // TODO 5
 ////////////////////////////////////////////////////////////////////////////////
 [  ] - Versionamento de API (Estudar e implementar)
-[  ] -
+[  ] - Traduzir o erros do fastify/AJV para ptBR
+[  ] - Customizar o errorHandler para exibição diferenciada entre produção e dev (testar)

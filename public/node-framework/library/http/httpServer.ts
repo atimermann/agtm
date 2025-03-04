@@ -8,25 +8,28 @@
  *
  */
 import type LoggerService from "../services/loggerService.ts"
-import type { FastifyInstance } from "fastify"
+import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 
 import RouteService from "./services/routeService.ts"
 import Fastify from "fastify"
 import cors from "@fastify/cors"
 
 import { SwaggerPlugin } from "./plugins/swagger.ts"
+import ErrorHandlerService from "./services/errorHandlerService.ts"
 
 export default class HttpServer {
   private readonly logger: LoggerService
   private readonly fastify: FastifyInstance
   private readonly router: RouteService
-  readonly swaggerPlugin: SwaggerPlugin
+  private readonly swaggerPlugin: SwaggerPlugin
+  private readonly errorHandlerService: ErrorHandlerService
 
   constructor(
     logger: LoggerService,
     server?: FastifyInstance,
     router?: RouteService,
     swaggerPlugin?: SwaggerPlugin,
+    errorHandlerService?: ErrorHandlerService,
   ) {
     this.logger = logger
 
@@ -43,11 +46,8 @@ export default class HttpServer {
         },
       })
 
-
-    // Plugins
     this.swaggerPlugin = swaggerPlugin ?? new SwaggerPlugin(this.fastify, this.logger)
-
-    // Rota
+    this.errorHandlerService = errorHandlerService ?? new ErrorHandlerService(this.logger)
     this.router = router ?? new RouteService(logger, this.fastify, this.swaggerPlugin)
   }
 
@@ -57,6 +57,9 @@ export default class HttpServer {
   async run() {
     await this.swaggerPlugin.setup()
     await this.configureCors()
+
+    await this.configureErrorHandler()
+
     await this.createPingRoute()
     await this.router.createRoutes()
     await this.createInfoRoute()
@@ -114,5 +117,16 @@ export default class HttpServer {
     this.fastify.get("/info", async (request, reply) => {
       return "TODO: Exibe todos os dados das rotas, controllers, schemas carregado para depuração"
     })
+  }
+
+  /**
+   * Configura o Manipulador de Erros
+   */
+  private async configureErrorHandler() {
+    this.fastify.setErrorHandler(
+      (error: Error & { validation?: any[] }, request: FastifyRequest, reply: FastifyReply) => {
+        this.errorHandlerService.handleError(error, request, reply)
+      },
+    )
   }
 }

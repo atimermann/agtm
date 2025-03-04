@@ -51,3 +51,4 @@ export {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export { ApiRouter } from "#/http/apiRouter.ts"
 export { ApiController } from "#/http/apiController.ts"
+export type { ApiRouterInterface } from "#/http/interfaces/apiRouter.interface.ts"

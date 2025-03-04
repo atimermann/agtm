@@ -19,17 +19,36 @@ const swaggerConfigValidator = new ValidatorByInterface(
   "SwaggerConfig",
 )
 
-
 export class SwaggerPlugin {
-  private readonly server: FastifyInstance
+  private readonly fastify: FastifyInstance
   private readonly logger: LoggerInterface
   private readonly config: SwaggerConfig
 
-  constructor(server: FastifyInstance, logger: LoggerInterface, config?: SwaggerConfig) {
-    this.server = server
+  constructor(fastify: FastifyInstance, logger: LoggerInterface, config?: SwaggerConfig) {
+    this.fastify = fastify
     this.logger = logger
     this.config = config ?? Config.getYaml("swagger")
     swaggerConfigValidator.validate(this.config, this.logger)
+  }
+
+  /**
+   * Adiciona uma nova tag à configuração OpenAPI do Swagger
+   *
+   * @param name        Nome da tag
+   * @param description Descrição da tag
+   */
+  addTag(name: string, description: string) {
+    if (!this.config.openapi.tags) {
+      this.config.openapi.tags = []
+    }
+
+    // Verifica se a tag já existe
+    const exists = this.config.openapi.tags.some((tag) => tag.name === name)
+    if (exists) {
+      this.logger.debug(`A tag '${name}' já existe.`)
+      return
+    }
+    this.config.openapi.tags.push({ name, description })
   }
 
   async setup() {
@@ -46,12 +65,12 @@ export class SwaggerPlugin {
       // ################################################################################################################
 
       // Referencia de documentação: https://swagger.io/specification/#schema-1
-      await this.server.register(import("@fastify/swagger"), {
+      await this.fastify.register(import("@fastify/swagger"), {
         openapi: this.config.openapi as any,
       })
 
       // Refêrencia de documentação: https://github.com/fastify/fastify-swagger-ui?tab=readme-ov-file#api
-      await this.server.register(import("@fastify/swagger-ui"), {
+      await this.fastify.register(import("@fastify/swagger-ui"), {
         routePrefix: this.config.routePrefix,
         theme: this.config.theme,
         uiConfig: this.config.uiConfig as any,

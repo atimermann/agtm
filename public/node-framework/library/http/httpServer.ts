@@ -15,13 +15,12 @@ import Fastify from "fastify"
 import cors from "@fastify/cors"
 
 import { SwaggerPlugin } from "./plugins/swagger.ts"
-import Config from "#/config.ts"
 
 export default class HttpServer {
   private readonly logger: LoggerService
-  private readonly server: FastifyInstance
+  private readonly fastify: FastifyInstance
   private readonly router: RouteService
-  private swaggerPlugin: SwaggerPlugin
+  readonly swaggerPlugin: SwaggerPlugin
 
   constructor(
     logger: LoggerService,
@@ -32,7 +31,7 @@ export default class HttpServer {
     this.logger = logger
 
     // Configura Fastify, reutilizando o logger fornecido
-    this.server =
+    this.fastify =
       server ??
       Fastify({
         logger: true,
@@ -44,11 +43,12 @@ export default class HttpServer {
         },
       })
 
-    // Instancia o roteador, permitindo injeção para testes
-    this.router = router ?? new RouteService(logger, this.server)
 
     // Plugins
-    this.swaggerPlugin = swaggerPlugin ?? new SwaggerPlugin(this.server, this.logger)
+    this.swaggerPlugin = swaggerPlugin ?? new SwaggerPlugin(this.fastify, this.logger)
+
+    // Rota
+    this.router = router ?? new RouteService(logger, this.fastify, this.swaggerPlugin)
   }
 
   /**
@@ -61,7 +61,7 @@ export default class HttpServer {
     await this.router.createRoutes()
     await this.createInfoRoute()
 
-    await this.server.ready()
+    await this.fastify.ready()
     await this.runServer()
   }
 
@@ -69,7 +69,7 @@ export default class HttpServer {
    * Configura o CORS para permitir requisições de origens variadas.
    */
   private async configureCors() {
-    await this.server.register(cors, {
+    await this.fastify.register(cors, {
       // Permite todas as origens, TODO: parametrizar CORS
       origin: true,
     })
@@ -79,7 +79,7 @@ export default class HttpServer {
    * Cria a rota `/ping`, que serve como teste para verificar se o servidor está rodando.
    */
   private async createPingRoute() {
-    this.server.get("/ping", async (request, reply) => {
+    this.fastify.get("/ping", async (request, reply) => {
       return {
         message: "Server is running!",
         time: reply.elapsedTime,
@@ -98,7 +98,7 @@ export default class HttpServer {
       // TODO: parametrizar no ENV
       const port = 3001
 
-      await this.server.listen({ port, host: "0.0.0.0" })
+      await this.fastify.listen({ port, host: "0.0.0.0" })
       this.logger.info(`Server started on http://0.0.0.0:${port}`)
     } catch (err) {
       this.logger.error("Error starting server: " + err)
@@ -111,7 +111,7 @@ export default class HttpServer {
    * TODO: Proteger esta rota para evitar exposição de informações sensíveis.
    */
   private async createInfoRoute() {
-    this.server.get("/info", async (request, reply) => {
+    this.fastify.get("/info", async (request, reply) => {
       return "TODO: Exibe todos os dados das rotas, controllers, schemas carregado para depuração"
     })
   }

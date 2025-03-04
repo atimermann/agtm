@@ -9,6 +9,7 @@
  */
 import { FieldSchemaInterface } from "./fieldsSchema.interface.ts"
 import { UiSchemaInterface } from "./uiSchema.interface.ts"
+import { DocsSchemaInterface } from "./docsSchema.interface.ts"
 
 export interface AutoSchemaInterface {
   /**
@@ -23,6 +24,12 @@ export interface AutoSchemaInterface {
    * Nome da rota base pra gerar a API
    */
   route: string
+
+  /**
+   * Informações de documentação da API.
+   */
+  docs?: DocsSchemaInterface
+
   /**
    * Lista de campos do  modelo
    */

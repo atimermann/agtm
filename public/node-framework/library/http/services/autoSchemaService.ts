@@ -11,7 +11,7 @@
  *
  */
 import type { AutoSchemaInterface } from "../interfaces/autoSchema/autoSchema.interface.ts"
-import type { LoggerInterface } from "../../loggers/logger.interface.ts"
+import type { LoggerInterface } from "#/loggers/logger.interface.js"
 
 import { UserClassFileDescription } from "./userApiFilesService.ts"
 import AutoSchema from "../autoSchema.ts"

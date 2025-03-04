@@ -5,6 +5,11 @@
 - Por ser um módulo complexo, revise a documentação de periodicamente, adicionando mais informação e principalmente
   verificando se a documentação está clara, melhorando-a.
 
+## Diagrama
+
+Source: https://drive.google.com/file/d/1GSaHr2BnL7aYExdjkP4sU_akuDpQ956C/view?usp=sharing
+![](http2.png)
+
 ## Ciclo de vida da aplicação
 
 * Server **(library/server.mjs)**

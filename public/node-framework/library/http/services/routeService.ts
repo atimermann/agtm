@@ -26,23 +26,28 @@ import { ApiRouter } from "../apiRouter.ts"
 import { ApiController } from "../apiController.ts"
 
 import type { UserClassFileDescription } from "./userApiFilesService.ts"
-import type { FastifyInstance, FastifySchema } from "fastify"
-import type LoggerService from "../../services/loggerService.ts"
+import type { FastifyInstance } from "fastify"
+import type LoggerService from "#/services/loggerService.ts"
+import type { SwaggerPlugin } from "#/http/plugins/swagger.js"
+import AutoSchema from "#/http/autoSchema.js"
 
 export default class RouteService {
   private readonly logger: LoggerService
-  private readonly server: FastifyInstance
+  private readonly fastify: FastifyInstance
   private readonly userApiFilesService: UserApiFilesService
   private readonly autoSchemaService: AutoSchemaService
+  private swagger: SwaggerPlugin
 
   constructor(
     logger: LoggerService,
-    server: FastifyInstance,
+    fastify: FastifyInstance,
+    swagger: SwaggerPlugin,
     userApiFilesService?: UserApiFilesService,
     autoSchemaService?: AutoSchemaService,
   ) {
     this.logger = logger
-    this.server = server
+    this.fastify = fastify
+    this.swagger = swagger
     this.userApiFilesService = userApiFilesService ?? new UserApiFilesService(logger)
     this.autoSchemaService = autoSchemaService ?? new AutoSchemaService(logger)
   }
@@ -68,26 +73,6 @@ export default class RouteService {
   }
 
   /**
-   * Valida se os arquivos requeridos para criar a rota estão definidos: arquivo de rota ou schema auto.js
-   *
-   * @param descriptorName
-   * @param fileDescriptors
-   * @private
-   */
-  private validateRequiredRouteFiles(
-    descriptorName: string,
-    fileDescriptors: UserClassFileDescription[],
-  ) {
-    this.logger.debug(`Validando rotas para "${descriptorName}"...`)
-    const hasRequiredType = fileDescriptors.some((file) => ["auto", "router"].includes(file.type))
-    if (!hasRequiredType) {
-      throw new Error(
-        `Route" ${descriptorName} "must have a router (.router.ts) or an auto (.auto.json)`,
-      )
-    }
-  }
-
-  /**
    *  Carrega ou cria rota.
    *
    * @param descriptorName    Nome da rota
@@ -106,6 +91,26 @@ export default class RouteService {
     }
 
     await router.setup()
+  }
+
+  /**
+   * Valida se os arquivos requeridos para criar a rota estão definidos: arquivo de rota ou schema auto.js
+   *
+   * @param descriptorName
+   * @param fileDescriptors
+   * @private
+   */
+  private validateRequiredRouteFiles(
+    descriptorName: string,
+    fileDescriptors: UserClassFileDescription[],
+  ) {
+    this.logger.debug(`Validando rotas para "${descriptorName}"...`)
+    const hasRequiredType = fileDescriptors.some((file) => ["auto", "router"].includes(file.type))
+    if (!hasRequiredType) {
+      throw new Error(
+        `Route" ${descriptorName} "must have a router (.router.ts) or an auto (.auto.json)`,
+      )
+    }
   }
 
   /**
@@ -179,37 +184,23 @@ export default class RouteService {
       ? (await import(routerDescriptor.path)).default
       : ApiRouter
 
-    const router = new RouterClass(this.logger, this.server, controller, routerDescriptor)
+    const router = new RouterClass(this.logger, this.fastify, controller, routerDescriptor)
 
     this.validateInstance(router, "__ApiRouter", routerDescriptor)
 
     return router
   }
 
-  /**
-   * Configures automatic CRUD routes based on schema
-   */
-  private configureAutoRoutes(router: ApiRouter, autoSchema: any) {
-    const routeName: string = autoSchema.routeName
-
-    const idParamSchema: FastifySchema = {
-      description: "post some data",
-      tags: ["user", "product"],
-      summary: "qwerty",
-      params: {
-        type: "object",
-        properties: {
-          id: { type: "integer" },
-        },
-        required: ["id"],
-      },
+  private configureAutoRoutes(router: ApiRouter, autoSchema: AutoSchema) {
+    if (autoSchema.docs?.name) {
+      this.swagger.addTag(autoSchema.docs.name, autoSchema.docs.description)
     }
 
-    router.post(`/${routeName}`, "create")
-    router.get(`/${routeName}`, "getAll")
-    router.get(`/${routeName}/:id(\\d+)`, "get", idParamSchema)
-    router.put(`/${routeName}/:id(\\d+)`, "update", idParamSchema)
-    router.delete(`/${routeName}/:id(\\d+)`, "delete", idParamSchema)
-    router.get(`/${routeName}/schema`, "schema")
+    router.post(`/${autoSchema.routeName}`, "create", autoSchema.getPostSchema())
+    router.get(`/${autoSchema.routeName}`, "getAll", autoSchema.getGetAllSchema())
+    router.get(`/${autoSchema.routeName}/:id(\\d+)`, "get", autoSchema.getGetOneSchema())
+    router.put(`/${autoSchema.routeName}/:id(\\d+)`, "update", autoSchema.getPutSchema())
+    router.delete(`/${autoSchema.routeName}/:id(\\d+)`, "delete", autoSchema.getDeleteSchema())
+    router.get(`/${autoSchema.routeName}/schema`, "schema", autoSchema.getCrudSchema())
   }
 }

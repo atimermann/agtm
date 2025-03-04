@@ -7,7 +7,7 @@
  *
  * @author André Timermann <andre@timermann.com.br>
  */
-import createLogger from '../../library/logger.mjs'
+import createLogger from '#/logger.mjs'
 import WorkerRunner from '../jobs/worker-runner.mjs'
 
 import JobManager from '../jobs/job-manager.mjs'

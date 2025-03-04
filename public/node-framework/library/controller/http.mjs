@@ -38,7 +38,7 @@
  */
 import path from 'node:path'
 
-import createLogger from '../../library/logger.mjs'
+import createLogger from '#/logger.mjs'
 import { performance } from 'node:perf_hooks'
 import BaseController from './base-controller.mjs'
 import consolidate from '@ladjs/consolidate'

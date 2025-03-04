@@ -1,4 +1,4 @@
-import type { LoggerInterface } from "../../loggers/logger.interface.ts"
+import type { LoggerInterface } from "#/loggers/logger.interface.ts"
 
 /**
  * Interface para a classe `ApiController`

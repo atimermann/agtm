@@ -8,7 +8,7 @@
  *  AutoSchema
  *
  */
-import type LoggerService from "../../services/loggerService.ts"
+import type LoggerService from "#/services/loggerService.ts"
 import type AutoSchema from "../autoSchema.ts"
 import type { FieldSchemaInterface } from "../interfaces/autoSchema/fieldsSchema.interface.ts"
 

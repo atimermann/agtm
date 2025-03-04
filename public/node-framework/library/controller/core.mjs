@@ -6,7 +6,7 @@
  * @author André Timermann <andre@timermann.com.br>
  */
 
-import createLogger from '../../library/logger.mjs'
+import createLogger from '#/logger.mjs'
 import BaseController from './base-controller.mjs'
 const logger = createLogger('BaseController')
 

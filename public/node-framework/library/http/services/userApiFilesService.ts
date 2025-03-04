@@ -8,7 +8,7 @@
  *
  */
 
-import type LoggerService from "../../services/loggerService.js"
+import type LoggerService from "#/services/loggerService.js"
 import { promises as fs } from "node:fs"
 import { resolve, join, parse } from "node:path"
 import { groupBy } from "lodash-es"

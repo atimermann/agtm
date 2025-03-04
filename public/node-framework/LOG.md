@@ -68,5 +68,6 @@ mostrar essa informação
     front-end
     Front-end deve conhecer a linguagem de erro do back, para enviar o erro corretamente para o campo certo
   * Criar um Service só para gerar schema do front-end para crud, pode ser chamar CrudSchemaService ou crudShema.api
-  * formatar logs   
+  * formatar logs
+  * Configurar autenticação com keycloak
  

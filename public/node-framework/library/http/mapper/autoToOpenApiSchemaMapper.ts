@@ -132,6 +132,7 @@ export class AutoToOpenApiSchemaMapper {
 
       jsonSchema.properties[field.name] = {
         type: this.mapFieldType(field.type),
+        default: field.default
       }
 
       if (field.required) {

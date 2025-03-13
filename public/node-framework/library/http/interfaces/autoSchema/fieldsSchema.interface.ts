@@ -24,6 +24,10 @@ export interface FieldSchemaInterface {
    */
   type: string
   /**
+   * Valor padrão, usado na documentação ou no formulário
+   */
+  default?: unknown
+  /**
    * Se for chave estrangeira, nome da relation definida no Prisma
    */
   relation?: string
@@ -40,8 +44,8 @@ export interface FieldSchemaInterface {
    */
   create?: boolean
   /**
-  * Se permite ser atribuído na Atualização
-  */
+   * Se permite ser atribuído na Atualização
+   */
   update?: boolean
   /**
    * Se será retornado na api

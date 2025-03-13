@@ -48,9 +48,9 @@ httpServer:
   # Ao desativar não esqueça remover no package.json a entrada "public" em pkg.assets
   loadStaticFromPackage: false
 
-  helmet: { }
+  helmet: {}
 
-  customStaticRoutes: [ ]
+  customStaticRoutes: []
 
   timezone: "America/Sao_Paulo"
 
@@ -121,9 +121,9 @@ socket:
   cors:
     origin: "*"
   # https://socket.io/docs/v4/how-it-works/#upgrade-mechanism
-  transports: [ "polling", "websocket" ]
+  transports: ["polling", "websocket"]
   # Demais opções https://socket.io/docs/v4/server-options
-  options: { }
+  options: {}
 
 ################################################################################################
 # Módulo de monitoramento de recurso, util para detecção de memory Leak
@@ -167,5 +167,5 @@ swagger:
       url: "https://swagger.io"
       description: "Encontra mais informações aqui"
     tags:
-      - name: 'default'
-        description: 'Rotas padrão'
+      - name: "default"
+        description: "Rotas padrão"

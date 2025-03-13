@@ -80,4 +80,12 @@ mostrar essa informação
   array para fácil tratamento no front-end
   * Se necessário traduzir no futuro a tradução deve ser feita no AJV com localize.pt_BR (chatGPT)
   * Por padrão o fastify apenas retorna erros em inglês
+* Implementado valor default
 * Implementar tradução de erro para PT_BR
+* Próximo passo: Implementar autenticação com Keycloak e sessão
+
+12/03/2025
+* https://medium.com/with-orus/the-5-commandments-of-clean-error-handling-in-typescript-93a9cbdf1af5
+* Config transformado em configService
+* Novo campo "default" no fieldShemaInterface
+* 

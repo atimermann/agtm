@@ -75,13 +75,13 @@ execução com definição de interface através do ts-json-schema-generator
 [  ] Revisar e definir os logs relevante separando por info e debug e erro
 [  ] Ver como é tratado erros genericos (tem q ter um catch all para debugar e retornar usuário dependendo ambiente prod
 ou dev)
-[  ] Validar logs onde for necessário
+[  ] Revisar os logs no sistema, adicionando onde for necessário
 [  ] Logger q é o mais usado deixar sempre na frente no contrutor
 [  ] Revisar tratamento de erro e log de erro, tá dificil de visualizar
 [  ] Estudar/Documentar Typescript Partial, Record, Omit
 [  ] Verificar o erro do prisma, ele gera log automaticamente, revisar essa configuração
 
-[  ] Esquema original do fastify é muito feio, temos q rever isso
+[OK] Esquema original do fastify é muito feio, temos q rever isso
 
 ```
     { params: {
@@ -103,4 +103,8 @@ desenvolvimento, ver log de produção com erro pra rastrear
 ////////////////////////////////////////////////////////////////////////////////
 [  ] - Versionamento de API (Estudar e implementar)
 [  ] - Traduzir o erros do fastify/AJV para ptBR
-[  ] - Customizar o errorHandler para exibição diferenciada entre produção e dev (testar)
+[  ] - Personalizar o errorHandler para exibição diferenciada entre produção e dev (testar)
+      - Atualmente não há mudança entre um ou outro (testei em prod)
+      - Indicar algum lugar q o ambiente é prod ou dev no swagger
+      - Tratar os códigos corretamente ter em mente a nivel de aplicação o tratamento de erro
+      - Integrar erros PRISMA com FASTIFY + debug de query (criar interface online)

@@ -17,6 +17,8 @@ subir novas api em tempo reduzido. E além disso tem suporte a geração de CRUD
 - Utiliza injeção de dependência internamente
 - **Auto Generator:** Gera uma API completa automaticamente a partir de arquivos *.auto.json. Além de schemas para o
   front gerar crud automaticamente
+- Schemas e tipos são validados em tempo de execução automaticamente com definições em interfaces usando
+  ts-json-schema-generator, então se tiver que adicionar novas propriedades, antes necessário atualizar as interfaces. 
 - Compatível com todas as funcionalidades nativas do Fastify, permitindo extensões e plugins.
 - Configuração de servidor automatizada, pronta para uso com poucas configurações iniciais.
 - Focado em velocidade
@@ -24,14 +26,16 @@ subir novas api em tempo reduzido. E além disso tem suporte a geração de CRUD
 
 ## Requisitos iniciais
 
-- Este módulo utiliza o Fastify para criação do servidor HTTP, é importante entender seu funcionamento para aproveitar todas as caractéristicas que este modulo tem a oferecer
-Veja o básico sobre o Fastfy aqui: REF: [Fastify](http2/fastify.md)
+- Este módulo utiliza o Fastify para criação do servidor HTTP, é importante entender seu funcionamento para aproveitar
+  todas as caractéristicas que este modulo tem a oferecer
+  Veja o básico sobre o Fastfy aqui: REF: [Fastify](http2/fastify.md)
 
 ## Componentes Chaves
 
 `Server - Router - Controller - SCHEMA - AUTO`
 
 ### 01 - Server
+
 REF: [Server](http2/server.md)
 
 - Classe responsável por configurar e inicializar o Fastify, sendo o ponto de entrada do servidor HTTP.
@@ -40,6 +44,7 @@ REF: [Server](http2/server.md)
 - Garante a inicialização de middlewares como o CORS e a definição de rotas básicas.
 
 ### 02 - Router
+
 REF: [Router](router.md)
 
 - Gerenciado internamente pelo RouteService (e instâncias de ApiRouter), onde a API é efetivamente configurada.
@@ -48,9 +53,11 @@ REF: [Router](router.md)
 - Carrega e instancia automaticamente:
   Controllers (lógica de negócios de cada rota).
   Schemas de validação, quando definidos em arquivos .auto.json.
-*  Permite configurar rotas de forma manual ou automática (por meio de *.auto.json).
+
+* Permite configurar rotas de forma manual ou automática (por meio de *.auto.json).
 
 ### 03. Controller
+
 REF: [Controller](controller.md)
 
 - São classes que implementado a lógica por trás de cada rota.
@@ -58,6 +65,7 @@ REF: [Controller](controller.md)
 - De forma simplificada controller são conjunto de métodos que são chamado para determinada rota
 
 ### 04. API Schema (fastfy)
+
 REF: [apiSchema](apiSchema.md)
 
 - Ainda não totalmente implementado neste módulo.
@@ -65,22 +73,29 @@ REF: [apiSchema](apiSchema.md)
 - Por enquanto passamos o schema diretamente na rota
 
 ### 05. Auto Schema
+
 REF: [autoSchema](autoSchema.md)
 
 - Permite a geração automática de uma API completa (CRUD e afins) a partir de um arquivo .auto.json.
 - Funciona em conjunto com AutoSchemaService e AutoApiService.
 
 ### 06. Documentação com Swagger
+
 REF: [swagger](http2/swagger.md)
 
 - Não implementado ainda
 - Geração automática de documentação com swagger
 
+### 07. Validação em tempo de execução com interfaces
+
+REF: [interfaceValidator](interfaceValidator.md)
+
+- Valida estruturas complexas como schemas em tempo de execução com interfaces
+
 ## Arquitetura
 
 A titulo de manutenção, veja aqui documentação detalhada sobre a implementação do modulo http2 no node-framework
 REF: [Arquitetura](http2/arquitetura.md)
-
 
 ## Guia de inicio
 

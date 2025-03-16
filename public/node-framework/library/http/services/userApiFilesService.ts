@@ -36,10 +36,10 @@ const typeMap: Record<string, string> = {
 
 export type UserClassFileDescription = {
   path: string
-  appName: string
-  name: string
-  id: string
-  type: string
+  appName?: string
+  name?: string
+  id?: string
+  type?: string
 }
 
 export type UserClassFilesGrouped = Record<string, UserClassFileDescription[]>

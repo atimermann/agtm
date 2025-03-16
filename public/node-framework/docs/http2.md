@@ -27,7 +27,7 @@ subir novas api em tempo reduzido. E além disso tem suporte a geração de CRUD
 ## Requisitos iniciais
 
 - Este módulo utiliza o Fastify para criação do servidor HTTP, é importante entender seu funcionamento para aproveitar
-  todas as caractéristicas que este modulo tem a oferecer
+  todas as características que este modulo tem a oferecer
   Veja o básico sobre o Fastfy aqui: REF: [Fastify](http2/fastify.md)
 
 ## Componentes Chaves
@@ -45,9 +45,9 @@ REF: [Server](http2/server.md)
 
 ### 02 - Router
 
-REF: [Router](router.md)
+REF: [Router](http2/router.md)
 
-- Gerenciado internamente pelo RouteService (e instâncias de ApiRouter), onde a API é efetivamente configurada.
+- Gerenciado internamente pelo RouterService (e instâncias de ApiRouter), onde a API é efetivamente configurada.
 - Ponto de entrada para a definição das rotas da aplicação.
 - Cada rota define o endpoint, o controller responsável e esquemas de validação (schemas).
 - Carrega e instancia automaticamente:
@@ -100,3 +100,9 @@ REF: [Arquitetura](http2/arquitetura.md)
 ## Guia de inicio
 
 REF: [Guia de inicio](http2/guia.md)
+
+
+## Mais documentação
+
+* [Auto Api Service](./http2/autoApiService.md)
+* [Keycloak](./http2/keycloak.md)

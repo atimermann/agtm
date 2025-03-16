@@ -5,7 +5,8 @@
   "types": "./types/index.d.mts",
   "type": "module",
   "bin": {
-    "nf-monitor": "scripts/monitor.mjs"
+    "nf-monitor": "scripts/monitor.mjs",
+    "nf-keycloak": "scripts/keycloak.ts"
   },
   "scripts": {
     "check": "npm run tsc ; npm run lint ; npm run test",

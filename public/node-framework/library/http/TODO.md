@@ -1,23 +1,19 @@
-////////////////////////////////////////////////////////////////////////////////
-TODO 1:
-////////////////////////////////////////////////////////////////////////////////
-[OK] Validar dados  (Usar schema padrão, ver integração com PRISMA)
-[OK] Tratar erros (Seguir as padrões de REST API para erros semânticos)
-[OK] Documentar com Swagger padronizado
+# TODO 1:
+- [x] Validar dados  (Usar schema padrão, ver integração com PRISMA)
+- [x] Tratar erros (Seguir as padrões de REST API para erros semânticos)
+- [x] Documentar com Swagger padronizado
 [XX] Criar erros customizados em função e em um arquivo separado .validator.ts
-[  ] Autenticar usuario com keycloak
-[  ] Processar dados (Criar um service padronizado para isso)
-[  ] Revisar e documentar
-[  ]  o Fastify já tem um tratamento de erro padrão
-[  ] Rate Limite padronizado
-[  ] Cors configurado
-[  ] Versionar
-[  ] Tudo que for padrão deixar numa lib
-[  ] Teste Unitário
+- [ ] Autenticar usuario com keycloak
+- [ ] Processar dados (Criar um service padronizado para isso)
+- [ ] Revisar e documentar
+- [ ] o Fastify já tem um tratamento de erro padrão
+- [ ] Rate Limite padronizado
+- [ ] Cors configurado
+- [ ] Versionar
+- [ ] Tudo que for padrão deixar numa lib
+- [ ] Teste Unitário
 
-////////////////////////////////////////////////////////////////////////////////
-TODO 2:
-////////////////////////////////////////////////////////////////////////////////
+# TODO 2:
 
 PROJECT AUTO API:
 
@@ -31,9 +27,7 @@ PROJECT AUTO API:
 [  ] - usar errorHandler do fastify
 [  ] - retorna uma lista indexada de erros para facilitar trabalho do front
 
-////////////////////////////////////////////////////////////////////////////////
-// TODO 3
-////////////////////////////////////////////////////////////////////////////////
+# TODO 3
 
 [  ] 1. Rate Limiting -> Evitar abusos e ataques de força bruta.
 [  ] 2. Autenticação -> Garantir acesso apenas a usuários legítimos.
@@ -51,9 +45,7 @@ PROJECT AUTO API:
 [  ] └── hooks
 [  ] └── your services
 
-////////////////////////////////////////////////////////////////////////////////
-// TODO 4
-////////////////////////////////////////////////////////////////////////////////
+# TODO 4
 
 [OK] Precisamos de uma classe de descritor (Descriptor) dos arquivos e uma que carregar esses descriptor
 [OK] Documentar a migração do Schema nosso simplificado pro schema padrão do fastify

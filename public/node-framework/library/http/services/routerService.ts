@@ -31,7 +31,7 @@ import type LoggerService from "#/services/loggerService.ts"
 import type { SwaggerPlugin } from "#/http/plugins/swagger.js"
 import AutoSchema from "#/http/autoSchema.js"
 
-export default class RouteService {
+export default class RouterService {
   private readonly logger: LoggerService
   private readonly fastify: FastifyInstance
   private readonly userApiFilesService: UserApiFilesService
@@ -91,6 +91,7 @@ export default class RouteService {
     }
 
     await router.setup()
+    router.run()
   }
 
   /**
@@ -100,36 +101,21 @@ export default class RouteService {
    * @param fileDescriptors
    * @private
    */
-  private validateRequiredRouteFiles(
-    descriptorName: string,
-    fileDescriptors: UserClassFileDescription[],
-  ) {
+  private validateRequiredRouteFiles(descriptorName: string, fileDescriptors: UserClassFileDescription[]) {
     this.logger.debug(`Validando rotas para "${descriptorName}"...`)
     const hasRequiredType = fileDescriptors.some((file) => ["auto", "router"].includes(file.type))
     if (!hasRequiredType) {
-      throw new Error(
-        `Route" ${descriptorName} "must have a router (.router.ts) or an auto (.auto.json)`,
-      )
+      throw new Error(`Route" ${descriptorName} "must have a router (.router.ts) or an auto (.auto.json)`)
     }
   }
 
   /**
    * Loads auto schema configuration from descriptor if available
    */
-  private async loadAutoSchema(
-    fileDescriptors: UserClassFileDescription[],
-    descriptorName: string,
-  ) {
+  private async loadAutoSchema(fileDescriptors: UserClassFileDescription[], descriptorName: string) {
     const autoDescriptor = fileDescriptors.find((file) => file.type === "auto")
-
-    const autoSchema = autoDescriptor
-      ? await this.autoSchemaService.createAutoSchemaFromFile(autoDescriptor)
-      : null
-
-    this.logger.debug(
-      `[${descriptorName}] Automatic Route Configuration: ${autoSchema ? "Yes" : "No"}`,
-    )
-
+    const autoSchema = autoDescriptor ? await this.autoSchemaService.createAutoSchemaFromFile(autoDescriptor) : null
+    this.logger.debug(`[${descriptorName}] Automatic Route Configuration: ${autoSchema ? "Yes" : "No"}`)
     return autoSchema
   }
 
@@ -138,17 +124,10 @@ export default class RouteService {
    */
   private async configureController(fileDescriptors: UserClassFileDescription[], autoSchema: any) {
     const controllerDescriptor = fileDescriptors.find((file) => file.type === "controller")
-
-    const ControllerClass = controllerDescriptor
-      ? (await import(controllerDescriptor.path)).default
-      : ApiController
-
+    const ControllerClass = controllerDescriptor ? (await import(controllerDescriptor.path)).default : ApiController
     const controller = new ControllerClass(this.logger)
-
     this.validateInstance(controller, "__ApiController", controllerDescriptor)
-
     await controller.init(autoSchema)
-
     return controller
   }
 
@@ -159,11 +138,7 @@ export default class RouteService {
    * @param expectedType The expected type name (e.g., "__ApiController" or "__ApiRouter").
    * @param descriptor The file descriptor, if available.
    */
-  private validateInstance(
-    instance: any,
-    expectedType: string,
-    descriptor?: UserClassFileDescription,
-  ) {
+  private validateInstance(instance: any, expectedType: string, descriptor?: UserClassFileDescription) {
     if (instance.__INSTANCE__ === expectedType) return
 
     const typeName = expectedType.replace("__", "") // Remove underscores for better readability
@@ -179,15 +154,9 @@ export default class RouteService {
    */
   private async configureRouter(fileDescriptors: UserClassFileDescription[], controller: any) {
     const routerDescriptor = fileDescriptors.find((file) => file.type === "router")
-
-    const RouterClass: typeof ApiRouter = routerDescriptor
-      ? (await import(routerDescriptor.path)).default
-      : ApiRouter
-
+    const RouterClass: typeof ApiRouter = routerDescriptor ? (await import(routerDescriptor.path)).default : ApiRouter
     const router = new RouterClass(this.logger, this.fastify, controller, routerDescriptor)
-
     this.validateInstance(router, "__ApiRouter", routerDescriptor)
-
     return router
   }
 
@@ -196,11 +165,16 @@ export default class RouteService {
       this.swagger.addTag(autoSchema.docs.name, autoSchema.docs.description)
     }
 
-    router.post(`/${autoSchema.routeName}`, "create", autoSchema.getPostSchema())
-    router.get(`/${autoSchema.routeName}`, "getAll", autoSchema.getGetAllSchema())
-    router.get(`/${autoSchema.routeName}/:id(\\d+)`, "get", autoSchema.getGetOneSchema())
-    router.put(`/${autoSchema.routeName}/:id(\\d+)`, "update", autoSchema.getPutSchema())
-    router.delete(`/${autoSchema.routeName}/:id(\\d+)`, "delete", autoSchema.getDeleteSchema())
-    router.get(`/${autoSchema.routeName}/schema`, "schema", autoSchema.getCrudSchema())
+    router.post(`/${autoSchema.routeName}`, "create", autoSchema.getPostSchema(), autoSchema.getPostOptions())
+    router.get(`/${autoSchema.routeName}`, "getAll", autoSchema.getGetAllSchema(), autoSchema.getGetAllOptions())
+    router.get(`/${autoSchema.routeName}/:id(\\d+)`, "get", autoSchema.getGetOneSchema(), autoSchema.getOneOptions())
+    router.put(`/${autoSchema.routeName}/:id(\\d+)`, "update", autoSchema.getPutSchema(), autoSchema.getPutOptions())
+    router.delete(
+      `/${autoSchema.routeName}/:id(\\d+)`,
+      "delete",
+      autoSchema.getDeleteSchema(),
+      autoSchema.getDeleteOptions(),
+    )
+    router.get(`/${autoSchema.routeName}/schema`, "schema", autoSchema.getCrudSchema(), autoSchema.getCrudOptions())
   }
 }

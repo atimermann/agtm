@@ -10,6 +10,7 @@
 import { FieldSchemaInterface } from "./fieldsSchema.interface.ts"
 import { UiSchemaInterface } from "./uiSchema.interface.ts"
 import { DocsSchemaInterface } from "./docsSchema.interface.ts"
+import { AuthSchemaInterface } from "#/http/interfaces/autoSchema/authSchema.interface.js"
 
 export interface AutoSchemaInterface {
   /**
@@ -29,6 +30,14 @@ export interface AutoSchemaInterface {
    * Informações de documentação da API.
    */
   docs?: DocsSchemaInterface
+
+  /**
+   * Define a configuração de autenticação para a API.
+   *  1. Habilita ou desabilita autorização para todas as operações da API
+   *  2. Habilita e define permissões (roles) para todas as operações da API
+   *  3. Configuração individual para cada operação da API
+   */
+  auth?: boolean | string[] | AuthSchemaInterface
 
   /**
    * Lista de campos do  modelo

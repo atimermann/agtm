@@ -7,7 +7,8 @@
  */
 
 /**
- *
+ * @deprecated
+ * Use library/http/errors/apiError.ts
  */
 export default class ApiError extends Error {
   /**

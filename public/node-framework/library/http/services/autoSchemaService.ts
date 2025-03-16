@@ -28,10 +28,8 @@ export default class AutoSchemaService {
    *
    * @param fileDescriptor
    */
-  async createAutoSchemaFromFile(fileDescriptor: UserClassFileDescription) {
-    const schema: AutoSchemaInterface = (
-      await import(fileDescriptor.path, { with: { type: "json" } })
-    ).default
+  async createAutoSchemaFromFile(fileDescriptor: UserClassFileDescription): Promise<AutoSchema> {
+    const schema: AutoSchemaInterface = (await import(fileDescriptor.path, { with: { type: "json" } })).default
 
     try {
       return new AutoSchema(this.logger, schema)

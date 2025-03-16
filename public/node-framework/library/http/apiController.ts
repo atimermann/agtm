@@ -12,14 +12,15 @@
 import type { LoggerInterface } from "../loggers/logger.interface.ts"
 import type { FastifyReply, FastifyRequest } from "fastify"
 import type AutoSchema from "./autoSchema.ts"
+import type { ApiControllerInterface } from "#/http/interfaces/apiController.interface.js"
 
-import AutoApiService from "./services/autoApiService.js"
+import { AutoApiService } from "./services/autoApiService.js"
 
 interface ParamInterface {
   id: number
 }
 
-export class ApiController {
+export class ApiController implements ApiControllerInterface {
   protected readonly logger: LoggerInterface
   protected autoApiService?: AutoApiService
   protected autoSchema?: AutoSchema

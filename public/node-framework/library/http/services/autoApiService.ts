@@ -8,26 +8,45 @@
  *  AutoSchema
  *
  */
-import type LoggerService from "#/services/loggerService.ts"
+import LoggerService from "#/services/loggerService.ts"
 import type AutoSchema from "../autoSchema.ts"
 import type { FieldSchemaInterface } from "../interfaces/autoSchema/fieldsSchema.interface.ts"
 
-import { join } from "node:path"
+import { join, resolve } from "node:path"
+import AutoSchemaService from "#/http/services/autoSchemaService.js"
 
-export default class AutoApiService {
+export class AutoApiService {
   private logger: LoggerService
   private prismaInstance?: Record<string, any>
   private readonly autoSchema: AutoSchema
 
   /**
-   * Gera nova instancia à partir do caminho do schema
+   * Gera nova instancia à partir do schema
    */
-  static async createFromSchema(
-    logger: LoggerService,
-    autoSchema: AutoSchema,
-  ): Promise<AutoApiService> {
+  static async createFromSchema(logger: LoggerService, autoSchema: AutoSchema): Promise<AutoApiService> {
     const autoApi = new AutoApiService(logger, autoSchema)
     autoApi.prismaInstance = await autoApi.importPrismaClient()
+    return autoApi
+  }
+
+  /**
+   * Gera nova instancia à partir do arquivo do schema
+   */
+  static async createFromSchemaFile(schemaFilePath: string): Promise<AutoApiService> {
+    const logger = new LoggerService()
+    const autoSchemaService = new AutoSchemaService(logger)
+
+    // Se o caminho começa com "/", usa diretamente como absoluto.
+    // Caso contrário, resolve relativo ao diretório atual.
+    const finalPath = schemaFilePath.startsWith("/") ? schemaFilePath : resolve(process.cwd(), schemaFilePath)
+
+    const autoSchema = await autoSchemaService.createAutoSchemaFromFile({
+      path: finalPath,
+    })
+
+    const autoApi = new AutoApiService(logger, autoSchema)
+    autoApi.prismaInstance = await autoApi.importPrismaClient()
+
     return autoApi
   }
 
@@ -46,9 +65,7 @@ export default class AutoApiService {
   async create(rawData: unknown) {
     const data = await this.loadDataFromBody(true, rawData)
 
-    this.logger.debug(
-      `Create "${this.autoSchema.model}":\n "${JSON.stringify(data, undefined, "  ")}"`,
-    )
+    this.logger.debug(`Create "${this.autoSchema.model}":\n "${JSON.stringify(data, undefined, "  ")}"`)
 
     const queryResult = await this.prisma.create({ data })
     return this.filterResult(queryResult)
@@ -104,9 +121,15 @@ export default class AutoApiService {
   private async importPrismaClient() {
     const pathToPrismaClient = join(process.cwd(), "node_modules", "@prisma/client")
     const PrismaClient = (await import(`${pathToPrismaClient}/default.js`)).PrismaClient
-    return new PrismaClient({
+    const prisma = new PrismaClient({
       log: ["query", "info", "warn", "error"],
     })
+
+    prisma.$on("query", (event) => {
+      this.logger.info("[PRISMA QUERY]:", event.query, event.params)
+    })
+
+    return prisma
   }
 
   /**

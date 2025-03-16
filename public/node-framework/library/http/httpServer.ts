@@ -10,28 +10,36 @@
 import type LoggerService from "../services/loggerService.ts"
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 
-import RouteService from "./services/routeService.ts"
+import RouterService from "./services/routerService.ts"
 import Fastify from "fastify"
 import cors from "@fastify/cors"
 
 import { SwaggerPlugin } from "./plugins/swagger.ts"
 import ErrorHandlerService from "./services/errorHandlerService.ts"
+import { KeycloakPlugin } from "#/http/plugins/keycloak.ts"
+import { RFC7807ErrorInterface } from "#/http/interfaces/RFC7807ErrorInterface.js"
+import { ConfigService } from "#/services/configService.js"
 
 export default class HttpServer {
   private readonly logger: LoggerService
   private readonly fastify: FastifyInstance
-  private readonly router: RouteService
+  private readonly router: RouterService
   private readonly swaggerPlugin: SwaggerPlugin
   private readonly errorHandlerService: ErrorHandlerService
+  private readonly keyCloakPlugin: KeycloakPlugin
+  private readonly config: ConfigService
 
   constructor(
     logger: LoggerService,
+    config: ConfigService,
     server?: FastifyInstance,
-    router?: RouteService,
+    router?: RouterService,
     swaggerPlugin?: SwaggerPlugin,
+    keyCloakPlugin?: KeycloakPlugin,
     errorHandlerService?: ErrorHandlerService,
   ) {
     this.logger = logger
+    this.config = config
 
     // Configura Fastify, reutilizando o logger fornecido
     this.fastify =
@@ -46,16 +54,17 @@ export default class HttpServer {
         },
       })
 
-    this.swaggerPlugin = swaggerPlugin ?? new SwaggerPlugin(this.fastify, this.logger)
+    this.swaggerPlugin = swaggerPlugin ?? new SwaggerPlugin(this.logger, this.config, this.fastify)
+    this.keyCloakPlugin = keyCloakPlugin ?? new KeycloakPlugin(this.logger, this.config, this.fastify)
     this.errorHandlerService = errorHandlerService ?? new ErrorHandlerService(this.logger)
-    this.router = router ?? new RouteService(logger, this.fastify, this.swaggerPlugin)
+    this.router = router ?? new RouterService(logger, this.fastify, this.swaggerPlugin)
   }
 
   /**
    * Inicia o servidor HTTP, configurando CORS, rotas e iniciando o servidor.
    */
   async run() {
-    await this.swaggerPlugin.setup()
+    await this.configurePlugins()
     await this.configureCors()
 
     await this.configureErrorHandler()
@@ -66,6 +75,19 @@ export default class HttpServer {
 
     await this.fastify.ready()
     await this.runServer()
+  }
+
+  /**
+   * Configuração plugins do Servidor
+   */
+  private async configurePlugins() {
+    if (this.config.get("swagger.enabled", "boolean")) {
+      await this.swaggerPlugin.setup()
+    }
+
+    if (this.config.get("httpServer2.plugins.keycloak", "boolean")) {
+      await this.keyCloakPlugin.setup()
+    }
   }
 
   /**
@@ -124,7 +146,7 @@ export default class HttpServer {
    */
   private async configureErrorHandler() {
     this.fastify.setErrorHandler(
-      (error: Error & { validation?: any[] }, request: FastifyRequest, reply: FastifyReply) => {
+      (error: Error | RFC7807ErrorInterface, request: FastifyRequest, reply: FastifyReply) => {
         this.errorHandlerService.handleError(error, request, reply)
       },
     )

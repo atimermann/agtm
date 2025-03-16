@@ -6,6 +6,8 @@
  * Provides functions to initialize the server and its components.
  *
  * @author André Timermann <andre@timermann.com.br>
+ *
+ *   TODO: Migrar Typescript e transformar em classe com injeção de dependencia
  */
 
 import Application from "./application.mjs"
@@ -17,7 +19,7 @@ import JobManager from "./jobs/job-manager.mjs"
 import WorkerRunner from "./jobs/worker-runner.mjs"
 
 import BlessedInterface from "./blessed.mjs"
-import Config from "./config.mjs"
+
 import os from "node:os"
 
 import figlet from "figlet"
@@ -26,15 +28,17 @@ import { sentenceCase } from "change-case"
 import createLogger from "./logger.mjs"
 import { readFileSync } from "node:fs"
 import ResourceMonitor from "./resource-monitor.mjs"
-import ConsoleLogger from "./loggers/consoleLogger.js" // Old
 
 import LoggerService from "./services/loggerService.ts"
+import { ConfigService } from "#/services/configService.js"
 
 // TODO: Old
-const logger = createLogger("Init")
+import Config from "./config.mjs"
+const loggerLegacy = createLogger("Init")
 
 // TODO new
-const loggerService = new LoggerService();
+const logger = new LoggerService()
+const config = new ConfigService()
 
 export default {
   /**
@@ -49,6 +53,11 @@ export default {
   async init(applicationLoader) {
     try {
       const application = applicationLoader(Application)
+
+      if (process.env.NODE_ENV === undefined) {
+        // noinspection ExceptionCaughtLocallyJS
+        throw new Error("Non defined environment, it must be: production, development or homologation")
+      }
 
       if (!(application instanceof Application)) {
         // noinspection ExceptionCaughtLocallyJS
@@ -102,9 +111,7 @@ export default {
       try {
         await controller.setup()
       } catch (e) {
-        logger.error(
-          `Error initializing controller "${controller.completeIndentification}": ${e.message}`,
-        )
+        loggerLegacy.error(`Error initializing controller "${controller.completeIndentification}": ${e.message}`)
         throw e
       }
     }
@@ -123,8 +130,8 @@ export default {
     }
 
     // New HTTP server implementation based on Fastify and inspired by NestJS
-    if (Config.get("httpServer2.enabled", "boolean")) {
-      const httpServer2 = new HttpServer2(loggerService)
+    if (config.get("httpServer2.enabled", "boolean")) {
+      const httpServer2 = new HttpServer2(logger, config)
       await httpServer2.run(application)
     }
   },
@@ -138,19 +145,19 @@ export default {
     const filePath = new URL("../package.json", import.meta.url)
     const packageInfo = JSON.parse(readFileSync(filePath, "utf8"))
 
-    logger.info("\n" + figlet.textSync("Node Framework"))
-    logger.info("\n" + figlet.textSync(`\n${sentenceCase(application.name)}`))
-    logger.info("==============================================================")
-    logger.info(`Project:                 ${application.name}`)
-    logger.info(`Root Path:               ${application.path}`)
-    logger.info(`Node Version:            ${process.version}`)
-    logger.info(`Environment:             ${process.env.NODE_ENV}`)
-    logger.info(`Pid:                     ${process.pid}`)
-    logger.info(`Hostname:                ${os.hostname()}`)
-    logger.info(`Platform:                ${os.platform()}`)
-    logger.info(`Arch:                    ${os.arch()}`)
-    logger.info(`Node Framework Version:  ${packageInfo.version}`)
-    logger.info(`Application Version:     ${process.env.npm_package_version}`)
-    logger.info("==============================================================")
+    loggerLegacy.info("\n" + figlet.textSync("Node Framework"))
+    loggerLegacy.info("\n" + figlet.textSync(`\n${sentenceCase(application.name)}`))
+    loggerLegacy.info("==============================================================")
+    loggerLegacy.info(`Project:                 ${application.name}`)
+    loggerLegacy.info(`Root Path:               ${application.path}`)
+    loggerLegacy.info(`Node Version:            ${process.version}`)
+    loggerLegacy.info(`Environment:             ${process.env.NODE_ENV}`)
+    loggerLegacy.info(`Pid:                     ${process.pid}`)
+    loggerLegacy.info(`Hostname:                ${os.hostname()}`)
+    loggerLegacy.info(`Platform:                ${os.platform()}`)
+    loggerLegacy.info(`Arch:                    ${os.arch()}`)
+    loggerLegacy.info(`Node Framework Version:  ${packageInfo.version}`)
+    loggerLegacy.info(`Application Version:     ${process.env.npm_package_version}`)
+    loggerLegacy.info("==============================================================")
   },
 }

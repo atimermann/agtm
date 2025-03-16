@@ -21,7 +21,9 @@ import type { FieldSchemaInterface } from "./interfaces/autoSchema/fieldsSchema.
 import { sentenceCase } from "change-case"
 import { DocsSchemaInterface } from "#/http/interfaces/autoSchema/docsSchema.interface.js"
 import { AutoToOpenApiSchemaMapper } from "#/http/mapper/autoToOpenApiSchemaMapper.js"
-import { FastifySchema } from "fastify"
+import { FastifySchema, RouteOptions } from "fastify"
+import { AuthSchemaInterface } from "#/http/interfaces/autoSchema/authSchema.interface.js"
+import { ApiRouteOptionInterface, CustomContextConfig } from "#/http/interfaces/apiRouteOption.interface.js"
 
 const autoSchemaValidator = new ValidatorByInterface(
   "library/http/interfaces/autoSchema/autoSchema.interface.ts",
@@ -33,11 +35,7 @@ export default class AutoSchema {
   private logger: LoggerInterface
   private mapper: AutoToOpenApiSchemaMapper
 
-  constructor(
-    logger: LoggerInterface,
-    schema: AutoSchemaInterface,
-    mapper?: AutoToOpenApiSchemaMapper,
-  ) {
+  constructor(logger: LoggerInterface, schema: AutoSchemaInterface, mapper?: AutoToOpenApiSchemaMapper) {
     this.logger = logger
     autoSchemaValidator.validate(schema)
     this.schema = schema
@@ -238,5 +236,129 @@ export default class AutoSchema {
       ...this.mapper.mapCrudSchema(),
       summary: `Retorna schema para gerar crud automaticamente no frontend.`,
     }
+  }
+
+  /**
+   * Returns the route options for the POST (CREATE) operation.
+   * The returned options include a flag 'auto' set to true along with the authentication configuration for the 'create' operation.
+   *
+   * @returns A Partial<RouteOptions> object to be merged into the route configuration.
+   */
+  getPostOptions(): Partial<ApiRouteOptionInterface> {
+    return {
+      config: {
+        auto: true,
+        ...this.getAuthOptionsFor("create"),
+      },
+    }
+  }
+
+  /**
+   * Returns the route options for retrieving all records (GET all).
+   *
+   * @returns A Partial<RouteOptions> object to be merged into the route configuration.
+   */
+  getGetAllOptions(): Partial<ApiRouteOptionInterface> {
+    return {
+      config: {
+        auto: true,
+        ...this.getAuthOptionsFor("getAll"),
+      },
+    }
+  }
+
+  /**
+   * Returns the route options for retrieving a single record (GET).
+   *
+   * @returns A Partial<RouteOptions> object to be merged into the route configuration.
+   */
+  getOneOptions(): Partial<ApiRouteOptionInterface> {
+    return {
+      config: {
+        auto: true,
+        ...this.getAuthOptionsFor("get"),
+      },
+    }
+  }
+
+  /**
+   * Returns the route options for the PUT (UPDATE) operation.
+   *
+   * @returns A Partial<RouteOptions> object to be merged into the route configuration.
+   */
+  getPutOptions(): Partial<ApiRouteOptionInterface> {
+    return {
+      config: {
+        auto: true,
+        ...this.getAuthOptionsFor("update"),
+      },
+    }
+  }
+
+  /**
+   * Returns the route options for the DELETE operation.
+   *
+   * @returns A Partial<RouteOptions> object to be merged into the route configuration.
+   */
+  getDeleteOptions(): Partial<ApiRouteOptionInterface> {
+    return {
+      config: {
+        auto: true,
+        ...this.getAuthOptionsFor("delete"),
+      },
+    }
+  }
+
+  /**
+   * Returns the route options for the CRUD schema operation.
+   *
+   * @returns A Partial<RouteOptions> object to be merged into the route configuration.
+   */
+  getCrudOptions(): Partial<ApiRouteOptionInterface> {
+    return {
+      config: {
+        auto: true,
+        ...this.getAuthOptionsFor("schema"),
+      },
+    }
+  }
+
+  /**
+   * Retrieves the authentication configuration for a given operation from the schema.
+   * This method returns only the configuration to be merged inside the 'config' property.
+   *
+   * @param operation - The operation key (e.g., "create", "getAll", "get", "update", "delete", "schema").
+   *
+   * @returns An object containing the authentication configuration for the specified operation,
+   *          or an empty object if no configuration is defined.
+   */
+  private getAuthOptionsFor(operation: keyof AuthSchemaInterface): Partial<CustomContextConfig> | undefined {
+    const auth = this.schema.auth
+
+    if (auth === undefined) return undefined
+
+    // Scenario 1: auth is a boolean – apply it directly to all operations.
+    if (typeof auth === "boolean") {
+      return { auth }
+    }
+
+    // Scenario 2: auth is an array of roles – apply to all operations.
+    if (Array.isArray(auth)) {
+      return { auth: true, roles: auth }
+    }
+
+    // Scenario 3: auth is an object with specific configuration per operation.
+    if (typeof auth === "object") {
+      const opConfig = auth[operation]
+      if (opConfig === undefined) return undefined
+      if (typeof opConfig === "boolean") {
+        return { auth: opConfig }
+      }
+      if (Array.isArray(opConfig)) {
+        return { auth: true, roles: opConfig }
+      }
+    }
+
+    return undefined
   }
 }

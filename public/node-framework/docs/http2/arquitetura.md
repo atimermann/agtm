@@ -16,7 +16,7 @@ Source: https://drive.google.com/file/d/1GSaHr2BnL7aYExdjkP4sU_akuDpQ956C/view?u
   * Se httpServer2.enabled estiver habilitado chama o httpServer.run
 * HttpServer **(library/http/httpServer.ts)**
   * Configura e inicializa o servidor Fastify
-  * Chama o RouterService para inicializar as rotas do usuário **(library/http/services/routeService.ts)**
+  * Chama o RouterService para inicializar as rotas do usuário **(library/http/services/routerService.ts)**
     * router.createRoutes
 * Utilizando a classe **userAPiFilesService** carrega todas os arquivos criados pelo usuário para implementar sua API **(
   library/http/services/userApiFilesService.ts)**

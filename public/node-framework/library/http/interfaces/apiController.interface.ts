@@ -13,4 +13,7 @@ export interface ApiControllerInterface {
    * Logger utilizado pelo controlador.
    */
   readonly logger: LoggerInterface
+
+  // TODO: IDE ainda não identifica get e outros métodos nas definições filhas do controller
+  get: (path: string, handler: string, options?: Record<string, any>) => void
 }

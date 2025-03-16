@@ -1,10 +1,4 @@
-import type {
-  FastifyInstance,
-  FastifyReply,
-  FastifyRequest,
-  FastifySchema,
-  RouteOptions,
-} from "fastify"
+import type { FastifyInstance, FastifyReply, FastifyRequest, FastifySchema, RouteOptions } from "fastify"
 
 /**
  * Type representing a route handler function.
@@ -13,10 +7,7 @@ import type {
  * @param {FastifyReply} reply - Fastify reply object.
  * @returns {Promise<any> | any} Response or promise resolving to a response.
  */
-export type RouteHandler = (
-  request: FastifyRequest,
-  reply: FastifyReply
-) => Promise<any> | any
+export type RouteHandler = (request: FastifyRequest, reply: FastifyReply) => Promise<any> | any
 
 /**
  * Interface for the ApiRouter class.
@@ -32,6 +23,11 @@ export interface ApiRouterInterface {
   setup(): Promise<void>
 
   /**
+   * Creates the routes
+   */
+  run(): void
+
+  /**
    * Defines a DELETE route.
    *
    * @param {string} url - The URL path for the route.
@@ -41,12 +37,7 @@ export interface ApiRouterInterface {
    *
    * @returns {this} The ApiRouter instance.
    */
-  delete(
-    url: string,
-    handler: string | RouteHandler,
-    schema?: FastifySchema,
-    options?: Partial<RouteOptions>
-  ): this
+  delete(url: string, handler: string | RouteHandler, schema?: FastifySchema, options?: Partial<RouteOptions>): this
 
   /**
    * Defines a GET route.
@@ -58,12 +49,7 @@ export interface ApiRouterInterface {
    *
    * @returns {this} The ApiRouter instance.
    */
-  get(
-    url: string,
-    handler: string | RouteHandler,
-    schema?: FastifySchema,
-    options?: Partial<RouteOptions>
-  ): this
+  get(url: string, handler: string | RouteHandler, schema?: FastifySchema, options?: Partial<RouteOptions>): this
 
   /**
    * Defines a POST route.
@@ -75,12 +61,7 @@ export interface ApiRouterInterface {
    *
    * @returns {this} The ApiRouter instance.
    */
-  post(
-    url: string,
-    handler: string | RouteHandler,
-    schema?: FastifySchema,
-    options?: Partial<RouteOptions>
-  ): this
+  post(url: string, handler: string | RouteHandler, schema?: FastifySchema, options?: Partial<RouteOptions>): this
 
   /**
    * Defines a PUT route.
@@ -92,12 +73,7 @@ export interface ApiRouterInterface {
    *
    * @returns {this} The ApiRouter instance.
    */
-  put(
-    url: string,
-    handler: string | RouteHandler,
-    schema?: FastifySchema,
-    options?: Partial<RouteOptions>
-  ): this
+  put(url: string, handler: string | RouteHandler, schema?: FastifySchema, options?: Partial<RouteOptions>): this
 
   /**
    * Defines a HEAD route.
@@ -109,12 +85,7 @@ export interface ApiRouterInterface {
    *
    * @returns {this} The ApiRouter instance.
    */
-  head(
-    url: string,
-    handler: string | RouteHandler,
-    schema?: FastifySchema,
-    options?: Partial<RouteOptions>
-  ): this
+  head(url: string, handler: string | RouteHandler, schema?: FastifySchema, options?: Partial<RouteOptions>): this
 
   /**
    * Defines a TRACE route.
@@ -125,13 +96,7 @@ export interface ApiRouterInterface {
    * @param {Partial<RouteOptions>} [options] - Additional route options.
    * @returns {this} The ApiRouter instance.
    */
-  trace(
-    url: string,
-    handler: string | RouteHandler,
-    schema?: FastifySchema,
-    options?: Partial<RouteOptions>
-
-  ): this
+  trace(url: string, handler: string | RouteHandler, schema?: FastifySchema, options?: Partial<RouteOptions>): this
 
   /**
    * Defines an OPTIONS route.
@@ -143,12 +108,7 @@ export interface ApiRouterInterface {
    *
    * @returns {this} The ApiRouter instance.
    */
-  options(
-    url: string,
-    handler: string | RouteHandler,
-    schema?: FastifySchema,
-    options?: Partial<RouteOptions>
-  ): this
+  options(url: string, handler: string | RouteHandler, schema?: FastifySchema, options?: Partial<RouteOptions>): this
 
   /**
    * Defines a PATCH route.
@@ -160,10 +120,5 @@ export interface ApiRouterInterface {
    *
    * @returns {this} The ApiRouter instance.
    */
-  patch(
-    url: string,
-    handler: string | RouteHandler,
-    schema?: FastifySchema,
-    options?: Partial<RouteOptions>
-  ): this
+  patch(url: string, handler: string | RouteHandler, schema?: FastifySchema, options?: Partial<RouteOptions>): this
 }

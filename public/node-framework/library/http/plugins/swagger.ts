@@ -11,8 +11,8 @@ import type { FastifyInstance } from "fastify"
 import type { LoggerInterface } from "#/loggers/logger.interface.js"
 import type { SwaggerConfig } from "#/http/interfaces/swaggerConfig.interface.js"
 
-import Config from "#/config.js"
 import ValidatorByInterface from "#/utils/validatorByInterface.js"
+import { ConfigService } from "#/services/configService.js"
 
 const swaggerConfigValidator = new ValidatorByInterface(
   "library/http/interfaces/swaggerConfig.interface.ts",
@@ -22,13 +22,15 @@ const swaggerConfigValidator = new ValidatorByInterface(
 export class SwaggerPlugin {
   private readonly fastify: FastifyInstance
   private readonly logger: LoggerInterface
-  private readonly config: SwaggerConfig
+  private readonly swaggerConfig: SwaggerConfig
+  private config: ConfigService
 
-  constructor(fastify: FastifyInstance, logger: LoggerInterface, config?: SwaggerConfig) {
+  constructor(logger: LoggerInterface, config: ConfigService, fastify: FastifyInstance, swaggerConfig?: SwaggerConfig) {
     this.fastify = fastify
     this.logger = logger
-    this.config = config ?? Config.getYaml("swagger")
-    swaggerConfigValidator.validate(this.config, this.logger)
+    this.config = config
+    this.swaggerConfig = swaggerConfig ?? config.getYaml("swagger")
+    swaggerConfigValidator.validate(this.swaggerConfig, this.logger)
   }
 
   /**
@@ -38,17 +40,17 @@ export class SwaggerPlugin {
    * @param description Descrição da tag
    */
   addTag(name: string, description: string) {
-    if (!this.config.openapi.tags) {
-      this.config.openapi.tags = []
+    if (!this.swaggerConfig.openapi.tags) {
+      this.swaggerConfig.openapi.tags = []
     }
 
     // Verifica se a tag já existe
-    const exists = this.config.openapi.tags.some((tag) => tag.name === name)
+    const exists = this.swaggerConfig.openapi.tags.some((tag) => tag.name === name)
     if (exists) {
       this.logger.debug(`A tag '${name}' já existe.`)
       return
     }
-    this.config.openapi.tags.push({ name, description })
+    this.swaggerConfig.openapi.tags.push({ name, description })
   }
 
   async setup() {
@@ -66,14 +68,14 @@ export class SwaggerPlugin {
 
       // Referencia de documentação: https://swagger.io/specification/#schema-1
       await this.fastify.register(import("@fastify/swagger"), {
-        openapi: this.config.openapi as any,
+        openapi: this.swaggerConfig.openapi as any,
       })
 
       // Refêrencia de documentação: https://github.com/fastify/fastify-swagger-ui?tab=readme-ov-file#api
       await this.fastify.register(import("@fastify/swagger-ui"), {
-        routePrefix: this.config.routePrefix,
-        theme: this.config.theme,
-        uiConfig: this.config.uiConfig as any,
+        routePrefix: this.swaggerConfig.routePrefix,
+        theme: this.swaggerConfig.theme,
+        uiConfig: this.swaggerConfig.uiConfig as any,
         // uiHooks: {
         //   onRequest: function (request, reply, next) {
         //     next()

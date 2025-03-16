@@ -9,154 +9,190 @@
  */
 import type { LoggerInterface } from "../loggers/logger.interface.ts"
 import type { ApiControllerInterface } from "./interfaces/apiController.interface.ts"
-import type {
-  FastifyInstance,
-  FastifyReply,
-  FastifyRequest,
-  FastifySchema,
-  RouteOptions,
-} from "fastify"
+import type { FastifyInstance, FastifyReply, FastifyRequest, FastifySchema, RouteOptions } from "fastify"
 import type { UserClassFileDescription } from "./services/userApiFilesService.ts"
 import { ApiRouterInterface } from "#/http/interfaces/apiRouter.interface.js"
+import {ApiRouteOptionInterface} from "#/http/interfaces/apiRouteOption.interface.js";
 
 /**
  * Ao criar uma nova rota, é possível referenciar o method no controller ou criar um callback fastify diretamente
  */
 type RouteHandler = (request: FastifyRequest, reply: FastifyReply) => Promise<any> | any
 
+/**
+ * @param method      Method HTTP (ex.: "GET", "POST").
+ * @param url         Caminho da URL para a rota.
+ * @param userHandler Nome do Method no controlador ou uma função de manipulação personalizada do Fastify.
+ * @param schema      Esquema de validação do Fastify.
+ * @param options     Opções adicionais para a rota no Fastify.s
+ */
+interface RouteConfig {
+  method: string
+  url: string
+  handler: string | RouteHandler
+  schema?: FastifySchema
+  options?: Partial<ApiRouteOptionInterface>
+}
+
 export class ApiRouter implements ApiRouterInterface {
   private readonly logger: LoggerInterface
-  private readonly server: FastifyInstance
+  private readonly fastify: FastifyInstance
   private readonly controller: ApiControllerInterface
   private readonly routerDescriptor?: UserClassFileDescription
 
   public __INSTANCE__ = "__ApiRouter"
 
+  private routes: RouteConfig[] = []
+
   constructor(
     logger: LoggerInterface,
-    server: FastifyInstance,
+    fastify: FastifyInstance,
     controller: ApiControllerInterface,
     routerDescriptor?: UserClassFileDescription,
   ) {
     this.logger = logger
-    this.server = server
+    this.fastify = fastify
     this.routerDescriptor = routerDescriptor
     this.controller = controller
   }
 
   async setup(): Promise<void> {}
 
+  /**
+   * Registra todas as rotas armazenadas no array no servidor Fastify.
+   *
+   * Este método deve ser chamado após a configuração de todas as rotas.
+   */
+  public run(): void {
+    for (const route of this.routes) {
+      this.createRoute(route)
+    }
+  }
+
+  get lastRoute() {
+    return this.routes[this.routes.length - 1]
+  }
+
   // TODO: Criar o método "all" se necessário (suporta todos os métodos)
 
-  delete(
-    url: string,
-    handler: string | RouteHandler,
-    schema?: FastifySchema,
-    options?: Partial<RouteOptions>,
-  ): this {
-    this.createRoute("DELETE", url, handler, schema, options)
+  // Métodos para registrar rotas (não criam a rota imediatamente, apenas armazenam a configuração)
+  delete(url: string, handler: string | RouteHandler, schema?: FastifySchema, options?: Partial<RouteOptions>): this {
+    this.addRoute("DELETE", url, handler, schema, options)
     return this
   }
 
-  get(
-    url: string,
-    handler: string | RouteHandler,
-    schema?: FastifySchema,
-    options?: Partial<RouteOptions>,
-  ): this {
-    this.createRoute("GET", url, handler, schema, options)
+  get(url: string, handler: string | RouteHandler, schema?: FastifySchema, options?: Partial<RouteOptions>): this {
+    this.addRoute("GET", url, handler, schema, options)
     return this
   }
 
-  post(
-    url: string,
-    handler: string | RouteHandler,
-    schema?: FastifySchema,
-    options?: Partial<RouteOptions>,
-  ): this {
-    this.createRoute("POST", url, handler, schema, options)
+  post(url: string, handler: string | RouteHandler, schema?: FastifySchema, options?: Partial<RouteOptions>): this {
+    this.addRoute("POST", url, handler, schema, options)
     return this
   }
 
-  put(
-    url: string,
-    handler: string | RouteHandler,
-    schema?: FastifySchema,
-    options?: Partial<RouteOptions>,
-  ): this {
-    this.createRoute("PUT", url, handler, schema, options)
+  put(url: string, handler: string | RouteHandler, schema?: FastifySchema, options?: Partial<RouteOptions>): this {
+    this.addRoute("PUT", url, handler, schema, options)
     return this
   }
 
-  head(
-    url: string,
-    handler: string | RouteHandler,
-    schema?: FastifySchema,
-    options?: Partial<RouteOptions>,
-  ): this {
-    this.createRoute("HEAD", url, handler, schema, options)
+  head(url: string, handler: string | RouteHandler, schema?: FastifySchema, options?: Partial<RouteOptions>): this {
+    this.addRoute("HEAD", url, handler, schema, options)
     return this
   }
 
-  trace(
-    url: string,
-    handler: string | RouteHandler,
-    schema?: FastifySchema,
-    options?: Partial<RouteOptions>,
-  ): this {
-    this.createRoute("TRACE", url, handler, schema, options)
+  trace(url: string, handler: string | RouteHandler, schema?: FastifySchema, options?: Partial<RouteOptions>): this {
+    this.addRoute("TRACE", url, handler, schema, options)
     return this
   }
 
-  options(
-    url: string,
-    handler: string | RouteHandler,
-    schema?: FastifySchema,
-    options?: Partial<RouteOptions>,
-  ): this {
-    this.createRoute("OPTIONS", url, handler, schema, options)
+  options(url: string, handler: string | RouteHandler, schema?: FastifySchema, options?: Partial<RouteOptions>): this {
+    this.addRoute("OPTIONS", url, handler, schema, options)
     return this
   }
 
-  patch(
+  patch(url: string, handler: string | RouteHandler, schema?: FastifySchema, options?: Partial<RouteOptions>): this {
+    this.addRoute("PATCH", url, handler, schema, options)
+    return this
+  }
+
+  /**
+   * Define a configuração da ultima rota não precisa ser autorizada ou seja é publica
+   *
+   * Para isso precisamos definir config.auth = false que será lido pelo plugin keycloak, se auth = false libera
+   * Nota, vamos deixar explicito para evitar problema de esquecer e deixar uma rota aberta
+   *
+   * TODO: No futuro podemos jogar esse método para dentro do plugin "library/http/plugins/keycloak.ts"
+   *
+   */
+  public() {
+    this.lastRoute.options = {
+      config: {
+        auth: false,
+      },
+      ...this.lastRoute.options,
+    }
+    return this
+  }
+
+  /**
+   * Define a configuração da ultima rota como deve ser autorizada
+   * Para isso precisamos definor config.auth = true que será lido pelo plugin keycloak, se auth = true ele só autoriza
+   * execução da rota se usuário estivar autenticado
+   *
+   * TODO: No futuro podemos jogar esse método para dentro do plugin "library/http/plugins/keycloak.ts"
+   *
+   * @param roles Se definido a rota também será validada à partir da lista de roles (permissões) definida
+   */
+  auth(roles: string[] = []) {
+    this.lastRoute.options = {
+      config: {
+        auth: true,
+        roles,
+      },
+      ...this.lastRoute.options,
+    }
+    return this
+  }
+
+  /**
+   * Armazena a configuração da rota em um array para criação posterior.
+   *
+   * @param method      Método HTTP (ex.: "GET", "POST").
+   * @param url         Caminho da URL para a rota.
+   * @param handler     Nome do método no controller ou uma função de manipulação personalizada do Fastify.
+   * @param schema      Esquema de validação do Fastify.
+   * @param options     Opções adicionais para a rota no Fastify.
+   */
+  private addRoute(
+    method: string,
     url: string,
     handler: string | RouteHandler,
     schema?: FastifySchema,
     options?: Partial<RouteOptions>,
-  ): this {
-    this.createRoute("PATCH", url, handler, schema, options)
-    return this
+  ): void {
+    this.logger.info(`Rota configurada adicionada: ${method} ${url}`)
+    this.routes.push({ method, url, handler, schema, options })
   }
 
   /**
    * Cria uma rota no servidor Fastify para o method HTTP, caminho, manipulador e esquema especificados.
    * Lança um erro se o manipulador especificado não existir no controlador.
    *
-   * @param method      Method HTTP (ex.: "GET", "POST").
-   * @param url         Caminho da URL para a rota.
-   * @param userHandler Nome do Method no controlador ou uma função de manipulação personalizada do Fastify.
-   * @param schema      Esquema de validação do Fastify.
-   * @param options     Opções adicionais para a rota no Fastify.
+   * @param routeConfig
    */
-  private createRoute(
-    method: string,
-    url: string,
-    userHandler: string | RouteHandler,
-    schema?: FastifySchema,
-    options?: Partial<RouteOptions>,
-  ) {
-    this.logger.info(`Configurando Rota ${method}: ${url}`)
-
+  private createRoute(routeConfig: RouteConfig) {
+    this.logger.info(`Configurando Rota ${routeConfig.method}: ${routeConfig.url}`)
     const handler: RouteHandler =
-      typeof userHandler === "string" ? this.getHandlerFromController(userHandler) : userHandler
+      typeof routeConfig.handler === "string" ? this.getHandlerFromController(routeConfig.handler) : routeConfig.handler
 
     // Ref: https://fastify.dev/docs/latest/Reference/Routes/#routes-options
-    this.server.route({
-      method,
-      url,
-      schema,
+    this.fastify.route({
+      method: routeConfig.method,
+      url: routeConfig.url,
+      schema: routeConfig.schema,
       handler,
-      ...options,
+      ...routeConfig.options,
     })
   }
 
@@ -171,9 +207,7 @@ export class ApiRouter implements ApiRouterInterface {
         throw new Error(`Controller does not exist for route "${this.routerDescriptor.name}"`)
       }
 
-      throw new Error(
-        "Severe Error: Controller does not exist for dynamic route (generated pro auto)",
-      )
+      throw new Error("Severe Error: Controller does not exist for dynamic route (generated pro auto)")
     }
 
     // @ts-ignore

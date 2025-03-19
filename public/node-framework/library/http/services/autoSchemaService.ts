@@ -17,11 +17,7 @@ import { UserClassFileDescription } from "./userApiFilesService.ts"
 import AutoSchema from "../autoSchema.ts"
 
 export default class AutoSchemaService {
-  private readonly logger: LoggerInterface
-
-  constructor(logger: LoggerInterface) {
-    this.logger = logger
-  }
+  constructor(private readonly logger: LoggerInterface) {}
 
   /**
    * Gera uma instancia de AutoSchema à partir de um descritor de arquivo

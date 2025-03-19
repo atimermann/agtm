@@ -13,7 +13,7 @@ httpServer2:
 ################################################################################################
 # body-parser: https://github.com/expressjs/body-parser
 httpServer:
-  enabled: true
+  enabled: false
   # Para servidor ficar acessivel em todas as redes incluindo internet use 0.0.0.0
   hostname: "127.0.0.1"
   port: 3001
@@ -105,7 +105,7 @@ logger:
 # Configuração do servidor socket.io
 ################################################################################################
 socket:
-  enabled: true
+  enabled: false
   port: 4001
   # Modo de execução, podendo ser: (REF: https://socket.io/docs/v4/server-initialization/)
   #  - standalone (Servidor simples independente do servidor http)

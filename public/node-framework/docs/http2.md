@@ -58,7 +58,7 @@ REF: [Router](http2/router.md)
 
 ### 03. Controller
 
-REF: [Controller](controller.md)
+REF: [Controller](./http2/controller.md)
 
 - São classes que implementado a lógica por trás de cada rota.
 - Cada Controller está vinculado a uma ou mais rota.

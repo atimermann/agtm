@@ -22,32 +22,25 @@ import { ConfigService } from "#/services/configService.js"
 import { PrismaService } from "#/services/prismaService.js"
 
 export default class HttpServer {
-  private readonly logger: LoggerService
   private readonly fastify: FastifyInstance
   private readonly router: RouterService
   private readonly swaggerPlugin: SwaggerPlugin
   private readonly errorHandlerService: ErrorHandlerService
   private readonly keyCloakPlugin: KeycloakPlugin
-  private readonly config: ConfigService
-  private readonly prismaService: PrismaService
 
   constructor(
-    logger: LoggerService,
-    config: ConfigService,
-    prismaService: PrismaService,
-    server?: FastifyInstance,
+    private readonly logger: LoggerService,
+    private readonly config: ConfigService,
+    private readonly prismaService: PrismaService,
+    fastify?: FastifyInstance,
     router?: RouterService,
     swaggerPlugin?: SwaggerPlugin,
     keyCloakPlugin?: KeycloakPlugin,
     errorHandlerService?: ErrorHandlerService,
   ) {
-    this.logger = logger
-    this.config = config
-    this.prismaService = prismaService
-
     // Configura Fastify, reutilizando o logger fornecido
     this.fastify =
-      server ??
+      fastify ??
       Fastify({
         logger: true,
         ajv: {

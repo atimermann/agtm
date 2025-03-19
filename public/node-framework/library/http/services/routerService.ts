@@ -34,28 +34,18 @@ import { PrismaService } from "#/services/prismaService.js"
 import { ConfigService } from "#/services/configService.js"
 
 export default class RouterService {
-  private readonly logger: LoggerService
-  private readonly config: ConfigService
-  private readonly fastify: FastifyInstance
   private readonly userApiFilesService: UserApiFilesService
   private readonly autoSchemaService: AutoSchemaService
-  private readonly swagger: SwaggerPlugin
-  private readonly prismaService: PrismaService
 
   constructor(
-    logger: LoggerService,
-    config: ConfigService,
-    prismaService: PrismaService,
-    fastify: FastifyInstance,
-    swagger: SwaggerPlugin,
+    private readonly logger: LoggerService,
+    private readonly config: ConfigService,
+    private readonly prismaService: PrismaService,
+    private readonly fastify: FastifyInstance,
+    private readonly swagger: SwaggerPlugin,
     userApiFilesService?: UserApiFilesService,
     autoSchemaService?: AutoSchemaService,
   ) {
-    this.logger = logger
-    this.config = config
-    this.prismaService = prismaService
-    this.fastify = fastify
-    this.swagger = swagger
     this.userApiFilesService = userApiFilesService ?? new UserApiFilesService(logger)
     this.autoSchemaService = autoSchemaService ?? new AutoSchemaService(logger)
   }
@@ -120,9 +110,14 @@ export default class RouterService {
   /**
    * Loads auto schema configuration from descriptor if available
    */
-  private async loadAutoSchema(fileDescriptors: UserClassFileDescription[], descriptorName: string) {
+  private async loadAutoSchema(
+    fileDescriptors: UserClassFileDescription[],
+    descriptorName: string,
+  ): Promise<AutoSchema | undefined> {
     const autoDescriptor = fileDescriptors.find((file) => file.type === "auto")
-    const autoSchema = autoDescriptor ? await this.autoSchemaService.createAutoSchemaFromFile(autoDescriptor) : null
+    const autoSchema = autoDescriptor
+      ? await this.autoSchemaService.createAutoSchemaFromFile(autoDescriptor)
+      : undefined
     this.logger.debug(`[${descriptorName}] Automatic Route Configuration: ${autoSchema ? "Yes" : "No"}`)
     return autoSchema
   }
@@ -130,12 +125,17 @@ export default class RouterService {
   /**
    * Configures API controller from user descriptor or creates default
    */
-  private async configureController(fileDescriptors: UserClassFileDescription[], autoSchema: any) {
+  private async configureController(fileDescriptors: UserClassFileDescription[], autoSchema?: AutoSchema) {
     const controllerDescriptor = fileDescriptors.find((file) => file.type === "controller")
-    const ControllerClass: typeof ApiController = controllerDescriptor ? (await import(controllerDescriptor.path)).default : ApiController
-    const controller = new ControllerClass(this.logger, this.config, this.prismaService)
+
+    const ControllerClass: typeof ApiController = controllerDescriptor
+      ? (await import(controllerDescriptor.path)).default
+      : ApiController
+
+    const controller = new ControllerClass(this.logger, this.config, this.prismaService, this.fastify)
     this.validateInstance(controller, "__ApiController", controllerDescriptor)
     await controller.init(autoSchema)
+    await controller.setup()
     return controller
   }
 
@@ -146,7 +146,11 @@ export default class RouterService {
    * @param expectedType The expected type name (e.g., "__ApiController" or "__ApiRouter").
    * @param descriptor The file descriptor, if available.
    */
-  private validateInstance(instance: any, expectedType: string, descriptor?: UserClassFileDescription) {
+  private validateInstance(
+    instance: ApiController | ApiRouter,
+    expectedType: string,
+    descriptor?: UserClassFileDescription,
+  ) {
     if (instance.__INSTANCE__ === expectedType) return
 
     const typeName = expectedType.replace("__", "") // Remove underscores for better readability
@@ -160,7 +164,7 @@ export default class RouterService {
   /**
    * Configures API router from user descriptor or creates default
    */
-  private async configureRouter(fileDescriptors: UserClassFileDescription[], controller: any) {
+  private async configureRouter(fileDescriptors: UserClassFileDescription[], controller: ApiController) {
     const routerDescriptor = fileDescriptors.find((file) => file.type === "router")
     const RouterClass: typeof ApiRouter = routerDescriptor ? (await import(routerDescriptor.path)).default : ApiRouter
     const router = new RouterClass(this.logger, this.fastify, controller, routerDescriptor)
@@ -168,6 +172,12 @@ export default class RouterService {
     return router
   }
 
+  /**
+   * Configura rotas automaticas
+   *
+   * @param router      - Instancia da Api de rotas do usuário
+   * @param autoSchema  - Auto Schema definido pelo usuário (auto.json)
+   */
   private configureAutoRoutes(router: ApiRouter, autoSchema: AutoSchema) {
     if (autoSchema.docs?.name) {
       this.swagger.addTag(autoSchema.docs.name, autoSchema.docs.description)

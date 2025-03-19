@@ -18,10 +18,6 @@ import { PrismaService } from "#/services/prismaService.js"
 import { ConfigService } from "#/services/configService.js"
 
 export class AutoApiService {
-  private logger: LoggerService
-  private readonly autoSchema: AutoSchema
-  private prismaService: PrismaService
-
   /**
    * Gera uma nova instancia apiService standalone, pode ser usada fora do fluxo do node-framework
    *
@@ -46,14 +42,14 @@ export class AutoApiService {
     return new AutoApiService(logger, prismaService, autoSchema)
   }
 
-  constructor(logger: LoggerService, prismaService: PrismaService, autoSchema: AutoSchema) {
+  constructor(
+    private readonly logger: LoggerService,
+    private readonly prismaService: PrismaService,
+    private readonly autoSchema: AutoSchema,
+  ) {
     if (!prismaService) {
       throw new Error("Prisma is not enabled in the project, should be enabled in Config prisma.enabled = True")
     }
-
-    this.autoSchema = autoSchema
-    this.prismaService = prismaService
-    this.logger = logger
   }
 
   /**

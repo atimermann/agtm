@@ -45,11 +45,7 @@ export type UserClassFileDescription = {
 export type UserClassFilesGrouped = Record<string, UserClassFileDescription[]>
 
 export default class UserApiFilesService {
-  private readonly logger: LoggerService
-
-  constructor(logger: LoggerService) {
-    this.logger = logger
-  }
+  constructor(private readonly logger: LoggerService) {}
 
   /**
    * Retorna uma lista com a descrição de todos os arquivos usados para instanciar classes do usuário.
@@ -73,11 +69,7 @@ export default class UserApiFilesService {
           const appDirectoryEntryPath = join(APP_DIR, appDirectory.name, appDirectoryEntry.name)
 
           if (appDirectoryEntry.name === "http") {
-            await this.findUserClassFilesInDirectory(
-              userApiFilesDescriptors,
-              appDirectoryEntryPath,
-              appName,
-            )
+            await this.findUserClassFilesInDirectory(userApiFilesDescriptors, appDirectoryEntryPath, appName)
           }
         }
       }
@@ -120,12 +112,7 @@ export default class UserApiFilesService {
    * @param fileList Lista acumulativa dos arquivos encontrados.
    * @param appName Nome do aplicativo ao qual os arquivos pertencem.
    */
-  private addUserApiFile(
-    fileList: UserClassFileDescription[],
-    fileName: string,
-    path: string,
-    appName: string,
-  ): void {
+  private addUserApiFile(fileList: UserClassFileDescription[], fileName: string, path: string, appName: string): void {
     if (!REG_SEARCH.test(fileName)) return
 
     const id = `${appName}/${fileName}`

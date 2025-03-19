@@ -19,16 +19,12 @@ const UPDATE = 2
 export interface JsonSchema {
   type: "object"
   required: string[]
-  properties: Record<string, { type: string }>
+  properties: Record<string, { type: string; default: unknown }>
   additionalProperties: boolean
 }
 
 export class AutoToOpenApiSchemaMapper {
-  private autoSchema: AutoSchemaInterface
-
-  constructor(schema: AutoSchemaInterface) {
-    this.autoSchema = schema
-  }
+  constructor(private autoSchema: AutoSchemaInterface) {}
   /**
    * Mapeia o AutoSchema para o Fastify Schema para a rota POST.
    *
@@ -123,7 +119,7 @@ export class AutoToOpenApiSchemaMapper {
       properties: {},
       // Configuração abaixo não funciona pois está sendo usado o AJV com atributo removeAdditional
       // https://fastify.dev/docs/latest/Reference/Validation-and-Serialization/#validator-compiler
-      additionalProperties: false
+      additionalProperties: false,
     }
 
     for (const field of this.autoSchema.fields) {
@@ -132,7 +128,7 @@ export class AutoToOpenApiSchemaMapper {
 
       jsonSchema.properties[field.name] = {
         type: this.mapFieldType(field.type),
-        default: field.default
+        default: field.default,
       }
 
       if (field.required) {

@@ -151,3 +151,8 @@ mostrar essa informação
       NF_PRISMA_DEFAULT_PASSWORD=""
       NF_PRISMA_DEFAULT_OPTIONS="schema=public"
 - Adicionar essa informação na documenação do prisma
+
+
+19/03/2025
+
+- Implementei o serviço prisma e acesso ao fastify no controller

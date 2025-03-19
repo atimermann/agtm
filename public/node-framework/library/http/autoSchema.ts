@@ -31,14 +31,15 @@ const autoSchemaValidator = new ValidatorByInterface(
 )
 
 export default class AutoSchema {
-  private schema: AutoSchemaInterface
-  private logger: LoggerInterface
   private mapper: AutoToOpenApiSchemaMapper
 
-  constructor(logger: LoggerInterface, schema: AutoSchemaInterface, mapper?: AutoToOpenApiSchemaMapper) {
-    this.logger = logger
+  constructor(
+    private logger: LoggerInterface,
+    private schema: AutoSchemaInterface,
+    mapper?: AutoToOpenApiSchemaMapper,
+  ) {
     autoSchemaValidator.validate(schema)
-    this.schema = schema
+
     this.mapper = mapper ?? new AutoToOpenApiSchemaMapper(schema)
   }
 

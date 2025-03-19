@@ -12,7 +12,7 @@ import type { ApiControllerInterface } from "./interfaces/apiController.interfac
 import type { FastifyInstance, FastifyReply, FastifyRequest, FastifySchema, RouteOptions } from "fastify"
 import type { UserClassFileDescription } from "./services/userApiFilesService.ts"
 import { ApiRouterInterface } from "#/http/interfaces/apiRouter.interface.js"
-import {ApiRouteOptionInterface} from "#/http/interfaces/apiRouteOption.interface.js";
+import { ApiRouteOptionInterface } from "#/http/interfaces/apiRouteOption.interface.js"
 
 /**
  * Ao criar uma nova rota, é possível referenciar o method no controller ou criar um callback fastify diretamente
@@ -35,26 +35,16 @@ interface RouteConfig {
 }
 
 export class ApiRouter implements ApiRouterInterface {
-  private readonly logger: LoggerInterface
-  private readonly fastify: FastifyInstance
-  private readonly controller: ApiControllerInterface
-  private readonly routerDescriptor?: UserClassFileDescription
-
   public __INSTANCE__ = "__ApiRouter"
 
   private routes: RouteConfig[] = []
 
   constructor(
-    logger: LoggerInterface,
-    fastify: FastifyInstance,
-    controller: ApiControllerInterface,
-    routerDescriptor?: UserClassFileDescription,
-  ) {
-    this.logger = logger
-    this.fastify = fastify
-    this.routerDescriptor = routerDescriptor
-    this.controller = controller
-  }
+    protected readonly logger: LoggerInterface,
+    protected readonly fastify: FastifyInstance,
+    protected readonly controller: ApiControllerInterface,
+    protected readonly routerDescriptor?: UserClassFileDescription,
+  ) {}
 
   async setup(): Promise<void> {}
 

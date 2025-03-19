@@ -26,22 +26,15 @@ interface AuthFastifyRequest extends FastifyRequest {
 }
 
 export class KeycloakPlugin {
-  private readonly fastify: FastifyInstance
-  private readonly logger: LoggerInterface
   private readonly keycloakService: KeycloakService
-  private readonly config: ConfigService
 
   constructor(
-    logger: LoggerInterface,
-    config: ConfigService,
-    fastify: FastifyInstance,
+    private readonly logger: LoggerInterface,
+    private readonly config: ConfigService,
+    private readonly fastify: FastifyInstance,
     keyCloakService?: KeycloakService,
   ) {
-    this.fastify = fastify
-    this.logger = logger
-    this.config = config
-
-    // TODO: Permitir customizar instancia da configuração por rota
+    // TODO: Permitir personalizar instancia da configuração por rota
     this.keycloakService =
       keyCloakService ??
       new KeycloakService({

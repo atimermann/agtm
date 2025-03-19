@@ -20,11 +20,7 @@ import type { RFC7807ErrorInterface } from "#/http/interfaces/RFC7807ErrorInterf
  * ErrorHandlerService class that provides methods to handle errors and send responses in the RFC 7807 format.
  */
 export default class ErrorHandlerService {
-  private logger: LoggerInterface
-
-  constructor(logger: LoggerInterface) {
-    this.logger = logger
-  }
+  constructor(private readonly logger: LoggerInterface) {}
 
   /**
    * Handles errors and sends an RFC 7807 formatted error response.

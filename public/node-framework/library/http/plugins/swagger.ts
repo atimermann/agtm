@@ -20,15 +20,14 @@ const swaggerConfigValidator = new ValidatorByInterface(
 )
 
 export class SwaggerPlugin {
-  private readonly fastify: FastifyInstance
-  private readonly logger: LoggerInterface
   private readonly swaggerConfig: SwaggerConfig
-  private config: ConfigService
 
-  constructor(logger: LoggerInterface, config: ConfigService, fastify: FastifyInstance, swaggerConfig?: SwaggerConfig) {
-    this.fastify = fastify
-    this.logger = logger
-    this.config = config
+  constructor(
+    private readonly logger: LoggerInterface,
+    private readonly config: ConfigService,
+    private readonly fastify: FastifyInstance,
+    swaggerConfig?: SwaggerConfig,
+  ) {
     this.swaggerConfig = swaggerConfig ?? config.getYaml("swagger")
     swaggerConfigValidator.validate(this.swaggerConfig, this.logger)
   }

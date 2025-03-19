@@ -106,6 +106,14 @@ operações como por exemplo:
 - rotas especiais
 - ... entre outros
 
+### prismaService
+
+Serviço que gerencia as instancias do prisma, realiza conexão carrega configuração etc
+
+É possível obter informações de métricas
+
 ### prisma
 
-Acesso a instancia ao ORM Prisma (Banco de dados)
+Atalho para `prismaService.getInstance()`
+
+Acesso a instancia do ORM Prisma (Banco de dados) (conexão padrão)

@@ -13,10 +13,12 @@ import type { LoggerInterface } from "../loggers/logger.interface.ts"
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import type AutoSchema from "./autoSchema.ts"
 import type { ApiControllerInterface } from "#/http/interfaces/apiController.interface.ts"
+import type { PrismaClient } from "@prisma/client"
 
 import { AutoApiService } from "./services/autoApiService.ts"
 import { ConfigService } from "#/services/configService.ts"
 import { PrismaService } from "#/services/prismaService.js"
+
 
 interface ParamInterface {
   id: number
@@ -27,6 +29,7 @@ export class ApiController implements ApiControllerInterface {
   protected autoSchema?: AutoSchema
 
   public __INSTANCE__ = "__ApiController"
+  private prisma: PrismaClient
 
   constructor(
     protected readonly logger: LoggerInterface,
@@ -44,6 +47,7 @@ export class ApiController implements ApiControllerInterface {
       this.autoApiService = new AutoApiService(this.logger, this.prismaService, autoSchema)
     }
     this.autoSchema = autoSchema
+    this.prisma = this.prismaService.getInstance()
   }
 
   /**

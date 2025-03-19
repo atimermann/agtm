@@ -65,7 +65,6 @@ export default class RouterService {
     const groupedFilesDescriptors = await this.userApiFilesService.getFilesDescriptors()
 
     for (const [descriptorName, fileDescriptors] of Object.entries(groupedFilesDescriptors)) {
-      this.validateRequiredRouteFiles(descriptorName, fileDescriptors)
       await this.createRoute(descriptorName, fileDescriptors)
     }
   }
@@ -90,21 +89,6 @@ export default class RouterService {
 
     await router.setup()
     router.run()
-  }
-
-  /**
-   * Valida se os arquivos requeridos para criar a rota estão definidos: arquivo de rota ou schema auto.js
-   *
-   * @param descriptorName
-   * @param fileDescriptors
-   * @private
-   */
-  private validateRequiredRouteFiles(descriptorName: string, fileDescriptors: UserClassFileDescription[]) {
-    this.logger.debug(`Validando rotas para "${descriptorName}"...`)
-    const hasRequiredType = fileDescriptors.some((file) => file.type && ["auto", "router"].includes(file.type))
-    if (!hasRequiredType) {
-      throw new Error(`Route" ${descriptorName} "must have a router (.router.ts) or an auto (.auto.json)`)
-    }
   }
 
   /**

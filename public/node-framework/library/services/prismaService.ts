@@ -34,7 +34,7 @@ import type { PrismaClient } from "@prisma/client"
  * It manages a single connection instance with Prisma.
  */
 export class PrismaService {
-  public prisma: any // Ideally, use PrismaClient type if available.
+  public prisma: PrismaClient // Ideally, use PrismaClient type if available.
   private logger: LoggerService
   private config: ConfigService
 
@@ -99,7 +99,7 @@ export class PrismaService {
    * Retorna uma instancia prisma
    * @param instanceName
    */
-  getInstance(instanceName?: string) {
+  getInstance(instanceName?: string): PrismaClient {
     //TODO: Se não definido retorna uma instancia padrão, (nao implementado ainda)
 
     if (!this.prisma) {

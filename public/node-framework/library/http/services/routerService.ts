@@ -30,22 +30,30 @@ import type { FastifyInstance } from "fastify"
 import type LoggerService from "#/services/loggerService.ts"
 import type { SwaggerPlugin } from "#/http/plugins/swagger.js"
 import AutoSchema from "#/http/autoSchema.js"
+import { PrismaService } from "#/services/prismaService.js"
+import { ConfigService } from "#/services/configService.js"
 
 export default class RouterService {
   private readonly logger: LoggerService
+  private readonly config: ConfigService
   private readonly fastify: FastifyInstance
   private readonly userApiFilesService: UserApiFilesService
   private readonly autoSchemaService: AutoSchemaService
-  private swagger: SwaggerPlugin
+  private readonly swagger: SwaggerPlugin
+  private readonly prismaService: PrismaService
 
   constructor(
     logger: LoggerService,
+    config: ConfigService,
+    prismaService: PrismaService,
     fastify: FastifyInstance,
     swagger: SwaggerPlugin,
     userApiFilesService?: UserApiFilesService,
     autoSchemaService?: AutoSchemaService,
   ) {
     this.logger = logger
+    this.config = config
+    this.prismaService = prismaService
     this.fastify = fastify
     this.swagger = swagger
     this.userApiFilesService = userApiFilesService ?? new UserApiFilesService(logger)
@@ -103,7 +111,7 @@ export default class RouterService {
    */
   private validateRequiredRouteFiles(descriptorName: string, fileDescriptors: UserClassFileDescription[]) {
     this.logger.debug(`Validando rotas para "${descriptorName}"...`)
-    const hasRequiredType = fileDescriptors.some((file) => ["auto", "router"].includes(file.type))
+    const hasRequiredType = fileDescriptors.some((file) => file.type && ["auto", "router"].includes(file.type))
     if (!hasRequiredType) {
       throw new Error(`Route" ${descriptorName} "must have a router (.router.ts) or an auto (.auto.json)`)
     }
@@ -124,8 +132,8 @@ export default class RouterService {
    */
   private async configureController(fileDescriptors: UserClassFileDescription[], autoSchema: any) {
     const controllerDescriptor = fileDescriptors.find((file) => file.type === "controller")
-    const ControllerClass = controllerDescriptor ? (await import(controllerDescriptor.path)).default : ApiController
-    const controller = new ControllerClass(this.logger)
+    const ControllerClass: typeof ApiController = controllerDescriptor ? (await import(controllerDescriptor.path)).default : ApiController
+    const controller = new ControllerClass(this.logger, this.config, this.prismaService)
     this.validateInstance(controller, "__ApiController", controllerDescriptor)
     await controller.init(autoSchema)
     return controller

@@ -113,3 +113,41 @@ mostrar essa informação
   - Porém nas rotas só pode ser usado um, se haver necessidade de utilizar mais de um servidor de autenticação será
     necessário alterar o autoschema para suportar esse parâmetro e tb definir uma forma de passar esse parametro para
     cada rota.
+
+- Proximos passos:
+    TODO 01: Prisma deve ser carregado via plugin também, ver se existe plugin ou criar (deve estar no node-framework)
+    https://github.com/joggrdocs/fastify-prisma (parece ruim)
+    - Vamos criar um plugin do prismaeu
+
+
+    [OK] TODO 01: Prisma deve ser carregado via plugin também, ver se existe plugin ou criar (deve estar no node-framework)  
+    Problema: Criar um plugin que disponibiliza USUARIO e ACCOUNT Interno (atualmente só trás do Keycloak)
+      - É uma regra da aplicação e não do framework, portanto criar esse plugin
+
+    TODO 02:  Projetar e Implementar uma forma padronizada e alterar o fastify, definir plugins (node-framework)
+    TODO 03:  Então implementar o plugin q faz esse vinculo, deve validar e ajustar caso usuário esteja desincronizado (aplicação)
+
+    TODO 04: Verificar se a conta do usuário é do tipo tenantAdmin
+    TODO 05: Verificar se o usuário tem a permissão tenant-create
+
+    TODO 06: Criar um tenant onde o owner é a conta atual
+
+    TODO 07: Registar quem fez essa criação (Analisar melhor forma)
+
+18/03/2025
+
+- Vamos user apenas uma instancia do PRISMA, se um dia precisar de mais instancia será necessário criar mais schema:
+  - output          = "./generated/client1" no schema definindo um diretório (gera apartir do diretório prisma)
+  - Definir no config yaml o caminho para esse cliente
+  - Criar um client para cada caminho
+  - Configurar o ENV para suportar mais de um:
+    ex:
+    - NF_PRISMA_DEFAULT_CLIENT_PATH="generated/client"
+      NF_PRISMA_DEFAULT_PROVIDER="postgresql"
+      NF_PRISMA_DEFAULT_HOST="localhost"
+      NF_PRISMA_DEFAULT_PORT="30100"
+      NF_PRISMA_DEFAULT_DATABASE=""
+      NF_PRISMA_DEFAULT_USERNAME=""
+      NF_PRISMA_DEFAULT_PASSWORD=""
+      NF_PRISMA_DEFAULT_OPTIONS="schema=public"
+- Adicionar essa informação na documenação do prisma

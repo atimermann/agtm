@@ -19,6 +19,7 @@ import { ApiError } from "#/http/errors/apiError.ts"
 import { ApiRouteOptionInterface } from "#/http/interfaces/apiRouteOption.interface.js"
 import { ConfigService } from "#/services/configService.js"
 
+// TODO: Mover para interfaces
 interface AuthFastifyRequest extends FastifyRequest {
   user?: any
   roles?: string[]

@@ -12,9 +12,11 @@
 import type { LoggerInterface } from "../loggers/logger.interface.ts"
 import type { FastifyReply, FastifyRequest } from "fastify"
 import type AutoSchema from "./autoSchema.ts"
-import type { ApiControllerInterface } from "#/http/interfaces/apiController.interface.js"
+import type { ApiControllerInterface } from "#/http/interfaces/apiController.interface.ts"
 
-import { AutoApiService } from "./services/autoApiService.js"
+import { AutoApiService } from "./services/autoApiService.ts"
+import { ConfigService } from "#/services/configService.ts"
+import { PrismaService } from "#/services/prismaService.js"
 
 interface ParamInterface {
   id: number
@@ -26,18 +28,22 @@ export class ApiController implements ApiControllerInterface {
   protected autoSchema?: AutoSchema
 
   public __INSTANCE__ = "__ApiController"
+  private readonly config: ConfigService
+  private readonly prismaService: PrismaService
 
-  constructor(logger: LoggerInterface) {
+  constructor(logger: LoggerInterface, config: ConfigService, prismaService: PrismaService) {
     this.logger = logger
+    this.config = config
+    this.prismaService = prismaService
   }
 
   /**
    * Configuração inicial do controller (INTERNO: Não deve ser estendido pelo usuário)
    * e chama Setup definido pelo usuário
    */
-  private async init(autoSchema?: AutoSchema) {
+  async init(autoSchema?: AutoSchema) {
     if (autoSchema) {
-      this.autoApiService = await AutoApiService.createFromSchema(this.logger, autoSchema)
+      this.autoApiService = new AutoApiService(this.logger, this.prismaService, autoSchema)
     }
 
     this.autoSchema = autoSchema

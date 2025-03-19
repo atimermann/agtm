@@ -81,7 +81,7 @@ REF: [autoSchema](autoSchema.md)
 
 ### 06. Documentação com Swagger
 
-REF: [swagger](http2/swagger.md)
+REF: [swagger](http2/plugins/swagger.md)
 
 - Não implementado ainda
 - Geração automática de documentação com swagger
@@ -105,4 +105,4 @@ REF: [Guia de inicio](http2/guia.md)
 ## Mais documentação
 
 * [Auto Api Service](./http2/autoApiService.md)
-* [Keycloak](./http2/keycloak.md)
+* [Keycloak](services/keycloak.md)

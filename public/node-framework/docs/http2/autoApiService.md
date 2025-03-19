@@ -15,6 +15,8 @@ modelo de banco de dados, a partir de um **schema** definido em JSON. Através d
 Normalmente é utilizado internamente para gerar as API automática, porém podemos aproveitar para gerar nossos scripts
 ou em qualquer outro lugar que precisar
 
+**IMPORTANTE:** Deve estar na raiz de um projeto node-framework. Deve ter config e prisma configurado 
+
 AutoApiService utiliza o  [AutoSchema (Clique aqui)](./autoSchema.md).
 
 ## Exemplo
@@ -24,7 +26,7 @@ AutoApiService utiliza o  [AutoSchema (Clique aqui)](./autoSchema.md).
 import {AutoApiService} from "@agtm/node-framework"
 
 try {
-  const userCrudService = await AutoApiService.createFromSchemaFile("./src/apps/AccountService/http/user.auto.json")
+  const userCrudService = await AutoApiService.create("./src/apps/AccountService/http/user.auto.json")
 
   const createdUser = await userCrudService.create({
     name: "Admin",

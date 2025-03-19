@@ -12,28 +12,24 @@ import LoggerService from "#/services/loggerService.ts"
 import type AutoSchema from "../autoSchema.ts"
 import type { FieldSchemaInterface } from "../interfaces/autoSchema/fieldsSchema.interface.ts"
 
-import { join, resolve } from "node:path"
+import { resolve } from "node:path"
 import AutoSchemaService from "#/http/services/autoSchemaService.js"
+import { PrismaService } from "#/services/prismaService.js"
+import { ConfigService } from "#/services/configService.js"
 
 export class AutoApiService {
   private logger: LoggerService
-  private prismaInstance?: Record<string, any>
   private readonly autoSchema: AutoSchema
+  private prismaService: PrismaService
 
   /**
-   * Gera nova instancia à partir do schema
+   * Gera uma nova instancia apiService standalone, pode ser usada fora do fluxo do node-framework
+   *
+   * @param schemaFilePath  Caminho do schema Auto (relativo ou absoluto)
    */
-  static async createFromSchema(logger: LoggerService, autoSchema: AutoSchema): Promise<AutoApiService> {
-    const autoApi = new AutoApiService(logger, autoSchema)
-    autoApi.prismaInstance = await autoApi.importPrismaClient()
-    return autoApi
-  }
-
-  /**
-   * Gera nova instancia à partir do arquivo do schema
-   */
-  static async createFromSchemaFile(schemaFilePath: string): Promise<AutoApiService> {
+  static async create(schemaFilePath: string): Promise<AutoApiService> {
     const logger = new LoggerService()
+    const config = new ConfigService()
     const autoSchemaService = new AutoSchemaService(logger)
 
     // Se o caminho começa com "/", usa diretamente como absoluto.
@@ -44,44 +40,45 @@ export class AutoApiService {
       path: finalPath,
     })
 
-    const autoApi = new AutoApiService(logger, autoSchema)
-    autoApi.prismaInstance = await autoApi.importPrismaClient()
+    const prismaService = new PrismaService(logger, config)
+    await prismaService.init()
 
-    return autoApi
+    return new AutoApiService(logger, prismaService, autoSchema)
   }
 
-  constructor(logger: LoggerService, autoSchema: AutoSchema) {
+  constructor(logger: LoggerService, prismaService: PrismaService, autoSchema: AutoSchema) {
+    if (!prismaService) {
+      throw new Error("Prisma is not enabled in the project, should be enabled in Config prisma.enabled = True")
+    }
+
     this.autoSchema = autoSchema
+    this.prismaService = prismaService
     this.logger = logger
   }
 
   /**
-   * Retorna instancia do prisma com a entidade definida
+   * Retorna instancia do prismaModel com a entidade definida
    */
-  get prisma() {
-    return this.prismaInstance ? this.prismaInstance[this.autoSchema.model] : null
+  get prismaModel() {
+    return this.prismaService.getInstance()[this.autoSchema.model]
   }
 
   async create(rawData: unknown) {
     const data = await this.loadDataFromBody(true, rawData)
-
-    this.logger.debug(`Create "${this.autoSchema.model}":\n "${JSON.stringify(data, undefined, "  ")}"`)
-
-    const queryResult = await this.prisma.create({ data })
+    const queryResult = await this.prismaModel.create({ data })
     return this.filterResult(queryResult)
   }
 
   async getAll() {
-    const queryResult = await this.prisma.findMany({
+    const queryResult = await this.prismaModel.findMany({
       select: this.autoSchema.generateSelectField(),
       where: { deletedAt: null },
     })
-
     return this.filterResult(queryResult)
   }
 
   async get(id: number) {
-    return await this.prisma.findFirst({
+    return await this.prismaModel.findFirst({
       select: this.autoSchema.generateSelectField(),
       where: { id, deletedAt: null },
     })
@@ -90,7 +87,7 @@ export class AutoApiService {
   async update(id: number, rawData: unknown) {
     const data = await this.loadDataFromBody(false, rawData)
 
-    const queryResult = await this.prisma.update({
+    const queryResult = await this.prismaModel.update({
       data: {
         ...data,
         updatedAt: new Date(),
@@ -102,7 +99,7 @@ export class AutoApiService {
   }
 
   async delete(id: unknown) {
-    const queryResult = await this.prisma.update({
+    const queryResult = await this.prismaModel.update({
       where: { id, deletedAt: null },
       data: { deletedAt: new Date() },
     })
@@ -112,24 +109,6 @@ export class AutoApiService {
 
   async getCrudSchema() {
     return this.autoSchema.mapApiSchemaToCrudSchema()
-  }
-
-  /**
-   * Importa PrismaClient do diretório do projeto do usuário
-   *
-   */
-  private async importPrismaClient() {
-    const pathToPrismaClient = join(process.cwd(), "node_modules", "@prisma/client")
-    const PrismaClient = (await import(`${pathToPrismaClient}/default.js`)).PrismaClient
-    const prisma = new PrismaClient({
-      log: ["query", "info", "warn", "error"],
-    })
-
-    prisma.$on("query", (event) => {
-      this.logger.info("[PRISMA QUERY]:", event.query, event.params)
-    })
-
-    return prisma
   }
 
   /**

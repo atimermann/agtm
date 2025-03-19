@@ -19,6 +19,7 @@ import ErrorHandlerService from "./services/errorHandlerService.ts"
 import { KeycloakPlugin } from "#/http/plugins/keycloak.ts"
 import { RFC7807ErrorInterface } from "#/http/interfaces/RFC7807ErrorInterface.js"
 import { ConfigService } from "#/services/configService.js"
+import { PrismaService } from "#/services/prismaService.js"
 
 export default class HttpServer {
   private readonly logger: LoggerService
@@ -28,10 +29,12 @@ export default class HttpServer {
   private readonly errorHandlerService: ErrorHandlerService
   private readonly keyCloakPlugin: KeycloakPlugin
   private readonly config: ConfigService
+  private readonly prismaService: PrismaService
 
   constructor(
     logger: LoggerService,
     config: ConfigService,
+    prismaService: PrismaService,
     server?: FastifyInstance,
     router?: RouterService,
     swaggerPlugin?: SwaggerPlugin,
@@ -40,6 +43,7 @@ export default class HttpServer {
   ) {
     this.logger = logger
     this.config = config
+    this.prismaService = prismaService
 
     // Configura Fastify, reutilizando o logger fornecido
     this.fastify =
@@ -54,10 +58,13 @@ export default class HttpServer {
         },
       })
 
+    // Plugins
     this.swaggerPlugin = swaggerPlugin ?? new SwaggerPlugin(this.logger, this.config, this.fastify)
     this.keyCloakPlugin = keyCloakPlugin ?? new KeycloakPlugin(this.logger, this.config, this.fastify)
+
+    // Services
     this.errorHandlerService = errorHandlerService ?? new ErrorHandlerService(this.logger)
-    this.router = router ?? new RouterService(logger, this.fastify, this.swaggerPlugin)
+    this.router = router ?? new RouterService(logger, this.config, this.prismaService, this.fastify, this.swaggerPlugin)
   }
 
   /**

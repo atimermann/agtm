@@ -31,6 +31,7 @@ import ResourceMonitor from "./resource-monitor.mjs"
 
 import LoggerService from "./services/loggerService.ts"
 import { ConfigService } from "#/services/configService.js"
+import { PrismaService } from "#/services/prismaService.js"
 
 // TODO: Old
 import Config from "./config.mjs"
@@ -97,6 +98,12 @@ export default {
    * @param {Application} application  - The instance of the application to initialize servers for.
    */
   async initServer(application) {
+    let prismaService
+    if (Config.get("prisma.enabled", "boolean")) {
+      prismaService = new PrismaService(logger, config)
+      await prismaService.init()
+    }
+
     if (Config.get("monitor.enabled", "boolean")) {
       BlessedInterface.init()
     }
@@ -131,7 +138,7 @@ export default {
 
     // New HTTP server implementation based on Fastify and inspired by NestJS
     if (config.get("httpServer2.enabled", "boolean")) {
-      const httpServer2 = new HttpServer2(logger, config)
+      const httpServer2 = new HttpServer2(logger, config, prismaService)
       await httpServer2.run(application)
     }
   },

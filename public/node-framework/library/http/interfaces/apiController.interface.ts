@@ -1,4 +1,5 @@
 import type { LoggerInterface } from "#/loggers/logger.interface.ts"
+import type { FastifyReply, FastifyRequest } from "fastify"
 
 /**
  * Interface para a classe `ApiController`
@@ -9,11 +10,7 @@ export interface ApiControllerInterface {
    */
   __INSTANCE__: string
 
-  /**
-   * Logger utilizado pelo controlador.
-   */
-  readonly logger: LoggerInterface
 
   // TODO: IDE ainda não identifica get e outros métodos nas definições filhas do controller
-  get: (path: string, handler: string, options?: Record<string, any>) => void
+  get: (request: FastifyRequest, reply: FastifyReply) => Promise<any>
 }

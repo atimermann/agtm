@@ -30,7 +30,7 @@ const autoSchemaValidator = new ValidatorByInterface(
   "AutoSchemaInterface",
 )
 
-export default class AutoSchema {
+export class AutoSchema {
   private mapper: AutoToOpenApiSchemaMapper
 
   constructor(

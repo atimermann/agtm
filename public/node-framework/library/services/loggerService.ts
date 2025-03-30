@@ -1,17 +1,17 @@
-export default class LoggerService {
+export class LoggerService {
   info(message: string): void {
-    console.info(`[INFO]: ${message}`);
+    console.info(`[INFO]: ${message}`)
   }
 
   debug(message: string): void {
-    console.debug(`[DEBUG]: ${message}`);
+    console.debug(`[DEBUG]: ${message}`)
   }
 
   warn(message: string): void {
-    console.warn(`[WARN]: ${message}`);
+    console.warn(`[WARN]: ${message}`)
   }
 
   error(message: string): void {
-    console.error(`[ERROR]: ${message}`);
+    console.error(`[ERROR]: ${message}`)
   }
 }

@@ -29,7 +29,7 @@ import createLogger from "./logger.mjs"
 import { readFileSync } from "node:fs"
 import ResourceMonitor from "./resource-monitor.mjs"
 
-import LoggerService from "./services/loggerService.ts"
+import { LoggerService } from "./services/loggerService.ts"
 import { ConfigService } from "#/services/configService.js"
 import { PrismaService } from "#/services/prismaService.js"
 

@@ -165,3 +165,8 @@ mostrar essa informação
 28/03/2025
 
 - Agora temos default separado em dois contexto no schema: initial e default (se tem default, qualquer dado vazio é preenchido)
+
+
+30/03/2025
+
+- Se eu não quiser usar o prisma? o controller (que instancia automaticamente) vai funcionar?

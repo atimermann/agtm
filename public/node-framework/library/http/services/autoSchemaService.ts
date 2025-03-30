@@ -14,7 +14,7 @@ import type { AutoSchemaInterface } from "#/http/interfaces/schemas/autoSchema/a
 import type { LoggerInterface } from "#/loggers/logger.interface.js"
 
 import { UserClassFileDescription } from "./userApiFilesService.ts"
-import AutoSchema from "../autoSchema.ts"
+import { AutoSchema } from "../autoSchema.ts"
 
 export default class AutoSchemaService {
   constructor(private readonly logger: LoggerInterface) {}

@@ -10,7 +10,7 @@
  */
 import LoggerService from "#/services/loggerService.ts"
 import type AutoSchema from "../autoSchema.ts"
-import type { FieldSchemaInterface } from "../interfaces/autoSchema/fieldsSchema.interface.ts"
+import type { FieldSchemaInterface } from "#/http/interfaces/schemas/autoSchema/fieldsSchema.interface.ts"
 
 import { resolve } from "node:path"
 import AutoSchemaService from "#/http/services/autoSchemaService.js"

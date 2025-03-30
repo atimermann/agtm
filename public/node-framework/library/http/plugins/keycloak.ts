@@ -12,18 +12,14 @@
  * user information is attached to request.user.
  */
 
-import type { FastifyInstance, FastifyRequest } from "fastify"
+import type { FastifyInstance } from "fastify"
+import type { AuthRequest } from "#/http/interfaces/authRequest.interface.ts"
 import type { LoggerInterface } from "#/loggers/logger.interface.ts"
+
 import { KeycloakError, KeycloakService } from "#/services/keycloakService.ts"
 import { ApiError } from "#/http/errors/apiError.ts"
 import { ApiRouteOptionInterface } from "#/http/interfaces/apiRouteOption.interface.js"
 import { ConfigService } from "#/services/configService.js"
-
-// TODO: Mover para interfaces
-interface AuthFastifyRequest extends FastifyRequest {
-  user?: any
-  roles?: string[]
-}
 
 export class KeycloakPlugin {
   private readonly keycloakService: KeycloakService
@@ -46,9 +42,9 @@ export class KeycloakPlugin {
   }
 
   async setup() {
-    this.fastify.decorate("user", null)
+    this.fastify.decorate("auth", null)
     this.fastify.decorate("roles", null)
-    this.fastify.addHook("preHandler", async (request: AuthFastifyRequest, reply) => {
+    this.fastify.addHook("preHandler", async (request: AuthRequest) => {
       try {
         const routeOptions = request.routeOptions as ApiRouteOptionInterface
 
@@ -63,7 +59,7 @@ export class KeycloakPlugin {
         const clientAccessToken = this.getToken(authHeader)
 
         const decodedToken = await this.keycloakService.validateUser(clientAccessToken)
-        request.user = decodedToken
+        request.auth = decodedToken
         request.roles = this.getRoles(decodedToken, routeOptions)
       } catch (error: any) {
         if (error instanceof KeycloakError) {
@@ -96,7 +92,7 @@ export class KeycloakPlugin {
    */
   private getToken(authHeader?: string): string {
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      throw new ApiError("Unauthorized: No token provided", "Authentication Error", 401)
+      throw new ApiError("Unauthorized: No token provided", "Authentication Error", 400)
     }
 
     return authHeader.substring(7)
@@ -192,7 +188,12 @@ export class KeycloakPlugin {
       const allowedRoles: string[] = routeOptions.config.roles
       const hasAllowedRole = allowedRoles.some((allowedRole) => clientRoles.includes(allowedRole))
       if (!hasAllowedRole) {
-        throw new ApiError("Forbidden: Insufficient permissions", "Authentication Error", 403)
+        throw new ApiError(
+          "Forbidden: Insufficient permissions",
+          "Authorization Error",
+          403,
+          `Required permissions: ${allowedRoles.join(", ")}.\n Provided permissions: ${clientRoles.join(", ")}`,
+        )
       }
     }
   }

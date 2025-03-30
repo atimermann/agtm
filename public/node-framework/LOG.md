@@ -156,3 +156,12 @@ mostrar essa informação
 19/03/2025
 
 - Implementei o serviço prisma e acesso ao fastify no controller
+
+
+22/03/2025
+
+- Alterado para que o campos adicionais não sejam ignorados
+
+28/03/2025
+
+- Agora temos default separado em dois contexto no schema: initial e default (se tem default, qualquer dado vazio é preenchido)

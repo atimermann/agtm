@@ -16,17 +16,17 @@
  */
 import ValidatorByInterface from "../utils/validatorByInterface.js"
 import type { LoggerInterface } from "../loggers/logger.interface.js"
-import type { AutoSchemaInterface } from "./interfaces/autoSchema/autoSchema.interface.ts"
-import type { FieldSchemaInterface } from "./interfaces/autoSchema/fieldsSchema.interface.ts"
+import type { AutoSchemaInterface } from "#/http/interfaces/schemas/autoSchema/autoSchema.interface.ts"
+import type { FieldSchemaInterface } from "#/http/interfaces/schemas/autoSchema/fieldsSchema.interface.ts"
 import { sentenceCase } from "change-case"
-import { DocsSchemaInterface } from "#/http/interfaces/autoSchema/docsSchema.interface.js"
+import { DocsSchemaInterface } from "#/http/interfaces/schemas/autoSchema/docsSchema.interface.js"
 import { AutoToOpenApiSchemaMapper } from "#/http/mapper/autoToOpenApiSchemaMapper.js"
 import { FastifySchema, RouteOptions } from "fastify"
-import { AuthSchemaInterface } from "#/http/interfaces/autoSchema/authSchema.interface.js"
+import { AuthSchemaInterface } from "#/http/interfaces/schemas/autoSchema/authSchema.interface.js"
 import { ApiRouteOptionInterface, CustomContextConfig } from "#/http/interfaces/apiRouteOption.interface.js"
 
 const autoSchemaValidator = new ValidatorByInterface(
-  "library/http/interfaces/autoSchema/autoSchema.interface.ts",
+  "library/http/interfaces/schemas/autoSchema/autoSchema.interface.ts",
   "AutoSchemaInterface",
 )
 
@@ -39,7 +39,6 @@ export default class AutoSchema {
     mapper?: AutoToOpenApiSchemaMapper,
   ) {
     autoSchemaValidator.validate(schema)
-
     this.mapper = mapper ?? new AutoToOpenApiSchemaMapper(schema)
   }
 

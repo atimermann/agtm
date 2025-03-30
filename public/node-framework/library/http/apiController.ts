@@ -36,7 +36,8 @@ export class ApiController implements ApiControllerInterface {
     protected readonly config: ConfigService,
     protected readonly prismaService: PrismaService,
     protected readonly fastify: FastifyInstance,
-  ) {}
+  ) {
+  }
 
   /**
    * Configuração inicial do controller (INTERNO: Não deve ser estendido pelo usuário)

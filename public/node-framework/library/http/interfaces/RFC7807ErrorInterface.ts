@@ -19,6 +19,7 @@ export interface RFC7807ErrorInterface {
   title: string
   status: number
   message: string
+  restricted: string
   validation?: any[]
   setResponse(reply: FastifyReply): void
 }

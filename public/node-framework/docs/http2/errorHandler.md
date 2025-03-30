@@ -75,6 +75,7 @@ e definido com o setErrorHandler em:
   usuário
 - Para Erros de sistema não esperado use o padrão Error o outro padrão do javascript, esses erros serão ocultos do
   usuário no ambiente de produção e exibido no ambiente de desenvolvimento e homologação
+- Permite definir mensagems restritas, ou seja, só será exibida para o usuário em modo desenvolvimento ou homologação
 
 **ATENÇÃO:**
 
@@ -96,6 +97,8 @@ if (request.routeOptions.config.auth === undefined) {
   throw new ApiError(
     "If Keycloak plugin is enabled it is mandatory to define whether the route is authenticated or not!",
     "Missing Authentication Configuration",
+    500,
+    "Restricted message, will be displayed only in development or approval mode"
   )
 }
 ```

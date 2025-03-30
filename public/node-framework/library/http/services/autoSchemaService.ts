@@ -10,7 +10,7 @@
  *   e estrutura correta dos dados.
  *
  */
-import type { AutoSchemaInterface } from "../interfaces/autoSchema/autoSchema.interface.ts"
+import type { AutoSchemaInterface } from "#/http/interfaces/schemas/autoSchema/autoSchema.interface.ts"
 import type { LoggerInterface } from "#/loggers/logger.interface.js"
 
 import { UserClassFileDescription } from "./userApiFilesService.ts"

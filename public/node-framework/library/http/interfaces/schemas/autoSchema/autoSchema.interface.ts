@@ -4,15 +4,24 @@
  * @author André Timermann <andre@timermann.com.br>
  *
  * @file
- * Descreve o schema de geração de API Automatico
+ * Descreve o schema de geração de API Automático
+ *
+ * Arquivo Principal
  *
  */
 import { FieldSchemaInterface } from "./fieldsSchema.interface.ts"
 import { UiSchemaInterface } from "./uiSchema.interface.ts"
 import { DocsSchemaInterface } from "./docsSchema.interface.ts"
-import { AuthSchemaInterface } from "#/http/interfaces/autoSchema/authSchema.interface.js"
+import { AuthSchemaInterface } from "#/http/interfaces/schemas/autoSchema/authSchema.interface.js"
 
 export interface AutoSchemaInterface {
+
+  /**
+   * Se definido não ignora campos adicinais
+   * Padrão: true
+   */
+  strict?: boolean
+
   /**
    * Nome do modelo ou tabela do banco de dados
    */

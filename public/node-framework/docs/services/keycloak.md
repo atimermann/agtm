@@ -37,7 +37,7 @@ NF_KEYCLOAK_CLIENT_ID="teste-platform-server"
 NF_KEYCLOAK_CLIENT_SECRET="vscE7QT8UaDeARP7gvEVZ4ZWXq2F7Kzn"
 ```
 
-**OBSERVAÇÂO:**
+**OBSERVAÇÃO:**
 Atualmente configuração do keycloak está fixo, ou seja , só temos a possibilidade de ter um servidor de autenticação.
 No script keycloak eu já deixei genérico podemos selecionar várias instancias.
 

@@ -13,22 +13,27 @@ import { RFC7807ErrorInterface } from "#/http/interfaces/RFC7807ErrorInterface.j
  *
  */
 export class ApiError extends Error implements RFC7807ErrorInterface {
-  public title: string
-  public status: number
-
-  constructor(message: string, title: string = "Internal Server Error", status: number = 500) {
+  constructor(
+    readonly message: string,
+    readonly title: string = "Internal Server Error",
+    readonly status: number = 500,
+    readonly restricted: string = "",
+  ) {
     super(message)
-    this.title = title
-    this.status = status
     this.name = "ApiError"
   }
 
   setResponse(reply: FastifyReply) {
+    const detail =
+      process.env.NODE_ENV === "development" || process.env.NODE_ENV === "homologation"
+        ? `${this.message}${this.restricted ? ` - ${this.restricted}` : ""}`
+        : this.message
+
     reply.status(this.status).send({
       type: "about:blank",
       title: this.title,
       status: this.status,
-      detail: this.message,
+      detail,
     })
   }
 }

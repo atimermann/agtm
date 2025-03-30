@@ -20,6 +20,8 @@ import { KeycloakPlugin } from "#/http/plugins/keycloak.ts"
 import { RFC7807ErrorInterface } from "#/http/interfaces/RFC7807ErrorInterface.js"
 import { ConfigService } from "#/services/configService.js"
 import { PrismaService } from "#/services/prismaService.js"
+import Ajv from 'ajv'
+import fastUri from 'fast-uri'
 
 export default class HttpServer {
   private readonly fastify: FastifyInstance
@@ -50,6 +52,25 @@ export default class HttpServer {
           },
         },
       })
+
+    // TODO: criar um método de configuração do fastify
+    // --------------- Configuração do fastify para o validador não remover campos adicionais ---------------
+    // Agora se usuário adicionar mais informações q necessário será tratado
+    // @ts-expect-error TS2351: This expression is not constructable.
+    const ajv = new Ajv({
+      coerceTypes: 'array', // change data type of data to match type keyword
+      useDefaults: true, // replace missing properties and items with the values from corresponding default keyword
+      removeAdditional: false, // remove additional properties if additionalProperties is set to false, see: https://ajv.js.org/guide/modifying-data.html#removing-additional-properties
+      uriResolver: fastUri,
+      addUsedSchema: false,
+      // Explicitly set allErrors to `false`.
+      // When set to `true`, a DoS attack is possible.
+      allErrors: false
+    })
+    this.fastify.setValidatorCompiler(({ schema, method, url, httpPart }) => {
+      return ajv.compile(schema)
+    })
+    // --------------- Configuração do fastify para o validador não remover campos adicionais ---------------
 
     // Plugins
     this.swaggerPlugin = swaggerPlugin ?? new SwaggerPlugin(this.logger, this.config, this.fastify)

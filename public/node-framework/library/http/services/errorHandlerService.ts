@@ -47,7 +47,7 @@ export default class ErrorHandlerService {
    */
   private handleCustomError(error: RFC7807ErrorInterface, reply: FastifyReply): boolean {
     if (typeof error.setResponse === "function") {
-      this.logger.error(`(${error.status}) ${error.title} ${error.message}`)
+      this.logger.error(`(${error.status}) ${error.title} ${error.message} - ${error.restricted}`)
       error.setResponse(reply)
       return true
     }
@@ -115,15 +115,17 @@ export default class ErrorHandlerService {
     const errorsByField: Record<string, string[]> = {}
 
     for (const err of validationErrors) {
-      // instancePath can be an empty string if the error is at the root level.
-      // If empty, try to get the missing property from error params.
-      const field = err.instancePath ? err.instancePath.replace(".", "") : err.params.missingProperty
+      // vamos tentar obter o nome do campo: instancePath, removendo / (geralmente do começo) / do missingProperty ou do additionalProperty
+      const fieldName = err.instancePath
+        ? err.instancePath.replace("/", "")
+        : err.params?.missingProperty || err.params?.additionalProperty
 
-      if (!errorsByField[field]) {
-        errorsByField[field] = []
+      if (!errorsByField[fieldName]) {
+        errorsByField[fieldName] = []
       }
 
-      errorsByField[field].push(err.message)
+      errorsByField[fieldName].push(err.message)
+      debugger
     }
 
     return errorsByField

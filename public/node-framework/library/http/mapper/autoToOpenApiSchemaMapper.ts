@@ -10,7 +10,7 @@
  * Ele não faz mapeamento direto, como gera uma configuração de rota completo levantando informações de todo Schema
  *
  */
-import type { AutoSchemaInterface } from "#/http/interfaces/autoSchema/autoSchema.interface.ts"
+import type { AutoSchemaInterface } from "#/http/interfaces/schemas/autoSchema/autoSchema.interface.ts"
 import type { FastifySchema } from "fastify"
 
 const CREATE = 1
@@ -113,18 +113,21 @@ export class AutoToOpenApiSchemaMapper {
    * Converte o schema de fields para o formato JSON Schema do Fastify
    */
   private mapBodyForCreateOrUpdate(route: number): object {
+
     const jsonSchema: JsonSchema = {
       type: "object",
       required: [],
       properties: {},
       // Configuração abaixo não funciona pois está sendo usado o AJV com atributo removeAdditional
       // https://fastify.dev/docs/latest/Reference/Validation-and-Serialization/#validator-compiler
-      additionalProperties: false,
+      additionalProperties: !(this.autoSchema.strict ?? true)
     }
 
     for (const field of this.autoSchema.fields) {
       if (route === CREATE && field.create === false) continue
       if (route === UPDATE && field.update === false) continue
+
+ // TODO: estruturar melhor a classe
 
       jsonSchema.properties[field.name] = {
         type: this.mapFieldType(field.type),

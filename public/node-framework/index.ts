@@ -52,5 +52,7 @@ export {
 export { ApiRouter } from "#/http/apiRouter.ts"
 export { ApiController } from "#/http/apiController.ts"
 export { AutoApiService } from "#/http/services/autoApiService.ts"
+export { ApiError } from "#/http/errors/apiError.ts"
 export type { ApiRouterInterface } from "#/http/interfaces/apiRouter.interface.ts"
 export type { ApiControllerInterface } from "#/http/interfaces/apiController.interface.ts"
+export type { AuthRequest } from "#/http/interfaces/authRequest.interface.js"

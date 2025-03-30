@@ -7,7 +7,7 @@
  * Servidor HTTP para criação apis com fastify
  *
  */
-import type LoggerService from "../services/loggerService.ts"
+import type { LoggerService } from "../services/loggerService.ts"
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 
 import RouterService from "./services/routerService.ts"

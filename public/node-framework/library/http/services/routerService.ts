@@ -19,7 +19,7 @@
  *   TODO: Adicionar suporte a uuid com string para melhor segurança
  *
  */
-import UserApiFilesService from "./userApiFilesService.ts"
+import UserApiFilesService, { UserClassFilesGrouped } from "./userApiFilesService.ts"
 import AutoSchemaService from "./autoSchemaService.ts"
 
 import { ApiRouter } from "../apiRouter.ts"
@@ -27,15 +27,16 @@ import { ApiController } from "../apiController.ts"
 
 import type { UserClassFileDescription } from "./userApiFilesService.ts"
 import type { FastifyInstance } from "fastify"
-import type LoggerService from "#/services/loggerService.ts"
+import type { LoggerService } from "#/services/loggerService.ts"
 import type { SwaggerPlugin } from "#/http/plugins/swagger.js"
-import AutoSchema from "#/http/autoSchema.js"
+import { AutoSchema } from "#/http/autoSchema.js"
 import { PrismaService } from "#/services/prismaService.js"
 import { ConfigService } from "#/services/configService.js"
 
 export default class RouterService {
   private readonly userApiFilesService: UserApiFilesService
   private readonly autoSchemaService: AutoSchemaService
+  private groupedFilesDescriptors!: UserClassFilesGrouped
 
   constructor(
     private readonly logger: LoggerService,
@@ -62,9 +63,9 @@ export default class RouterService {
     this.logger.debug("---------------------------------------------")
 
     this.logger.debug("Carregando configurações das rotas...")
-    const groupedFilesDescriptors = await this.userApiFilesService.getFilesDescriptors()
+    this.groupedFilesDescriptors = await this.userApiFilesService.getFilesDescriptors()
 
-    for (const [descriptorName, fileDescriptors] of Object.entries(groupedFilesDescriptors)) {
+    for (const [descriptorName, fileDescriptors] of Object.entries(this.groupedFilesDescriptors)) {
       await this.createRoute(descriptorName, fileDescriptors)
     }
   }
@@ -116,7 +117,13 @@ export default class RouterService {
       ? (await import(controllerDescriptor.path)).default
       : ApiController
 
-    const controller = new ControllerClass(this.logger, this.config, this.prismaService, this.fastify)
+    const controller = new ControllerClass(
+      this.logger,
+      this.config,
+      this.prismaService,
+      this.fastify,
+      this.groupedFilesDescriptors,
+    )
     this.validateInstance(controller, "__ApiController", controllerDescriptor)
     await controller.init(autoSchema)
     await controller.setup()

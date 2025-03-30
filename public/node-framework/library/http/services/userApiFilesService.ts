@@ -8,14 +8,14 @@
  *
  */
 
-import type LoggerService from "#/services/loggerService.js"
+import type { LoggerService } from "#/services/loggerService.js"
 import { promises as fs } from "node:fs"
 import { resolve, join, parse } from "node:path"
 import { groupBy } from "lodash-es"
 
 /**
  * Diretório de configuração de api do usuário
- * TODO: Parametrizar no .env
+ * TODO: Parametrizar no .env (tem em outros locais no código duplicado)
  */
 const APP_DIR = resolve(process.cwd(), "src/apps")
 

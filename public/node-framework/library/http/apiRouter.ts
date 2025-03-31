@@ -38,13 +38,18 @@ export class ApiRouter implements ApiRouterInterface {
   public __INSTANCE__ = "__ApiRouter"
 
   private routes: RouteConfig[] = []
+  private appName?: string;
 
   constructor(
     protected readonly logger: LoggerInterface,
     protected readonly fastify: FastifyInstance,
     protected readonly controller: ApiControllerInterface,
     protected readonly routerDescriptor?: UserClassFileDescription,
-  ) {}
+  ) {
+
+    this.appName = routerDescriptor?.appName || controller.appName
+
+  }
 
   async setup(): Promise<void> {}
 

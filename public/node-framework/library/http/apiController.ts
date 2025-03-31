@@ -19,39 +19,29 @@ import { AutoApiService } from "./services/autoApiService.ts"
 import { ConfigService } from "#/services/configService.ts"
 import { PrismaService } from "#/services/prismaService.js"
 import { AutoApi } from "#/http/autoApi.ts"
-import { UserClassFilesGrouped } from "#/http/services/userApiFilesService.ts"
+import { UserClassFileDescription, UserClassFilesGrouped } from "#/http/services/userApiFilesService.ts"
 
 interface ParamInterface {
   id: number
 }
 
 export class ApiController implements ApiControllerInterface {
-  protected autoApi?: AutoApi
-  protected autoSchema?: AutoSchema
-
   public __INSTANCE__ = "__ApiController"
-  private prisma: PrismaClient
-
+  /**
+   * Nome
+   *
+   * @private
+   */
   constructor(
     protected readonly logger: LoggerInterface,
     protected readonly config: ConfigService,
     protected readonly prismaService: PrismaService,
+    protected readonly prisma: PrismaClient,
     protected readonly fastify: FastifyInstance,
-    protected readonly userApiFiles: UserClassFilesGrouped,
+    protected readonly appName: string,
+    protected readonly autoSchema?: AutoSchema,
+    protected readonly autoApi?: AutoApi,
   ) {}
-
-  /**
-   * Configuração inicial do controller (INTERNO: Não deve ser estendido pelo usuário)
-   * e chama Setup definido pelo usuário
-   */
-  async init(autoSchema?: AutoSchema) {
-    if (autoSchema) {
-      const autoApiService = new AutoApiService()
-      this.autoApi = await autoApiService.create(this.logger, autoSchema, this.prismaService, this.userApiFiles)
-    }
-    this.autoSchema = autoSchema
-    this.prisma = this.prismaService.getInstance()
-  }
 
   /**
    * Méthod de configuração do controller para usuário

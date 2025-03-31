@@ -24,6 +24,7 @@ import AutoSchemaService from "./autoSchemaService.ts"
 
 import { ApiRouter } from "../apiRouter.ts"
 import { ApiController } from "../apiController.ts"
+import { join } from "node:path"
 
 import type { UserClassFileDescription } from "./userApiFilesService.ts"
 import type { FastifyInstance } from "fastify"
@@ -32,11 +33,14 @@ import type { SwaggerPlugin } from "#/http/plugins/swagger.js"
 import { AutoSchema } from "#/http/autoSchema.js"
 import { PrismaService } from "#/services/prismaService.js"
 import { ConfigService } from "#/services/configService.js"
+import { AutoApiService } from "#/http/services/autoApiService.js"
+import { AutoApi } from "#/http/autoApi.js"
+import { ControllerFactory } from "#/http/factories/controllerFactory.js"
 
 export default class RouterService {
   private readonly userApiFilesService: UserApiFilesService
   private readonly autoSchemaService: AutoSchemaService
-  private groupedFilesDescriptors!: UserClassFilesGrouped
+  private controllerFactory: ControllerFactory
 
   constructor(
     private readonly logger: LoggerService,
@@ -46,9 +50,12 @@ export default class RouterService {
     private readonly swagger: SwaggerPlugin,
     userApiFilesService?: UserApiFilesService,
     autoSchemaService?: AutoSchemaService,
+    controllerFactory?: ControllerFactory,
   ) {
     this.userApiFilesService = userApiFilesService ?? new UserApiFilesService(logger)
     this.autoSchemaService = autoSchemaService ?? new AutoSchemaService(logger)
+    this.controllerFactory =
+      controllerFactory ?? new ControllerFactory(this.logger, this.config, prismaService, fastify)
   }
 
   /**
@@ -63,26 +70,41 @@ export default class RouterService {
     this.logger.debug("---------------------------------------------")
 
     this.logger.debug("Carregando configurações das rotas...")
-    this.groupedFilesDescriptors = await this.userApiFilesService.getFilesDescriptors()
 
-    for (const [descriptorName, fileDescriptors] of Object.entries(this.groupedFilesDescriptors)) {
-      await this.createRoute(descriptorName, fileDescriptors)
+    for (const appDirectory of await this.userApiFilesService.getApps()) {
+      const appName = appDirectory.name
+      const appPath = join(appDirectory.parentPath, appDirectory.name)
+
+      const groupedFilesDescriptors = await this.userApiFilesService.getFilesDescriptors(appName, appPath)
+
+      for (const [descriptorName, fileDescriptors] of Object.entries(groupedFilesDescriptors)) {
+        await this.createRoute(appName, descriptorName, fileDescriptors, groupedFilesDescriptors)
+      }
     }
   }
 
   /**
    *  Carrega ou cria rota.
    *
-   * @param descriptorName    Nome da rota
-   * @param fileDescriptors   Lista de arquivos do usuários com definição da rota
+   * @param appName           - Nome da aplicação
+   * @param descriptorName    - Nome da rota
+   * @param fileDescriptors   - Lista de arquivos do usuários com definição da rota
+   * @param groupedFilesDescriptors
    */
-  private async createRoute(descriptorName: string, fileDescriptors: UserClassFileDescription[]) {
+  private async createRoute(
+    appName: string,
+    descriptorName: string,
+    fileDescriptors: UserClassFileDescription[],
+    groupedFilesDescriptors: UserClassFilesGrouped,
+  ) {
     this.logger.debug(`Criando rotas para "${descriptorName}"...`)
 
-    const autoSchema = await this.loadAutoSchema(fileDescriptors, descriptorName)
-    const controller = await this.configureController(fileDescriptors, autoSchema)
+    const autoSchema = await this.createAutoSchema(fileDescriptors, descriptorName)
+    const autoApi = await this.createAutoApi(descriptorName, groupedFilesDescriptors, autoSchema)
+    const controller = await this.controllerFactory.create(appName, fileDescriptors, autoSchema, autoApi)
+    const router = await this.createRouter(fileDescriptors, controller)
+
     // TODO: Configura FastifySchema
-    const router = await this.configureRouter(fileDescriptors, controller)
 
     if (autoSchema) {
       this.configureAutoRoutes(router, autoSchema)
@@ -95,7 +117,7 @@ export default class RouterService {
   /**
    * Loads auto schema configuration from descriptor if available
    */
-  private async loadAutoSchema(
+  private async createAutoSchema(
     fileDescriptors: UserClassFileDescription[],
     descriptorName: string,
   ): Promise<AutoSchema | undefined> {
@@ -105,29 +127,6 @@ export default class RouterService {
       : undefined
     this.logger.debug(`[${descriptorName}] Automatic Route Configuration: ${autoSchema ? "Yes" : "No"}`)
     return autoSchema
-  }
-
-  /**
-   * Configures API controller from user descriptor or creates default
-   */
-  private async configureController(fileDescriptors: UserClassFileDescription[], autoSchema?: AutoSchema) {
-    const controllerDescriptor = fileDescriptors.find((file) => file.type === "controller")
-
-    const ControllerClass: typeof ApiController = controllerDescriptor
-      ? (await import(controllerDescriptor.path)).default
-      : ApiController
-
-    const controller = new ControllerClass(
-      this.logger,
-      this.config,
-      this.prismaService,
-      this.fastify,
-      this.groupedFilesDescriptors,
-    )
-    this.validateInstance(controller, "__ApiController", controllerDescriptor)
-    await controller.init(autoSchema)
-    await controller.setup()
-    return controller
   }
 
   /**
@@ -155,16 +154,18 @@ export default class RouterService {
   /**
    * Configures API router from user descriptor or creates default
    */
-  private async configureRouter(fileDescriptors: UserClassFileDescription[], controller: ApiController) {
+  private async createRouter(fileDescriptors: UserClassFileDescription[], controller: ApiController) {
     const routerDescriptor = fileDescriptors.find((file) => file.type === "router")
     const RouterClass: typeof ApiRouter = routerDescriptor ? (await import(routerDescriptor.path)).default : ApiRouter
+
     const router = new RouterClass(this.logger, this.fastify, controller, routerDescriptor)
+
     this.validateInstance(router, "__ApiRouter", routerDescriptor)
     return router
   }
 
   /**
-   * Configura rotas automaticas
+   * Configura rotas automáticas
    *
    * @param router      - Instancia da Api de rotas do usuário
    * @param autoSchema  - Auto Schema definido pelo usuário (auto.json)
@@ -185,5 +186,15 @@ export default class RouterService {
       autoSchema.getDeleteOptions(),
     )
     router.get(`/${autoSchema.routeName}/schema`, "schema", autoSchema.getCrudSchema(), autoSchema.getCrudOptions())
+  }
+
+  /**
+   * Cria Instancia "autoApi" para ser usada pelo controller
+   */
+  private async createAutoApi(descriptorName: string, userApiFiles: UserClassFilesGrouped, autoSchema?: AutoSchema) {
+    if (autoSchema) {
+      const autoApiService = new AutoApiService(this.logger, autoSchema, this.prismaService, descriptorName)
+      return await autoApiService.create(userApiFiles)
+    }
   }
 }

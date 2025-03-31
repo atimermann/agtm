@@ -170,3 +170,10 @@ mostrar essa informação
 30/03/2025
 
 - Se eu não quiser usar o prisma? o controller (que instancia automaticamente) vai funcionar?
+
+
+31/03/2025
+
+- Refactory do loading, agora separa por App
+- TODO: Criado factory para o Controller (criar mais factories)
+- TODO: Criar uma Helper global para validate instance das classes usado em factories por exemplo

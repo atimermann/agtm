@@ -26,6 +26,16 @@ export interface AutoSchemaInterface {
    * Nome do modelo ou tabela do banco de dados
    */
   model: string
+
+  /**
+   * Nome do gerador de query automático:
+   *  - Será uma instancia de AutoApi
+   *  - Se não definido irá utilizar o AutoApi padrão definido em library/http/autoApi.ts
+   *  - No projeto do usuário deverá ter o prefixo auto.ts
+   *  - Se auto = 'account' o arquivo deverá se chamar 'account.auto.ts'
+   */
+  auto?: string
+
   /**
    * Identificador único do modelo (Chave primária da tabela)
    */

@@ -25,7 +25,7 @@
  */
 
 import { join } from "node:path"
-import LoggerService from "#/services/loggerService.js"
+import { LoggerService } from "#/services/loggerService.js"
 import { ConfigService } from "#/services/configService.js"
 import type { PrismaClient } from "@prisma/client"
 

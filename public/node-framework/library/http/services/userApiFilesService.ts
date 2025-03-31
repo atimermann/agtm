@@ -22,7 +22,7 @@ const APP_DIR = resolve(process.cwd(), "src/apps")
 /**
  * REGEXP para obter os tipos de arquivos desejado para montar o descriptor
  */
-const REG_SEARCH = /\.(auto\.json|schema\.ts|router\.ts|controller\.ts)$/
+const REG_SEARCH = /\.(auto\.json|schema\.ts|router\.ts|controller\.ts|auto\.ts)$/
 
 /**
  * Mapa dos tipos de arquivo encontrado
@@ -32,6 +32,7 @@ const typeMap: Record<string, string> = {
   ".schema.ts": "schema",
   ".controller.ts": "controller",
   ".router.ts": "router",
+  ".auto.ts": "custom-auto",
 }
 
 export type UserClassFileDescription = {
@@ -47,31 +48,38 @@ export type UserClassFilesGrouped = Record<string, UserClassFileDescription[]>
 export default class UserApiFilesService {
   constructor(private readonly logger: LoggerService) {}
 
-  /**
-   * Retorna uma lista com a descrição de todos os arquivos usados para instanciar classes do usuário.
-   *
-   * @returns Lista de descrições dos arquivos encontrados.
-   */
-  async getFilesDescriptors(): Promise<UserClassFilesGrouped> {
+  async getApps() {
     const appsDirectories = await fs.readdir(APP_DIR, { withFileTypes: true })
-    const userApiFilesDescriptors: UserClassFileDescription[] = []
+
+    const apps = []
 
     for (const appDirectory of appsDirectories) {
-      this.logger.debug(`Loading App: '${appDirectory.name}'...`)
-      const appName = appDirectory.name
-
       if (appDirectory.isDirectory()) {
-        const appDirectoryEntries = await fs.readdir(join(APP_DIR, appDirectory.name), {
-          withFileTypes: true,
-        })
+        apps.push(appDirectory)
+      }
+    }
 
-        for (const appDirectoryEntry of appDirectoryEntries) {
-          const appDirectoryEntryPath = join(APP_DIR, appDirectory.name, appDirectoryEntry.name)
+    return apps
+  }
 
-          if (appDirectoryEntry.name === "http") {
-            await this.findUserClassFilesInDirectory(userApiFilesDescriptors, appDirectoryEntryPath, appName)
-          }
-        }
+  /**
+   * Retorna uma lista com a descrição de todos os arquivos usados para instanciar classes do usuário. no App definido
+   *
+   * @param appName - Nome da Aplicação
+   * @param appPath - Caminho da aplicação
+   */
+  async getFilesDescriptors(appName: string, appPath: string): Promise<UserClassFilesGrouped> {
+    const appDirectoryEntries = await fs.readdir(appPath, {
+      withFileTypes: true,
+    })
+
+    const userApiFilesDescriptors: UserClassFileDescription[] = []
+
+    for (const appDirectoryEntry of appDirectoryEntries) {
+      const appDirectoryEntryPath = join(appPath, appDirectoryEntry.name)
+
+      if (appDirectoryEntry.name === "http") {
+        await this.findUserClassFilesInDirectory(userApiFilesDescriptors, appDirectoryEntryPath, appName)
       }
     }
 

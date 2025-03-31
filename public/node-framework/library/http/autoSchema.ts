@@ -36,10 +36,18 @@ export class AutoSchema {
   constructor(
     private logger: LoggerInterface,
     private schema: AutoSchemaInterface,
+    private _appName: string,
     mapper?: AutoToOpenApiSchemaMapper,
   ) {
     autoSchemaValidator.validate(schema)
     this.mapper = mapper ?? new AutoToOpenApiSchemaMapper(schema)
+  }
+
+  /**
+   * Retorna nome do APP vinculado a este schema (Root Level)
+   */
+  get appName(): string {
+    return this._appName
   }
 
   /**
@@ -54,6 +62,13 @@ export class AutoSchema {
    */
   get model(): string {
     return this.schema.model
+  }
+
+  /**
+   * Retorna nome do serviço autoApi
+   */
+  get auto(): string | undefined {
+    return this.schema.auto
   }
 
   /**

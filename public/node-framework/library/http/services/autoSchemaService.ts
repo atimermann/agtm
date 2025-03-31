@@ -27,8 +27,12 @@ export default class AutoSchemaService {
   async createAutoSchemaFromFile(fileDescriptor: UserClassFileDescription): Promise<AutoSchema> {
     const schema: AutoSchemaInterface = (await import(fileDescriptor.path, { with: { type: "json" } })).default
 
+    if (!fileDescriptor.appName) {
+      throw new Error("Variable 'appName' in fileDescriptor is required.")
+    }
+
     try {
-      return new AutoSchema(this.logger, schema)
+      return new AutoSchema(this.logger, schema, fileDescriptor.appName)
     } catch (error) {
       if (error instanceof TypeError) {
         throw new TypeError(

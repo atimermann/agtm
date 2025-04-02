@@ -11,8 +11,8 @@ import type { FastifyInstance } from "fastify"
 import type { LoggerInterface } from "#/loggers/logger.interface.js"
 import type { SwaggerConfig } from "#/http/interfaces/swaggerConfig.interface.js"
 
-import ValidatorByInterface from "#/utils/validatorByInterface.js"
-import { ConfigService } from "#/services/configService.js"
+import { ValidatorByInterface } from "#/utils/validatorByInterface.js"
+import type { ConfigService } from "#/services/configService.js"
 
 const swaggerConfigValidator = new ValidatorByInterface(
   "library/http/interfaces/swaggerConfig.interface.ts",
@@ -58,14 +58,14 @@ export class SwaggerPlugin {
       //       PAREI AQUI
       //
       //       - precisamos adicionar configuração para habilitar ou não o swagger
-      //       - configuação para definir rota padrão
+      //       - configuração para definir rota padrão
       //       - Existem muitas configurações no swagger, pensar melhor maneira de documentar, não é caso de usar variavel de ambiente é caso de uma configuração fixa
       //       => Pode ser YAML no sistema padrão ou criar uma configuração json só pro swagger ou ainda criar uma configuração simplificada
       //       => configuração de rotas especificas vai vir da configuração da rota q pode ser gerado automaticamente
       // TEM Q SER SIMPLES
       // ################################################################################################################
 
-      // Referencia de documentação: https://swagger.io/specification/#schema-1
+      // Referência de documentação: https://swagger.io/specification/#schema-1
       await this.fastify.register(import("@fastify/swagger"), {
         openapi: this.swaggerConfig.openapi as any,
       })

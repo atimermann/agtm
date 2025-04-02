@@ -10,20 +10,20 @@
 import type { LoggerService } from "../services/loggerService.ts"
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 
-import RouterService from "./services/routerService.ts"
+import { RouterService } from "./services/routerService.ts"
 import Fastify from "fastify"
 import cors from "@fastify/cors"
 
 import { SwaggerPlugin } from "./plugins/swagger.ts"
 import ErrorHandlerService from "./services/errorHandlerService.ts"
 import { KeycloakPlugin } from "#/http/plugins/keycloak.ts"
-import { RFC7807ErrorInterface } from "#/http/interfaces/RFC7807ErrorInterface.js"
-import { ConfigService } from "#/services/configService.js"
-import { PrismaService } from "#/services/prismaService.js"
+import type { RFC7807ErrorInterface } from "#/http/interfaces/RFC7807ErrorInterface.js"
+import type { ConfigService } from "#/services/configService.js"
+import type { PrismaService } from "#/services/prismaService.js"
 import Ajv from 'ajv'
 import fastUri from 'fast-uri'
 
-export default class HttpServer {
+export class HttpServer {
   private readonly fastify: FastifyInstance
   private readonly router: RouterService
   private readonly swaggerPlugin: SwaggerPlugin

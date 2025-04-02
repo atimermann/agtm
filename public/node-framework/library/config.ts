@@ -5,7 +5,7 @@ import type { ValueType } from "#/services/configService.js"
  * @deprecated Use `ConfigService` instead.
  * This class is maintained only for backward compatibility and will be removed in future versions.
  */
-export default class Config {
+export class Config {
   private static configService = new ConfigService()
 
   /** @deprecated Use `ConfigService` instead. */

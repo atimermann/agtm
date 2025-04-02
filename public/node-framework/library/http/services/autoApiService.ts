@@ -12,10 +12,10 @@
  */
 import { resolve } from "node:path"
 import { AutoApi } from "#/http/autoApi.js"
-import AutoSchemaService from "#/http/services/autoSchemaService.js"
+import { AutoSchemaService } from "#/http/services/autoSchemaService.js"
 import { PrismaService } from "#/services/prismaService.js"
 import { ConfigService } from "#/services/configService.js"
-import { LoggerInterface } from "#/loggers/logger.interface.js"
+import type { LoggerInterface } from "#/loggers/logger.interface.js"
 import type { AutoSchema } from "../autoSchema.ts"
 import type { UserClassFilesGrouped } from "#/http/services/userApiFilesService.js"
 import { LoggerService } from "#/services/loggerService.js"

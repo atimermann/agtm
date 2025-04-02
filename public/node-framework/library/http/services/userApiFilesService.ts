@@ -45,7 +45,7 @@ export type UserClassFileDescription = {
 
 export type UserClassFilesGrouped = Record<string, UserClassFileDescription[]>
 
-export default class UserApiFilesService {
+export class UserApiFilesService {
   constructor(private readonly logger: LoggerService) {}
 
   async getApps() {

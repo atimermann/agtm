@@ -19,25 +19,24 @@
  *   TODO: Adicionar suporte a uuid com string para melhor segurança
  *
  */
-import UserApiFilesService, { UserClassFilesGrouped } from "./userApiFilesService.ts"
-import AutoSchemaService from "./autoSchemaService.ts"
+import { UserApiFilesService } from "./userApiFilesService.ts"
+import { AutoSchemaService } from "./autoSchemaService.ts"
 
 import { ApiRouter } from "../apiRouter.ts"
-import { ApiController } from "../apiController.ts"
+import type { ApiController } from "../apiController.ts"
 import { join } from "node:path"
 
-import type { UserClassFileDescription } from "./userApiFilesService.ts"
+import type { UserClassFileDescription , UserClassFilesGrouped } from "./userApiFilesService.ts"
 import type { FastifyInstance } from "fastify"
 import type { LoggerService } from "#/services/loggerService.ts"
 import type { SwaggerPlugin } from "#/http/plugins/swagger.js"
-import { AutoSchema } from "#/http/autoSchema.js"
-import { PrismaService } from "#/services/prismaService.js"
-import { ConfigService } from "#/services/configService.js"
+import type { AutoSchema } from "#/http/autoSchema.js"
+import type { PrismaService } from "#/services/prismaService.js"
+import type { ConfigService } from "#/services/configService.js"
 import { AutoApiService } from "#/http/services/autoApiService.js"
-import { AutoApi } from "#/http/autoApi.js"
 import { ControllerFactory } from "#/http/factories/controllerFactory.js"
 
-export default class RouterService {
+export class RouterService {
   private readonly userApiFilesService: UserApiFilesService
   private readonly autoSchemaService: AutoSchemaService
   private controllerFactory: ControllerFactory
@@ -102,7 +101,7 @@ export default class RouterService {
     const autoSchema = await this.createAutoSchema(fileDescriptors, descriptorName)
     const autoApi = await this.createAutoApi(descriptorName, groupedFilesDescriptors, autoSchema)
     const controller = await this.controllerFactory.create(appName, fileDescriptors, autoSchema, autoApi)
-    const router = await this.createRouter(fileDescriptors, controller)
+    const router = await this.createRouter(appName, fileDescriptors, controller)
 
     // TODO: Configura FastifySchema
 
@@ -154,11 +153,11 @@ export default class RouterService {
   /**
    * Configures API router from user descriptor or creates default
    */
-  private async createRouter(fileDescriptors: UserClassFileDescription[], controller: ApiController) {
+  private async createRouter(appName: string, fileDescriptors: UserClassFileDescription[], controller: ApiController) {
     const routerDescriptor = fileDescriptors.find((file) => file.type === "router")
     const RouterClass: typeof ApiRouter = routerDescriptor ? (await import(routerDescriptor.path)).default : ApiRouter
 
-    const router = new RouterClass(this.logger, this.fastify, controller, routerDescriptor)
+    const router = new RouterClass(this.logger, this.fastify, controller, appName, routerDescriptor)
 
     this.validateInstance(router, "__ApiRouter", routerDescriptor)
     return router

@@ -12,20 +12,17 @@
 import type { LoggerInterface } from "../loggers/logger.interface.ts"
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import type { AutoSchema } from "./autoSchema.ts"
-import type { ApiControllerInterface } from "#/http/interfaces/apiController.interface.ts"
 import type { PrismaClient } from "@prisma/client"
 
-import { AutoApiService } from "./services/autoApiService.ts"
 import { ConfigService } from "#/services/configService.ts"
 import { PrismaService } from "#/services/prismaService.js"
 import { AutoApi } from "#/http/autoApi.ts"
-import { UserClassFileDescription, UserClassFilesGrouped } from "#/http/services/userApiFilesService.ts"
 
 interface ParamInterface {
   id: number
 }
 
-export class ApiController implements ApiControllerInterface {
+export class ApiController {
   public __INSTANCE__ = "__ApiController"
   /**
    * Nome
@@ -51,7 +48,7 @@ export class ApiController implements ApiControllerInterface {
   /**
    * Controller padrão para criar novo registro
    */
-  async create(request: FastifyRequest) {
+  async create(request: FastifyRequest, reply: FastifyReply) {
     if (!this.autoApi) {
       throw new Error("Invalid controller. It should be used only for automatic routes.")
     }

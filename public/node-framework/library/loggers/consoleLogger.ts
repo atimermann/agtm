@@ -1,6 +1,6 @@
 import type { LoggerInterface } from "./logger.interface.js"
 
-export default class ConsoleLogger implements LoggerInterface {
+export class ConsoleLogger implements LoggerInterface {
   info(message: string): void {
     console.info(`[INFO]: ${message}`)
   }

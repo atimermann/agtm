@@ -17,7 +17,7 @@ import type { ConfigService } from "#/services/configService.js"
 import type { PrismaService } from "#/services/prismaService.js"
 import type { FastifyInstance } from "fastify"
 import type { PrismaClient } from "@prisma/client"
-import { ApiRouter } from "#/http/apiRouter.js"
+import type { ApiRouter } from "#/http/apiRouter.js"
 
 export class ControllerFactory {
   constructor(

@@ -13,10 +13,10 @@
 import type { AutoSchemaInterface } from "#/http/interfaces/schemas/autoSchema/autoSchema.interface.ts"
 import type { LoggerInterface } from "#/loggers/logger.interface.js"
 
-import { UserClassFileDescription } from "./userApiFilesService.ts"
+import type { UserClassFileDescription } from "./userApiFilesService.ts"
 import { AutoSchema } from "../autoSchema.ts"
 
-export default class AutoSchemaService {
+export class AutoSchemaService {
   constructor(private readonly logger: LoggerInterface) {}
 
   /**

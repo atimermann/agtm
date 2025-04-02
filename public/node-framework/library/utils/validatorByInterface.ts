@@ -37,7 +37,7 @@ const ROOT_RELATIVE_PATH = "../../"
  */
 const TS_CONFIG_PATH = resolve(__dirname, ROOT_RELATIVE_PATH, "tsconfig.json")
 
-export default class ValidatorByInterface {
+export class ValidatorByInterface {
   private ajv
   private readonly schema: tsj.Schema
   private readonly schemaValidator: any

@@ -177,3 +177,4 @@ mostrar essa informação
 - Refactory do loading, agora separa por App
 - TODO: Criado factory para o Controller (criar mais factories)
 - TODO: Criar uma Helper global para validate instance das classes usado em factories por exemplo
+- TOOD: Atualizar documentação: agora temos o autoApi para customizar consultas no controller das queries automaticas

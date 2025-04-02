@@ -125,7 +125,6 @@ export default class ErrorHandlerService {
       }
 
       errorsByField[fieldName].push(err.message)
-      debugger
     }
 
     return errorsByField

@@ -7,7 +7,7 @@
  *
  *
  */
-export default class ApiSchema {
+export class ApiSchema {
   constructor() {
 
 

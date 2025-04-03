@@ -18,8 +18,10 @@ import type { LoggerInterface } from "#/loggers/logger.interface.ts"
 
 import { KeycloakError, KeycloakService } from "#/services/keycloakService.ts"
 import { ApiError } from "#/http/errors/apiError.ts"
-import { ApiRouteOptionInterface } from "#/http/interfaces/apiRouteOption.interface.js"
-import { ConfigService } from "#/services/configService.js"
+import type { ApiRouteOptionInterface } from "#/http/interfaces/apiRouteOption.interface.js"
+import type { ConfigService } from "#/services/configService.js"
+
+import { isDev } from "#/utils/tools.js"
 
 export class KeycloakPlugin {
   private readonly keycloakService: KeycloakService
@@ -56,7 +58,14 @@ export class KeycloakPlugin {
         }
 
         const authHeader = request.headers.authorization
-        const clientAccessToken = this.getToken(authHeader)
+
+        const developmentAccessToken = await this.getDevelopmentAccessToken(authHeader)
+
+        if (developmentAccessToken) {
+          this.logger.warn("WARNING: 'AccessToken' automatically obtained via 'DevMode' of the Keycloak service.")
+        }
+
+        const clientAccessToken = developmentAccessToken ?? this.getToken(authHeader)
 
         const decodedToken = await this.keycloakService.validateUser(clientAccessToken)
         request.auth = decodedToken
@@ -195,6 +204,32 @@ export class KeycloakPlugin {
           `Required permissions: ${allowedRoles.join(", ")}.\n Provided permissions: ${clientRoles.join(", ")}`,
         )
       }
+    }
+  }
+
+  /**
+   * Carrega token automaticamente no ambiente de desenvolvimento UTILIZAR APENAS EM AMBIENTE DESENVOLVIMENTO
+   *
+   * @param authHeader
+   * @private
+   */
+  private async getDevelopmentAccessToken(authHeader?: string) {
+    const autoLogin = this.config.get("httpServer2.plugins.keycloak.devMode.enabled", "boolean")
+    if (!isDev() && autoLogin) {
+      throw new Error("Do not use 'devMode' in a different environment of development.")
+    }
+
+    if (
+      isDev() &&
+      this.config.get("httpServer2.plugins.keycloak.devMode.enabled", "boolean") &&
+      (!authHeader || !authHeader.startsWith("Bearer "))
+    ) {
+      const username: string = this.config.get("httpServer2.plugins.keycloak.devMode.username")
+      const password: string = this.config.get("httpServer2.plugins.keycloak.devMode.password")
+      const clientId: string = this.config.get("httpServer2.plugins.keycloak.devMode.clientId")
+
+      const authInfo = await this.keycloakService.frontAuthentication(username, password, clientId)
+      return authInfo.access_token
     }
   }
 }

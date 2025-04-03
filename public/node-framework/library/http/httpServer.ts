@@ -106,7 +106,7 @@ export class HttpServer {
       await this.swaggerPlugin.setup()
     }
 
-    if (this.config.get("httpServer2.plugins.keycloak", "boolean")) {
+    if (this.config.get("httpServer2.plugins.keycloak.enabled", "boolean")) {
       await this.keyCloakPlugin.setup()
     }
   }

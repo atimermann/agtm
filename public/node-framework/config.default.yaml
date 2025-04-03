@@ -5,7 +5,16 @@
 httpServer2:
   enabled: false
   plugins:
-    keycloak: false
+    keycloak:
+      enabled: false
+      # Dev mode deve ser ativado apenas em ambiente de desenvolvimento
+      # Nenhum token deve ser enviado para que funcione
+      devMode:
+        enabled: false
+        username: ""
+        password: ""
+        clientId: ""
+
 #  TODO: Definir outros atributos
 
 ################################################################################################

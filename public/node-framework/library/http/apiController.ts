@@ -48,7 +48,7 @@ export class ApiController {
   /**
    * Controller padrão para criar novo registro
    */
-  async create(request: FastifyRequest) {
+  async create(request: FastifyRequest, reply: FastifyReply) {
     if (!this.autoApi) {
       throw new Error("Invalid controller. It should be used only for automatic routes.")
     }
@@ -60,7 +60,7 @@ export class ApiController {
    * Controller padrão para retornar todos os registros
    *
    **/
-  async getAll() {
+  async getAll(request: FastifyRequest, reply: FastifyReply) {
     if (!this.autoApi) {
       throw new Error("Invalid controller. It should be used only for automatic routes.")
     }
@@ -139,7 +139,7 @@ export class ApiController {
   /**
    * Gera um CrudSchema usado pelo front end para gerar crud automaticamente
    */
-  async schema() {
+  async schema(request: FastifyRequest, reply: FastifyReply) {
     if (!this.autoApi) {
       throw new Error("Invalid controller. It should be used only for automatic routes.")
     }

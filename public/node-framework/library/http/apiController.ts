@@ -10,13 +10,13 @@
  *
  */
 import type { LoggerInterface } from "../loggers/logger.interface.ts"
-import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
+import type { FastifyInstance, FastifyReply, FastifyRequest, RouteHandler } from "fastify"
 import type { AutoSchema } from "./autoSchema.ts"
 import type { PrismaClient } from "@prisma/client"
 
-import { ConfigService } from "#/services/configService.ts"
-import { PrismaService } from "#/services/prismaService.js"
-import { AutoApi } from "#/http/autoApi.ts"
+import type { ConfigService } from "#/services/configService.ts"
+import type { PrismaService } from "#/services/prismaService.js"
+import type { AutoApi } from "#/http/autoApi.ts"
 
 interface ParamInterface {
   id: number
@@ -48,7 +48,7 @@ export class ApiController {
   /**
    * Controller padrão para criar novo registro
    */
-  async create(request: FastifyRequest, reply: FastifyReply) {
+  async create(request: FastifyRequest) {
     if (!this.autoApi) {
       throw new Error("Invalid controller. It should be used only for automatic routes.")
     }
@@ -145,4 +145,9 @@ export class ApiController {
     }
     return this.autoApi.getCrudSchema()
   }
+
+  /**
+   * Representa qualquer outro método criado pelo usuário
+   */
+  [key: string]: RouteHandler | any
 }

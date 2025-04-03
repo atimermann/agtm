@@ -11,20 +11,20 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Legacy
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-import Application from "#/application.mjs"
-import ApplicationController from "#/application-controller.mjs"
-import Server from "#/server.mjs"
-import createLogger from "#/logger.mjs"
-import Config from "#/config.mjs"
-import JobsController from "#/controller/jobs.mjs"
-import SocketController from "#/controller/socket.mjs"
-import HttpController from "#/controller/http.mjs"
-import CoreController from "#/controller/core.mjs"
-import checkExecution from "#/check-execution.mjs"
-import JobManager from "#/jobs/job-manager.mjs"
-import WorkerManager from "#/jobs/worker-manager.mjs"
-import YupValidation from "#/api/yup-validation.mjs"
-import Model from "#/api/model.mjs"
+import Application from "./library/application.mjs"
+import ApplicationController from "./library/application-controller.mjs"
+import Server from "./library/server.mjs"
+import createLogger from "./library/logger.mjs"
+import Config from "./library/config.mjs"
+import JobsController from "./library/controller/jobs.mjs"
+import SocketController from "./library/controller/socket.mjs"
+import HttpController from "./library/controller/http.mjs"
+import CoreController from "./library/controller/core.mjs"
+import checkExecution from "./library/check-execution.mjs"
+import JobManager from "./library/jobs/job-manager.mjs"
+import WorkerManager from "./library/jobs/worker-manager.mjs"
+import YupValidation from "./library/api/yup-validation.mjs"
+import Model from "./library/api/model.mjs"
 
 const logger = createLogger()
 
@@ -48,13 +48,13 @@ export {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // New format
+// Nota: Não utilizar alias aqui (./library). Problema nos projetos que vão utilizar o módulo
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-export { ApiRouter } from "#/http/apiRouter.ts"
-export { ApiController } from "#/http/apiController.ts"
-export { AutoApiService } from "#/http/services/autoApiService.ts"
-export { ApiError } from "#/http/errors/apiError.ts"
-export { AutoSchema } from "#/http/autoSchema.ts"
-export type { ApiRouterInterface } from "#/http/interfaces/apiRouter.interface.ts"
-export type { AuthRequest } from "#/http/interfaces/authRequest.interface.ts"
-export { LoggerService } from "#/services/loggerService.ts"
-export { PrismaService } from "#/services/prismaService.ts"
+export { ApiRouter } from "./library/http/apiRouter.js"
+export { ApiController } from "./library/http/apiController.ts"
+export { AutoApiService } from "./library/http/services/autoApiService.ts"
+export { ApiError } from "./library/http/errors/apiError.ts"
+export { AutoSchema } from "./library/http/autoSchema.ts"
+export type { AuthRequest } from "./library/http/interfaces/authRequest.interface.ts"
+export { LoggerService } from "./library/services/loggerService.ts"
+export { PrismaService } from "./library/services/prismaService.ts"

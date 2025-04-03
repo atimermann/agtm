@@ -55,8 +55,6 @@ export class SwaggerPlugin {
   async setup() {
     try {
       // ################################################################################################################
-      //       PAREI AQUI
-      //
       //       - precisamos adicionar configuração para habilitar ou não o swagger
       //       - configuração para definir rota padrão
       //       - Existem muitas configurações no swagger, pensar melhor maneira de documentar, não é caso de usar variavel de ambiente é caso de uma configuração fixa

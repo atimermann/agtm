@@ -101,41 +101,6 @@ export default class ApiRouter extends ApiRouter implements ApiRouterInterface {
 }
 ```
 
-## Tratamento de Erros
-
-O plugin gera os seguintes erros:
-
-### 401 - Não Autenticado
-```typescript
-// Quando o token não é fornecido ou é inválido
-{
-  statusCode: 401,
-  error: "Authentication Error",
-  message: "Unauthorized: No token provided"
-}
-```
-
-### 403 - Acesso Negado
-```typescript
-// Quando o usuário não possui as roles necessárias
-{
-  statusCode: 403,
-  error: "Authorization Error",
-  message: "Forbidden: Insufficient permissions",
-  details: "Required permissions: admin. Provided permissions: user"
-}
-```
-
-### 400 - Erro de Requisição
-```typescript
-// Quando o header de autorização está mal formatado
-{
-  statusCode: 400,
-  error: "Authentication Error",
-  message: "Unauthorized: No token provided"
-}
-```
-
 ## Uso no Controller
 
 O plugin Keycloak fornece informações do usuário autenticado através do objeto `request.auth`. Você pode acessar essas informações em seus controllers para realizar validações adicionais.

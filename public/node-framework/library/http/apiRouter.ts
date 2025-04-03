@@ -8,15 +8,14 @@
  *
  */
 import type { LoggerInterface } from "../loggers/logger.interface.ts"
-import type { FastifyInstance, FastifyReply, FastifyRequest, FastifySchema, RouteOptions } from "fastify"
+import type { FastifyInstance, FastifyReply, FastifyRequest, FastifySchema, RouteHandler, RouteOptions } from "fastify"
 import type { UserClassFileDescription } from "./services/userApiFilesService.ts"
-import { ApiRouteOptionInterface } from "#/http/interfaces/apiRouteOption.interface.js"
-import { ApiController } from "#/http/apiController.js"
+import type { ApiRouteOptionInterface } from "#/http/interfaces/apiRouteOption.interface.js"
+import type { ApiController } from "#/http/apiController.js"
 
 /**
  * Ao criar uma nova rota, é possível referenciar o method no controller ou criar um callback fastify diretamente
  */
-type RouteHandler = (request: FastifyRequest, reply: FastifyReply) => Promise<any> | any
 
 /**
  * @param method      Method HTTP (ex.: "GET", "POST").
@@ -44,8 +43,7 @@ export class ApiRouter {
     protected readonly controller: ApiController,
     protected readonly appName: string,
     protected readonly routerDescriptor?: UserClassFileDescription,
-  ) {
-  }
+  ) {}
 
   async setup(): Promise<void> {}
 
@@ -118,10 +116,10 @@ export class ApiRouter {
    */
   public() {
     this.lastRoute.options = {
+      ...this.lastRoute.options,
       config: {
         auth: false,
       },
-      ...this.lastRoute.options,
     }
     return this
   }
@@ -137,11 +135,11 @@ export class ApiRouter {
    */
   auth(roles: string[] = []) {
     this.lastRoute.options = {
+      ...this.lastRoute.options,
       config: {
         auth: true,
         roles,
       },
-      ...this.lastRoute.options,
     }
     return this
   }
@@ -163,7 +161,18 @@ export class ApiRouter {
     options?: Partial<RouteOptions>,
   ): void {
     this.logger.info(`Rota configurada adicionada: ${method} ${url}`)
-    this.routes.push({ method, url, handler, schema, options })
+    this.routes.push({
+      method,
+      url,
+      handler,
+      schema,
+      options: {
+        config: {
+          auth: null,
+        },
+        ...options,
+      },
+    })
   }
 
   /**
@@ -176,7 +185,6 @@ export class ApiRouter {
     this.logger.info(`Configurando Rota ${routeConfig.method}: ${routeConfig.url}`)
     const handler: RouteHandler =
       typeof routeConfig.handler === "string" ? this.getHandlerFromController(routeConfig.handler) : routeConfig.handler
-
     // Ref: https://fastify.dev/docs/latest/Reference/Routes/#routes-options
     this.fastify.route({
       method: routeConfig.method,
@@ -188,7 +196,7 @@ export class ApiRouter {
   }
 
   /**
-   * Retorna um Handler de rota (Código executado quando usuário acessar uma rota especifica do controller
+   * Retorna um Handler de rota (Código executado quando usuário acessar uma rota especifica do controller)
    *
    * @param userHandlerName Nome do method do controller que será o handler desta rota
    */
@@ -201,13 +209,11 @@ export class ApiRouter {
       throw new Error("Severe Error: Controller does not exist for dynamic route (generated pro auto)")
     }
 
-    // @ts-ignore
     if (typeof this.controller[userHandlerName] !== "function") {
       throw new Error(`Method "${userHandlerName}" not implemented in the controller.`)
     }
 
-    return async (request, reply) => {
-      // @ts-ignore
+    return async (request, reply): Promise<RouteHandler> => {
       return await this.controller[userHandlerName](request, reply)
     }
   }

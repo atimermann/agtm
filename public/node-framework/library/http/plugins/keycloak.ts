@@ -76,7 +76,7 @@ export class KeycloakPlugin {
    * 1. Valida se rota está marcada para autenticação
    */
   private validateAuthIsDefined(routeOptions: ApiRouteOptionInterface) {
-    if (routeOptions.config?.auth === undefined) {
+    if (routeOptions.config?.auth === null) {
       throw new ApiError(
         "If Keycloak plugin is enabled it is mandatory to define whether the route is authenticated or not!",
         "Missing Authentication Configuration",

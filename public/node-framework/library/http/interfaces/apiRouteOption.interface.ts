@@ -16,7 +16,14 @@ import type { RouteOptions, FastifyContextConfig } from "fastify"
  * como a propriedade 'auth'. Assim, ela será compatível com a definição original do Fastify.
  */
 export interface CustomContextConfig extends FastifyContextConfig {
-  auth?: boolean
+  /**
+   * Define se a rota deve ser autenticada ou não:
+   *    True:       Protegida - será autenticada
+   *    False:      Publica   - não será autenticado
+   *    undefined:  Publica   - Não será autenticado (Usado em rotas padrões como /ping /docs do swagger)
+   *    null:       Erro      - Força um erro que usuário precisa decidir (obriga decisão do usuário)
+   */
+  auth?: boolean | null
   roles?: string[]
   /**
    * Define se a configuração da rota foi gerada automaticamente

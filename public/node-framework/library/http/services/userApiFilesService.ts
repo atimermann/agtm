@@ -14,7 +14,7 @@ import { resolve, join, parse } from "node:path"
 import { groupBy } from "lodash-es"
 import { ApiController } from "#/http/apiController.js"
 import type { ApiRouter } from "#/http/apiRouter.js"
-import { AutoApi } from "#/http/autoApi.js"
+import { ApiAuto } from "#/http/apiAuto.js"
 
 /**
  * Diretório de configuração de api do usuário
@@ -147,7 +147,7 @@ export class UserApiFilesService {
  * @param descriptor The file descriptor, if available.
  */
 export function validateInstance(
-  instance: ApiController | ApiRouter | AutoApi,
+  instance: ApiController | ApiRouter | ApiAuto,
   expectedType: string,
   descriptor?: UserClassFileDescription,
 ) {

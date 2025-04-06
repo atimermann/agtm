@@ -16,7 +16,7 @@ import type { PrismaClient } from "@prisma/client"
 
 import type { ConfigService } from "#/services/configService.ts"
 import type { PrismaService } from "#/services/prismaService.js"
-import type { AutoApi } from "#/http/autoApi.ts"
+import type { ApiAuto } from "#/http/apiAuto.ts"
 
 interface ParamInterface {
   id: number
@@ -37,7 +37,7 @@ export class ApiController {
     protected readonly fastify: FastifyInstance,
     protected readonly appName: string,
     protected readonly autoSchema?: AutoSchema,
-    protected readonly autoApi?: AutoApi,
+    protected readonly autoApi?: ApiAuto,
   ) {}
 
   /**

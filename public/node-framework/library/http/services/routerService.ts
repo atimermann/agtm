@@ -34,13 +34,13 @@ import type { AutoSchema } from "#/http/autoSchema.js"
 import type { PrismaService } from "#/services/prismaService.js"
 import type { ConfigService } from "#/services/configService.js"
 import { ControllerFactory } from "#/http/factories/controllerFactory.js"
-import { AutoApiFactory } from "#/http/factories/autoApiFactory.js"
+import { AutoFactory } from "#/http/factories/autoFactory.js"
 
 export class RouterService {
   private readonly userApiFilesService: UserApiFilesService
   private readonly autoSchemaService: AutoSchemaService
   private readonly controllerFactory: ControllerFactory
-  private readonly autoApiFactory: AutoApiFactory
+  private readonly autoApiFactory: AutoFactory
 
   constructor(
     private readonly logger: LoggerService,
@@ -56,7 +56,7 @@ export class RouterService {
     this.autoSchemaService = autoSchemaService ?? new AutoSchemaService(logger)
     this.controllerFactory =
       controllerFactory ?? new ControllerFactory(this.logger, this.config, prismaService, fastify)
-    this.autoApiFactory = new AutoApiFactory(this.logger, this.prismaService)
+    this.autoApiFactory = new AutoFactory(this.logger, this.prismaService)
   }
 
   /**

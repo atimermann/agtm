@@ -57,7 +57,7 @@ e particularidades da validação é feita no mapeador de "Autoschema" para o sc
 
 Essa configuração é feia no library/http/mapper/autoToOpenApiSchemaMapper.ts
 
-## Validação no AutoApi / Serviço
+## Validação no ApiAuto / Serviço
 
 Algumas validações especiais como unique não é definida pelo framework, sendo necessário configurar pelo usuário. Em seu
 serviços.

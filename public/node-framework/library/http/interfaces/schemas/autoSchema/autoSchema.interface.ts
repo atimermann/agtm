@@ -29,10 +29,10 @@ export interface AutoSchemaInterface {
 
   /**
    * Nome do gerador de query automático:
-   *  - Será uma instancia de AutoApi
+   *  - Será uma instancia de ApiAuto
    *  - Se não definido:
    *    - Busca no App atual se tá definido para o modulo atual ex: tenant.auto.ts no caso de tenant
-   *    - Carrega o "AutoApi" padrão em library/http/autoApi.ts
+   *    - Carrega o "ApiAuto" padrão em library/http/apiAuto.ts
    *  - Deve ter prefixo auto.ts para identificação automática
    *  - Se auto = 'account' o arquivo deverá se chamar 'account.auto.ts' dentro do App atual
    *  - Para carregar de outro App definir auto = "[Nome do App]:[Nome do modulo].auto.ts

@@ -64,9 +64,9 @@ this.get("/tenant/by-domain/:domain", "getTenantByUrl", schema).auth(["admin", "
 
 No ultimo exemplo a rota só será autorizada se o usuário tiver uma das permissões especificada
 
-### Configurando AutoApi
+### Configurando ApiAuto
 
-Para habilita autorização automaticamente no schema do AutoApi temos 3 cenários:
+Para habilita autorização automaticamente no schema do ApiAuto temos 3 cenários:
 
 **Habilita autorização para todas as rotas sem exigir permissões:**
 

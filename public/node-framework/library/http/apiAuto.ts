@@ -12,7 +12,7 @@ import type { FieldSchemaInterface } from "#/http/interfaces/schemas/autoSchema/
 import type { PrismaService } from "#/services/prismaService.js"
 import type { LoggerService } from "#/services/loggerService.js"
 
-export class AutoApi {
+export class ApiAuto {
   public __INSTANCE__ = "__ApiAuto"
 
   constructor(

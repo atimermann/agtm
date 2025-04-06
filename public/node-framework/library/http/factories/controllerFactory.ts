@@ -11,7 +11,7 @@
 import { ApiController } from "../apiController.ts"
 import type { UserClassFileDescription } from "#/http/services/userApiFilesService.ts"
 import type { AutoSchema } from "../autoSchema.ts"
-import type { AutoApi } from "#/http/autoApi.js"
+import type { ApiAuto } from "#/http/apiAuto.js"
 import type { LoggerService } from "#/services/loggerService.ts"
 import type { ConfigService } from "#/services/configService.js"
 import type { PrismaService } from "#/services/prismaService.js"
@@ -35,7 +35,7 @@ export class ControllerFactory {
    * @param appName         - Nome da aplicação
    * @param fileDescriptors - Lista de descritores de arquivos para a rota
    * @param autoSchema      - (Opcional) AutoSchema para configuração automática
-   * @param autoApi         - (Opcional) AutoApi customizado para o controller
+   * @param autoApi         - (Opcional) ApiAuto customizado para o controller
    *
    * @returns Uma instância configurada do controller.
    */
@@ -43,7 +43,7 @@ export class ControllerFactory {
     appName: string,
     fileDescriptors: UserClassFileDescription[],
     autoSchema?: AutoSchema,
-    autoApi?: AutoApi,
+    autoApi?: ApiAuto,
   ) {
     const controllerDescriptor = fileDescriptors.find((file) => file.type === "controller")
 

@@ -52,7 +52,7 @@ export {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export { ApiRouter } from "./library/http/apiRouter.js"
 export { ApiController } from "./library/http/apiController.ts"
-export { AutoApi as ApiAuto } from "./library/http/autoApi.js"
+export { ApiAuto } from "./library/http/apiAuto.js"
 export { ApiError } from "./library/http/errors/apiError.ts"
 export { AutoSchema } from "./library/http/autoSchema.ts"
 export type { AuthRequest } from "./library/http/interfaces/authRequest.interface.ts"

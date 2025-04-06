@@ -68,7 +68,7 @@ rotas mais facilmente
 Precisamos fazer alguns ajustes na validação, isso é feito no **autoToOpenApiSchemaMapper.ts** descrito acima
 Por exemplo, configurar a validação de campo string onde "" é recusado mesmo q o fastify só recuse null ou undefined.
 
-- Tem uma validação no AutoApi / Serviços
+- Tem uma validação no ApiAuto / Serviços
 - Tem a validação padrão do Fastify
 
 

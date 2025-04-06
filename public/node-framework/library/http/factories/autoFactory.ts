@@ -4,11 +4,11 @@
  * @author André Timermann <andre@timermann.com.br>
  *
  * @file
- *  Factory responsável por criar instâncias de AutoApi
+ *  Factory responsável por criar instâncias de ApiAuto
  *
  */
 import { resolve } from "node:path"
-import { AutoApi } from "#/http/autoApi.ts"
+import { ApiAuto } from "#/http/apiAuto.ts"
 import { AutoSchemaService } from "#/http/services/autoSchemaService.ts"
 import { PrismaService } from "#/services/prismaService.ts"
 import { ConfigService } from "#/services/configService.ts"
@@ -21,7 +21,7 @@ import {
 } from "#/http/services/userApiFilesService.ts"
 import { LoggerService } from "#/services/loggerService.ts"
 
-export class AutoApiFactory {
+export class AutoFactory {
   constructor(
     private readonly logger: LoggerInterface,
     private readonly prismaService: PrismaService,
@@ -30,17 +30,17 @@ export class AutoApiFactory {
   /**
    * Instância de autoApi só faz sentido se autoSchema tiver definido
    *
-   * Cria e retorna uma instância de AutoApi baseado no "Auto Schema".
-   * Se o schema tiver definido uma propriedade "auto", tenta carregar um AutoApi customizado.
-   * Se não definido, mas descriptorName estiver definido, tenta carregar um custom AutoApi usando o descriptorName.
-   * Se não encontrar nenhum customizado, retorna o AutoApi padrão.
+   * Cria e retorna uma instância de ApiAuto baseado no "Auto Schema".
+   * Se o schema tiver definido uma propriedade "auto", tenta carregar um ApiAuto customizado.
+   * Se não definido, mas descriptorName estiver definido, tenta carregar um custom ApiAuto usando o descriptorName.
+   * Se não encontrar nenhum customizado, retorna o ApiAuto padrão.
    *
    * @param appName                 - Nome da aplicação
    * @param descriptorName          - Nome do módulo autoApi
-   * @param groupedFilesDescriptors - Arquivos agrupados contendo os módulos customizados de AutoApi.
-   * @param autoSchema              - Schema que descreve o AutoApi gerado
+   * @param groupedFilesDescriptors - Arquivos agrupados contendo os módulos customizados de ApiAuto.
+   * @param autoSchema              - Schema que descreve o ApiAuto gerado
    *
-   * @returns Uma instância de AutoApi.
+   * @returns Uma instância de ApiAuto.
    */
   async create(
     appName: string,
@@ -52,7 +52,7 @@ export class AutoApiFactory {
       return
     }
 
-    let userApiAuto: AutoApi | false = false
+    let userApiAuto: ApiAuto | false = false
 
     if (autoSchema.auto) {
       userApiAuto = await this.createUserAutoApi(appName, autoSchema.auto, autoSchema, groupedFilesDescriptors)
@@ -66,16 +66,16 @@ export class AutoApiFactory {
       return userApiAuto
     }
 
-    return new AutoApi(this.logger, autoSchema, this.prismaService)
+    return new ApiAuto(this.logger, autoSchema, this.prismaService)
   }
 
   /**
-   * Gera uma nova instância de AutoApi standalone, que pode ser usada fora do fluxo do node-framework.
+   * Gera uma nova instância de ApiAuto standalone, que pode ser usada fora do fluxo do node-framework.
    *
    * @param schemaFilePath - Caminho do schema Auto (relativo ou absoluto)
-   * @returns Uma instância de AutoApi.
+   * @returns Uma instância de ApiAuto.
    */
-  static async createFromSchema(schemaFilePath: string): Promise<AutoApi> {
+  static async createFromSchema(schemaFilePath: string): Promise<ApiAuto> {
     const logger = new LoggerService()
     const config = new ConfigService()
     const autoSchemaService = new AutoSchemaService(logger)
@@ -93,20 +93,20 @@ export class AutoApiFactory {
       throw new Error("Prisma is not enabled in the project, should be enabled in Config prisma.enabled = True")
     }
 
-    return new AutoApi(logger, autoSchema, prismaService)
+    return new ApiAuto(logger, autoSchema, prismaService)
   }
 
   /**
-   * Cria uma instância personalizada de AutoApi a partir do nome informado.
+   * Cria uma instância personalizada de ApiAuto a partir do nome informado.
    * Busca o arquivo dentro de groupedFilesDescriptors
    *
    * @param appName                 - Nome da aplicação
    * @param autoName                - Nome do autoApi, por exemplo para "account.auto.ts" seria "account". é o mesmo
    *                                  valor de schema.auto se definido
-   * @param autoSchema              - Schema usado para gerar o AutoApi
+   * @param autoSchema              - Schema usado para gerar o ApiAuto
    * @param groupedFilesDescriptors - Classes do usuário usado para gerar api, onde será procurado o autoApi agrupado
    *
-   * @returns Uma instância de AutoApi customizado, ou false se não encontrado.
+   * @returns Uma instância de ApiAuto customizado, ou false se não encontrado.
    */
   private async createUserAutoApi(
     appName: string,
@@ -114,7 +114,7 @@ export class AutoApiFactory {
     autoSchema: AutoSchema,
     groupedFilesDescriptors: UserClassFilesGrouped,
   ) {
-    let UserAutoApi: typeof AutoApi | undefined
+    let UserAutoApi: typeof ApiAuto | undefined
     let autoApiFile: UserClassFileDescription | undefined
 
     for (const [, files] of Object.entries(groupedFilesDescriptors)) {

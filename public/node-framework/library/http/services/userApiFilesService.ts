@@ -12,6 +12,9 @@ import type { LoggerService } from "#/services/loggerService.js"
 import { promises as fs } from "node:fs"
 import { resolve, join, parse } from "node:path"
 import { groupBy } from "lodash-es"
+import { ApiController } from "#/http/apiController.js"
+import type { ApiRouter } from "#/http/apiRouter.js"
+import { AutoApi } from "#/http/autoApi.js"
 
 /**
  * Diretório de configuração de api do usuário
@@ -134,4 +137,26 @@ export class UserApiFilesService {
 
     fileList.push({ appName, name, id, type, path })
   }
+}
+
+/**
+ * Validates if an instance matches the expected type crate
+ *
+ * @param instance The object instance to validate.
+ * @param expectedType The expected type name (e.g., "__ApiController" or "__ApiRouter" or "__ApiAuto").
+ * @param descriptor The file descriptor, if available.
+ */
+export function validateInstance(
+  instance: ApiController | ApiRouter | AutoApi,
+  expectedType: string,
+  descriptor?: UserClassFileDescription,
+) {
+  if (instance.__INSTANCE__ === expectedType) return
+
+  const typeName = expectedType.replace("__", "") // Remove underscores for better readability
+  const message = descriptor
+    ? `${typeName} "${descriptor.id}" is not a valid "${typeName}" instance!`
+    : `${typeName} is not a valid "${typeName}" instance!`
+
+  throw new TypeError(message)
 }

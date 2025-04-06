@@ -9,10 +9,10 @@
  * Arquivo Principal
  *
  */
-import { FieldSchemaInterface } from "./fieldsSchema.interface.ts"
-import { UiSchemaInterface } from "./uiSchema.interface.ts"
-import { DocsSchemaInterface } from "./docsSchema.interface.ts"
-import { AuthSchemaInterface } from "#/http/interfaces/schemas/autoSchema/authSchema.interface.js"
+import type { FieldSchemaInterface } from "./fieldsSchema.interface.ts"
+import type { UiSchemaInterface } from "./uiSchema.interface.ts"
+import type { DocsSchemaInterface } from "./docsSchema.interface.ts"
+import type { AuthSchemaInterface } from "#/http/interfaces/schemas/autoSchema/authSchema.interface.js"
 
 export interface AutoSchemaInterface {
 
@@ -30,9 +30,13 @@ export interface AutoSchemaInterface {
   /**
    * Nome do gerador de query automático:
    *  - Será uma instancia de AutoApi
-   *  - Se não definido irá utilizar o AutoApi padrão definido em library/http/autoApi.ts
-   *  - No projeto do usuário deverá ter o prefixo auto.ts
-   *  - Se auto = 'account' o arquivo deverá se chamar 'account.auto.ts'
+   *  - Se não definido:
+   *    - Busca no App atual se tá definido para o modulo atual ex: tenant.auto.ts no caso de tenant
+   *    - Carrega o "AutoApi" padrão em library/http/autoApi.ts
+   *  - Deve ter prefixo auto.ts para identificação automática
+   *  - Se auto = 'account' o arquivo deverá se chamar 'account.auto.ts' dentro do App atual
+   *  - Para carregar de outro App definir auto = "[Nome do App]:[Nome do modulo].auto.ts
+   *    - Por exemplo: Account:account
    */
   auto?: string
 

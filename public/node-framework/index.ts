@@ -52,9 +52,11 @@ export {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export { ApiRouter } from "./library/http/apiRouter.js"
 export { ApiController } from "./library/http/apiController.ts"
-export { AutoApiService } from "./library/http/services/autoApiService.ts"
+export { AutoApi as ApiAuto } from "./library/http/autoApi.js"
 export { ApiError } from "./library/http/errors/apiError.ts"
 export { AutoSchema } from "./library/http/autoSchema.ts"
 export type { AuthRequest } from "./library/http/interfaces/authRequest.interface.ts"
 export { LoggerService } from "./library/services/loggerService.ts"
 export { PrismaService } from "./library/services/prismaService.ts"
+//TODO:  export tools, faler import { isDev } from "@agtm/node-framework/tools" (provavelmente é config no package.json)
+//TODO: Documentar isso

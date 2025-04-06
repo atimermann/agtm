@@ -28,7 +28,7 @@ subir novas api em tempo reduzido. E além disso tem suporte a geração de CRUD
 
 - Este módulo utiliza o Fastify para criação do servidor HTTP, é importante entender seu funcionamento para aproveitar
   todas as características que este modulo tem a oferecer
-  Veja o básico sobre o Fastfy aqui: REF: [Fastify](http2/fastify.md)
+  Veja o básico sobre o Fastify aqui: REF: [Fastify](http2/fastify.md)
 
 ## Componentes Chaves
 
@@ -64,7 +64,7 @@ REF: [Controller](./http2/controller.md)
 - Cada Controller está vinculado a uma ou mais rota.
 - De forma simplificada controller são conjunto de métodos que são chamado para determinada rota
 
-### 04. API Schema (fastfy)
+### 04. API Schema (fastify)
 
 REF: [apiSchema](apiSchema.md)
 
@@ -83,7 +83,6 @@ REF: [autoSchema](autoSchema.md)
 
 REF: [swagger](http2/plugins/swagger.md)
 
-- Não implementado ainda
 - Geração automática de documentação com swagger
 
 ### 07. Validação em tempo de execução com interfaces
@@ -91,6 +90,10 @@ REF: [swagger](http2/plugins/swagger.md)
 REF: [interfaceValidator](interfaceValidator.md)
 
 - Valida estruturas complexas como schemas em tempo de execução com interfaces
+
+### 08. Validação de dados
+
+REF: [Validação](./http2/validation.md)
 
 ## Arquitetura
 

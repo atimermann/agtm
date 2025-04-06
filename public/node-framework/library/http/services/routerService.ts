@@ -19,27 +19,28 @@
  *   TODO: Adicionar suporte a uuid com string para melhor segurança
  *
  */
-import { UserApiFilesService } from "./userApiFilesService.ts"
+import {UserApiFilesService, validateInstance} from "./userApiFilesService.ts"
 import { AutoSchemaService } from "./autoSchemaService.ts"
 
 import { ApiRouter } from "../apiRouter.ts"
 import type { ApiController } from "../apiController.ts"
 import { join } from "node:path"
 
-import type { UserClassFileDescription , UserClassFilesGrouped } from "./userApiFilesService.ts"
+import type { UserClassFileDescription, UserClassFilesGrouped } from "./userApiFilesService.ts"
 import type { FastifyInstance } from "fastify"
 import type { LoggerService } from "#/services/loggerService.ts"
 import type { SwaggerPlugin } from "#/http/plugins/swagger.js"
 import type { AutoSchema } from "#/http/autoSchema.js"
 import type { PrismaService } from "#/services/prismaService.js"
 import type { ConfigService } from "#/services/configService.js"
-import { AutoApiService } from "#/http/services/autoApiService.js"
 import { ControllerFactory } from "#/http/factories/controllerFactory.js"
+import { AutoApiFactory } from "#/http/factories/autoApiFactory.js"
 
 export class RouterService {
   private readonly userApiFilesService: UserApiFilesService
   private readonly autoSchemaService: AutoSchemaService
-  private controllerFactory: ControllerFactory
+  private readonly controllerFactory: ControllerFactory
+  private readonly autoApiFactory: AutoApiFactory
 
   constructor(
     private readonly logger: LoggerService,
@@ -55,6 +56,7 @@ export class RouterService {
     this.autoSchemaService = autoSchemaService ?? new AutoSchemaService(logger)
     this.controllerFactory =
       controllerFactory ?? new ControllerFactory(this.logger, this.config, prismaService, fastify)
+    this.autoApiFactory = new AutoApiFactory(this.logger, this.prismaService)
   }
 
   /**
@@ -99,7 +101,7 @@ export class RouterService {
     this.logger.debug(`Criando rotas para "${descriptorName}"...`)
 
     const autoSchema = await this.createAutoSchema(fileDescriptors, descriptorName)
-    const autoApi = await this.createAutoApi(descriptorName, groupedFilesDescriptors, autoSchema)
+    const autoApi = await this.autoApiFactory.create(appName, descriptorName, groupedFilesDescriptors, autoSchema)
     const controller = await this.controllerFactory.create(appName, fileDescriptors, autoSchema, autoApi)
     const router = await this.createRouter(appName, fileDescriptors, controller)
 
@@ -129,28 +131,6 @@ export class RouterService {
   }
 
   /**
-   * Validates if an instance matches the expected type.
-   *
-   * @param instance The object instance to validate.
-   * @param expectedType The expected type name (e.g., "__ApiController" or "__ApiRouter").
-   * @param descriptor The file descriptor, if available.
-   */
-  private validateInstance(
-    instance: ApiController | ApiRouter,
-    expectedType: string,
-    descriptor?: UserClassFileDescription,
-  ) {
-    if (instance.__INSTANCE__ === expectedType) return
-
-    const typeName = expectedType.replace("__", "") // Remove underscores for better readability
-    const message = descriptor
-      ? `${typeName} "${descriptor.id}" is not a valid "${typeName}" instance!`
-      : `${typeName} is not a valid "${typeName}" instance!`
-
-    throw new TypeError(message)
-  }
-
-  /**
    * Configures API router from user descriptor or creates default
    */
   private async createRouter(appName: string, fileDescriptors: UserClassFileDescription[], controller: ApiController) {
@@ -159,7 +139,7 @@ export class RouterService {
 
     const router = new RouterClass(this.logger, this.fastify, controller, appName, routerDescriptor)
 
-    this.validateInstance(router, "__ApiRouter", routerDescriptor)
+    validateInstance(router, "__ApiRouter", routerDescriptor)
     return router
   }
 
@@ -185,15 +165,5 @@ export class RouterService {
       autoSchema.getDeleteOptions(),
     )
     router.get(`/${autoSchema.routeName}/schema`, "schema", autoSchema.getCrudSchema(), autoSchema.getCrudOptions())
-  }
-
-  /**
-   * Cria Instancia "autoApi" para ser usada pelo controller
-   */
-  private async createAutoApi(descriptorName: string, userApiFiles: UserClassFilesGrouped, autoSchema?: AutoSchema) {
-    if (autoSchema) {
-      const autoApiService = new AutoApiService(this.logger, autoSchema, this.prismaService, descriptorName)
-      return await autoApiService.create(userApiFiles)
-    }
   }
 }

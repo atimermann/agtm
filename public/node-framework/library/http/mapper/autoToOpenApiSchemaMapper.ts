@@ -12,14 +12,17 @@
  */
 import type { AutoSchemaInterface } from "#/http/interfaces/schemas/autoSchema/autoSchema.interface.ts"
 import type { FastifySchema } from "fastify"
+import type { JSONSchemaType } from "ajv"
+import { ApiError } from "#/http/errors/apiError.ts"
 
 const CREATE = 1
 const UPDATE = 2
 
+// TODO: Verificar se existe uma interface para JsonSchema pronto ou mover para interfaces
 export interface JsonSchema {
   type: "object"
   required: string[]
-  properties: Record<string, { type: string; default: unknown }>
+  properties: Record<string, { type: string; default: unknown, minLength?: number }>
   additionalProperties: boolean
 }
 
@@ -112,23 +115,35 @@ export class AutoToOpenApiSchemaMapper {
   /**
    * Converte o schema de fields para o formato JSON Schema do Fastify
    */
-  private mapBodyForCreateOrUpdate(route: number): object {
-
+  private mapBodyForCreateOrUpdate(routeMethod: number): object {
     const jsonSchema: JsonSchema = {
       type: "object",
       required: [],
       properties: {},
       // Configuração abaixo não funciona pois está sendo usado o AJV com atributo removeAdditional
+      // Agora funciona, habilitado no httpServer.ts
       // https://fastify.dev/docs/latest/Reference/Validation-and-Serialization/#validator-compiler
-      additionalProperties: !(this.autoSchema.strict ?? true)
+      additionalProperties: !(this.autoSchema.strict ?? true),
     }
 
     for (const field of this.autoSchema.fields) {
-      if (route === CREATE && field.create === false) continue
-      if (route === UPDATE && field.update === false) continue
+      // Valida dados enviado no modo create
+      if (routeMethod === CREATE && field.create === false) {
+        if (this.autoSchema.strict) {
+          throw new ApiError(`Attribute "${field.name}" not allowed in create.`)
+        }
+        continue
+      }
 
- // TODO: estruturar melhor a classe
+      // Valida dados enviado no modo update
+      if (routeMethod === UPDATE && field.update === false) {
+        if (this.autoSchema.strict) {
+          throw new ApiError(`Attribute "${field.name}" not allowed in update.`)
+        }
+        continue
+      }
 
+      // TODO: estruturar melhor a classe
       jsonSchema.properties[field.name] = {
         type: this.mapFieldType(field.type),
         default: field.default,
@@ -136,6 +151,11 @@ export class AutoToOpenApiSchemaMapper {
 
       if (field.required) {
         jsonSchema.required.push(field.name)
+
+        // Se campo string, validação especial, deve pelo menos um caracter
+        if (field.type === "string") {
+          jsonSchema.properties[field.name].minLength = 1
+        }
       }
     }
 

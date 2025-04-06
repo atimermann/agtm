@@ -21,7 +21,7 @@ TODO:
 
 -[OK] findUsereClassFilesInDirectory separar em um serviço próprio
 
-09/02/2025
+## 09/02/2025
 
 - Problema configuração TypeScript
 - Configurar corretamente o .prettier no node-framework, para quebrar linhas apenas quando passar de 120 caracteres
@@ -39,7 +39,7 @@ TODO:
 mostrar essa informação
 == Problema do diretório do PV já existir em /tmp/postgres-pv
 
-28/02/2025
+## 28/02/2025
 
 - Criado documentação Básica
 - Finalizado versão inicial
@@ -54,7 +54,7 @@ mostrar essa informação
   - Padronização de logs (configurar o fastfy)
   - Padronização no .env
 
-03/03/2025
+## 03/03/2025
 
 - Aprendi a usar no Typescript: Omit, Partial, Record, documentar: Estudar/Documentar Typescript Partial, Record,
   Omit, ! (exclamação para dizer q vai ser definido depois)
@@ -74,7 +74,7 @@ mostrar essa informação
   - formatar logs
   - Configurar autenticação com keycloak
 
-04/03/2025
+## 04/03/2025
 
 - Implementado um tratamento de erro customizado seguindo padrão **O RFC 7807** e customizado para retornar erros em um
   array para fácil tratamento no front-end
@@ -84,7 +84,7 @@ mostrar essa informação
 - Implementar tradução de erro para PT_BR
 - Próximo passo: Implementar autenticação com Keycloak e sessão
 
-12/03/2025
+## 12/03/2025
 
 - https://medium.com/with-orus/the-5-commandments-of-clean-error-handling-in-typescript-93a9cbdf1af5
 - Config transformado em configService
@@ -94,19 +94,19 @@ mostrar essa informação
 - atualização documentação
 - Definido que roles e grou roles vão ser configurados no keycloak
 
-14/03/2025
+## 14/03/2025
 
 - Criei um suporte a usar AutoApiService em qualquer lugar como script
   - Agora faltou criar o metodo que vai decodificar a validar o token:
     eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICIzamh0STFpV016cUxZNmxlQVh1TFNSSmRPQ2VrNHpkMFRTRnFBbHBhZEM0In0.e...
 
-15/03/2025
+## 15/03/2025
 
 - Desenvolvi uma padronização de erro, falta por no front uma exibição da descrição do erro padronizado (por enquanto só
   mostra 500 ignora outros atributos)
 - Existe diversos tipos derro: erro de requisição ou erro de aplicação, erro para usuário ou erro inesperado
 
-16/03/2025
+## 16/03/2025
 
 - Atualmente configuração do keycloak está fixo, ou seja , só temos a possibilidade de ter um servidor de autenticação.
   Nó script keycloak eu já deixei genérico podemos selecionar qual instancia.
@@ -115,10 +115,9 @@ mostrar essa informação
     cada rota.
 
 - Proximos passos:
-    TODO 01: Prisma deve ser carregado via plugin também, ver se existe plugin ou criar (deve estar no node-framework)
-    https://github.com/joggrdocs/fastify-prisma (parece ruim)
-    - Vamos criar um plugin do prismaeu
-
+  TODO 01: Prisma deve ser carregado via plugin também, ver se existe plugin ou criar (deve estar no node-framework)
+  https://github.com/joggrdocs/fastify-prisma (parece ruim)
+  - Vamos criar um plugin do prismaeu
 
     [OK] TODO 01: Prisma deve ser carregado via plugin também, ver se existe plugin ou criar (deve estar no node-framework)  
     Problema: Criar um plugin que disponibiliza USUARIO e ACCOUNT Interno (atualmente só trás do Keycloak)
@@ -134,10 +133,10 @@ mostrar essa informação
 
     TODO 07: Registar quem fez essa criação (Analisar melhor forma)
 
-18/03/2025
+## 18/03/2025
 
 - Vamos user apenas uma instancia do PRISMA, se um dia precisar de mais instancia será necessário criar mais schema:
-  - output          = "./generated/client1" no schema definindo um diretório (gera apartir do diretório prisma)
+  - output = "./generated/client1" no schema definindo um diretório (gera apartir do diretório prisma)
   - Definir no config yaml o caminho para esse cliente
   - Criar um client para cada caminho
   - Configurar o ENV para suportar mais de um:
@@ -152,29 +151,47 @@ mostrar essa informação
       NF_PRISMA_DEFAULT_OPTIONS="schema=public"
 - Adicionar essa informação na documenação do prisma
 
-
-19/03/2025
+## 19/03/2025
 
 - Implementei o serviço prisma e acesso ao fastify no controller
 
-
-22/03/2025
+## 22/03/2025
 
 - Alterado para que o campos adicionais não sejam ignorados
 
-28/03/2025
+## 28/03/2025
 
-- Agora temos default separado em dois contexto no schema: initial e default (se tem default, qualquer dado vazio é preenchido)
+- Agora temos default separado em dois contexto no schema: initial e default (se tem default, qualquer dado vazio é
+  preenchido)
 
-
-30/03/2025
+## 30/03/2025
 
 - Se eu não quiser usar o prisma? o controller (que instancia automaticamente) vai funcionar?
 
-
-31/03/2025
+## 31/03/2025
 
 - Refactory do loading, agora separa por App
 - TODO: Criado factory para o Controller (criar mais factories)
 - TODO: Criar uma Helper global para validate instance das classes usado em factories por exemplo
 - TOOD: Atualizar documentação: agora temos o autoApi para customizar consultas no controller das queries automaticas
+
+## 04/04/2025
+
+- DIlema: Validação só é aplicada quando usada com api rest, script e outros códigos ficam fora da validação
+- Onde definir validação unique
+- Como customizar mensagem de erro na validação do fastify
+- Como localizar mensagens de erro para portugues (usar o ajv-i18n) validação do fastify é delegado ao AJV
+
+ficar atento ao código abaixo no httpserver.ts para customizar validação:
+this.fastify.setValidatorCompiler(({ schema, method, url, httpPart }) => {
+return ajv.compile(schema)
+})
+// -------
+
+## 05/04/2025
+
+- **TODO:** vamos alterar a configuração do atributo auto no autoSchema para permitir selecionar o Apps
+  - Por exemplo, por exemplo se vc tá definindo o modulo tenant, ele tenta carregar automaticamente tenant.auto.ts
+  - Se vc definir pode escolher outro modulo exemplo: **auto: "account"** q vai carregar o account.auto.ts
+  - Mas se a automação que deseja está em outro app, poderia fazer **auto: "Account:account""** para carregar o
+    account.auto.ts do app Account

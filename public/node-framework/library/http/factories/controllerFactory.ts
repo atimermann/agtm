@@ -17,7 +17,7 @@ import type { ConfigService } from "#/services/configService.js"
 import type { PrismaService } from "#/services/prismaService.js"
 import type { FastifyInstance } from "fastify"
 import type { PrismaClient } from "@prisma/client"
-import type { ApiRouter } from "#/http/apiRouter.js"
+import { validateInstance } from "#/http/services/userApiFilesService.ts"
 
 export class ControllerFactory {
   constructor(
@@ -72,30 +72,8 @@ export class ControllerFactory {
       autoApi,
     )
 
-    this.validateInstance(controller, "__ApiController", controllerDescriptor)
+    validateInstance(controller, "__ApiController", controllerDescriptor)
     await controller.setup()
     return controller
-  }
-
-  /**
-   * Validates if an instance matches the expected type.
-   *
-   * @param instance The object instance to validate.
-   * @param expectedType The expected type name (e.g., "__ApiController" or "__ApiRouter").
-   * @param descriptor The file descriptor, if available.
-   */
-  private validateInstance(
-    instance: ApiController | ApiRouter,
-    expectedType: string,
-    descriptor?: UserClassFileDescription,
-  ) {
-    if (instance.__INSTANCE__ === expectedType) return
-
-    const typeName = expectedType.replace("__", "") // Remove underscores for better readability
-    const message = descriptor
-      ? `${typeName} "${descriptor.id}" is not a valid "${typeName}" instance!`
-      : `${typeName} is not a valid "${typeName}" instance!`
-
-    throw new TypeError(message)
   }
 }

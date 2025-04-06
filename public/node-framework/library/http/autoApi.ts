@@ -7,12 +7,14 @@
  *  Auto Api para ser customizado
  *
  */
-import { AutoSchema } from "#/http/autoSchema.js"
+import type { AutoSchema } from "#/http/autoSchema.js"
 import type { FieldSchemaInterface } from "#/http/interfaces/schemas/autoSchema/fieldsSchema.interface.js"
-import { PrismaService } from "#/services/prismaService.js"
-import { LoggerService } from "#/services/loggerService.js"
+import type { PrismaService } from "#/services/prismaService.js"
+import type { LoggerService } from "#/services/loggerService.js"
 
 export class AutoApi {
+  public __INSTANCE__ = "__ApiAuto"
+
   constructor(
     protected readonly logger: LoggerService,
     protected readonly autoSchema: AutoSchema,

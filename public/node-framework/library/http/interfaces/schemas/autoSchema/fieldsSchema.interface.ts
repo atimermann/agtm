@@ -7,7 +7,7 @@
  * Descreve o schema de geração de API automática
  *
  */
-import { UiFieldSchemaInterface } from "./uiFieldSchema.interface.ts"
+import type { UiFieldSchemaInterface } from "./uiFieldSchema.interface.ts"
 
 export interface FieldSchemaInterface {
   /**

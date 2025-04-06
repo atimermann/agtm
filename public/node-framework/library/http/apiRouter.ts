@@ -10,7 +10,7 @@
 import type { LoggerInterface } from "../loggers/logger.interface.ts"
 import type { FastifyInstance, FastifyReply, FastifyRequest, FastifySchema, RouteHandler, RouteOptions } from "fastify"
 import type { UserClassFileDescription } from "./services/userApiFilesService.ts"
-import type { ApiRouteOptionInterface } from "#/http/interfaces/apiRouteOption.interface.js"
+import type { IApiRouteOption } from "#/http/interfaces/IApiRouteOption.js"
 import type { ApiController } from "#/http/apiController.js"
 
 /**
@@ -29,7 +29,7 @@ interface RouteConfig {
   url: string
   handler: string | RouteHandler
   schema?: FastifySchema
-  options?: Partial<ApiRouteOptionInterface>
+  options?: Partial<IApiRouteOption>
 }
 
 export class ApiRouter {

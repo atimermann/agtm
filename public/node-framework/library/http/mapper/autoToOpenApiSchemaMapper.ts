@@ -12,19 +12,11 @@
  */
 import type { AutoSchemaInterface } from "#/http/interfaces/schemas/autoSchema/autoSchema.interface.ts"
 import type { FastifySchema } from "fastify"
-import type { JSONSchemaType } from "ajv"
 import { ApiError } from "#/http/errors/apiError.ts"
+import type { IFastifySchemaBody } from "#/http/interfaces/IfastifySchemaBody.js"
 
 const CREATE = 1
 const UPDATE = 2
-
-// TODO: Verificar se existe uma interface para JsonSchema pronto ou mover para interfaces
-export interface JsonSchema {
-  type: "object"
-  required: string[]
-  properties: Record<string, { type: string; default: unknown, minLength?: number }>
-  additionalProperties: boolean
-}
 
 export class AutoToOpenApiSchemaMapper {
   constructor(private autoSchema: AutoSchemaInterface) {}
@@ -116,7 +108,7 @@ export class AutoToOpenApiSchemaMapper {
    * Converte o schema de fields para o formato JSON Schema do Fastify
    */
   private mapBodyForCreateOrUpdate(routeMethod: number): object {
-    const jsonSchema: JsonSchema = {
+    const jsonSchema: IFastifySchemaBody = {
       type: "object",
       required: [],
       properties: {},

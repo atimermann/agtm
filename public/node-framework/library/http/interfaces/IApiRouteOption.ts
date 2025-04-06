@@ -15,7 +15,7 @@ import type { RouteOptions, FastifyContextConfig } from "fastify"
  * Interface que estende o FastifyContextConfig para incluir configurações personalizadas,
  * como a propriedade 'auth'. Assim, ela será compatível com a definição original do Fastify.
  */
-export interface CustomContextConfig extends FastifyContextConfig {
+export interface ICustomContextConfig extends FastifyContextConfig {
   /**
    * Define se a rota deve ser autenticada ou não:
    *    True:       Protegida - será autenticada
@@ -32,8 +32,8 @@ export interface CustomContextConfig extends FastifyContextConfig {
 }
 
 /**
- * Interface que estende as RouteOptions do Fastify, utilizando a CustomContextConfig para a propriedade 'config'.
+ * Interface que estende as RouteOptions do Fastify, utilizando a ICustomContextConfig para a propriedade 'config'.
  */
-export interface ApiRouteOptionInterface extends RouteOptions {
-  config?: CustomContextConfig
+export interface IApiRouteOption extends RouteOptions {
+  config?: ICustomContextConfig
 }

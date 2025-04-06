@@ -17,7 +17,7 @@ import cors from "@fastify/cors"
 import { SwaggerPlugin } from "./plugins/swagger.ts"
 import ErrorHandlerService from "./services/errorHandlerService.ts"
 import { KeycloakPlugin } from "#/http/plugins/keycloak.ts"
-import type { RFC7807ErrorInterface } from "#/http/interfaces/RFC7807ErrorInterface.js"
+import type { RFC7807Error } from "#/http/interfaces/RFC7807Error.js"
 import type { ConfigService } from "#/services/configService.js"
 import type { PrismaService } from "#/services/prismaService.js"
 import Ajv from "ajv"
@@ -168,7 +168,7 @@ export class HttpServer {
    */
   private async configureErrorHandler() {
     this.fastify.setErrorHandler(
-      (error: Error | RFC7807ErrorInterface, request: FastifyRequest, reply: FastifyReply) => {
+      (error: Error | RFC7807Error, request: FastifyRequest, reply: FastifyReply) => {
         this.errorHandlerService.handleError(error, request, reply)
       },
     )

@@ -9,13 +9,13 @@
  */
 import type { FastifyInstance } from "fastify"
 import type { LoggerInterface } from "#/loggers/logger.interface.js"
-import type { SwaggerConfig } from "#/http/interfaces/swaggerConfig.interface.js"
+import type { SwaggerConfig } from "#/http/interfaces/SwaggerConfig.js"
 
 import { ValidatorByInterface } from "#/utils/validatorByInterface.js"
 import type { ConfigService } from "#/services/configService.js"
 
 const swaggerConfigValidator = new ValidatorByInterface(
-  "library/http/interfaces/swaggerConfig.interface.ts",
+  "library/http/interfaces/SwaggerConfig.ts",
   "SwaggerConfig",
 )
 

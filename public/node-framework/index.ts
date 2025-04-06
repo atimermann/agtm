@@ -55,7 +55,7 @@ export { ApiController } from "./library/http/apiController.ts"
 export { ApiAuto } from "./library/http/apiAuto.js"
 export { ApiError } from "./library/http/errors/apiError.ts"
 export { AutoSchema } from "./library/http/autoSchema.ts"
-export type { AuthRequest } from "./library/http/interfaces/authRequest.interface.ts"
+export type { AuthRequest } from "#/http/interfaces/AuthRequest.ts"
 export { LoggerService } from "./library/services/loggerService.ts"
 export { PrismaService } from "./library/services/prismaService.ts"
 //TODO:  export tools, faler import { isDev } from "@agtm/node-framework/tools" (provavelmente é config no package.json)

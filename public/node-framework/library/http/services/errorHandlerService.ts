@@ -14,7 +14,7 @@
 
 import type { FastifyRequest, FastifyReply } from "fastify"
 import type { LoggerInterface } from "#/loggers/logger.interface.ts"
-import type { RFC7807ErrorInterface } from "#/http/interfaces/RFC7807ErrorInterface.ts"
+import type { RFC7807Error } from "#/http/interfaces/RFC7807Error.ts"
 
 /**
  * ErrorHandlerService class that provides methods to handle errors and send responses in the RFC 7807 format.
@@ -33,9 +33,9 @@ export default class ErrorHandlerService {
    * @param {FastifyRequest} request - The Fastify request object.
    * @param {FastifyReply} reply - The Fastify reply object.
    */
-  public handleError(error: RFC7807ErrorInterface | Error, request: FastifyRequest, reply: FastifyReply): void {
-    if (this.handleCustomError(error as RFC7807ErrorInterface, reply)) return
-    if (this.handleValidationError(error as RFC7807ErrorInterface, reply)) return
+  public handleError(error: RFC7807Error | Error, request: FastifyRequest, reply: FastifyReply): void {
+    if (this.handleCustomError(error as RFC7807Error, reply)) return
+    if (this.handleValidationError(error as RFC7807Error, reply)) return
     this.handleGenericError(error as Error, reply)
   }
 
@@ -45,7 +45,7 @@ export default class ErrorHandlerService {
    * @param error - The API error object.
    * @param reply - The Fastify reply object.
    */
-  private handleCustomError(error: RFC7807ErrorInterface, reply: FastifyReply): boolean {
+  private handleCustomError(error: RFC7807Error, reply: FastifyReply): boolean {
     if (typeof error.setResponse === "function") {
       this.logger.error(`(${error.status}) ${error.title} ${error.message} - ${error.restricted}`)
       error.setResponse(reply)
@@ -60,7 +60,7 @@ export default class ErrorHandlerService {
    * @param error - The error object containing a validation property.
    * @param reply - The Fastify reply object.
    */
-  private handleValidationError(error: RFC7807ErrorInterface, reply: FastifyReply): boolean {
+  private handleValidationError(error: RFC7807Error, reply: FastifyReply): boolean {
     if ("validation" in error && error.validation) {
       this.logger.warn(`(400) Validation ${JSON.stringify(error.validation)}`)
       reply.status(400).send({

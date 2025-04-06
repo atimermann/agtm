@@ -13,12 +13,12 @@
  */
 
 import type { FastifyInstance } from "fastify"
-import type { AuthRequest } from "#/http/interfaces/authRequest.interface.ts"
+import type { AuthRequest } from "#/http/interfaces/AuthRequest.ts"
 import type { LoggerInterface } from "#/loggers/logger.interface.ts"
 
 import { KeycloakError, KeycloakService } from "#/services/keycloakService.ts"
 import { ApiError } from "#/http/errors/apiError.ts"
-import type { ApiRouteOptionInterface } from "#/http/interfaces/apiRouteOption.interface.js"
+import type { IApiRouteOption } from "#/http/interfaces/IApiRouteOption.js"
 import type { ConfigService } from "#/services/configService.js"
 
 import { isDev } from "#/utils/tools.js"
@@ -48,7 +48,7 @@ export class KeycloakPlugin {
     this.fastify.decorate("roles", null)
     this.fastify.addHook("preHandler", async (request: AuthRequest) => {
       try {
-        const routeOptions = request.routeOptions as ApiRouteOptionInterface
+        const routeOptions = request.routeOptions as IApiRouteOption
 
         this.validateAuthIsDefined(routeOptions)
 
@@ -84,7 +84,7 @@ export class KeycloakPlugin {
   /**
    * 1. Valida se rota está marcada para autenticação
    */
-  private validateAuthIsDefined(routeOptions: ApiRouteOptionInterface) {
+  private validateAuthIsDefined(routeOptions: IApiRouteOption) {
     if (routeOptions.config?.auth === null) {
       throw new ApiError(
         "If Keycloak plugin is enabled it is mandatory to define whether the route is authenticated or not!",
@@ -126,7 +126,7 @@ export class KeycloakPlugin {
    *
    * @throws {ApiError} If none of the clientRoles match allowed clientRoles specified in routeOptions.
    */
-  private getRoles(decodedToken: any, routeOptions: ApiRouteOptionInterface): string[] {
+  private getRoles(decodedToken: any, routeOptions: IApiRouteOption): string[] {
     const clientRoles: string[] = [
       ...this.getResourceAccessRoles(decodedToken),
       ...this.getRealmAccessRoles(decodedToken),
@@ -192,7 +192,7 @@ export class KeycloakPlugin {
    *
    * @throws {ApiError} If none of the clientRoles match the allowed clientRoles.
    */
-  private validateAllowedRoles(clientRoles: string[], routeOptions: ApiRouteOptionInterface): void {
+  private validateAllowedRoles(clientRoles: string[], routeOptions: IApiRouteOption): void {
     if (routeOptions.config?.roles) {
       const allowedRoles: string[] = routeOptions.config.roles
       const hasAllowedRole = allowedRoles.some((allowedRole) => clientRoles.includes(allowedRole))

@@ -24,7 +24,7 @@ import Config from "#/config.js"
 import ValidatorByInterface from "#/utils/validatorByInterface.js"
 
 const swaggerConfigValidator = new ValidatorByInterface(
-  "library/http/interfaces/swaggerConfig.interface.ts",
+  "library/http/interfaces/SwaggerConfig.ts",
   "SwaggerConfig",
 )
 
@@ -57,7 +57,7 @@ export class Exemplo {
 ### Exemplo 1: Validando Configuração
 
 ```typescript
-// Defina uma interface em library/http/interfaces/swaggerConfig.interface.ts
+// Defina uma interface em library/http/interfaces/SwaggerConfig.ts
 export interface SwaggerConfig {
   enabled: boolean
   baseUrl?: string
@@ -68,7 +68,7 @@ export interface SwaggerConfig {
 import ValidatorByInterface from "#/utils/validatorByInterface.ts"
 
 const swaggerConfigValidator = new ValidatorByInterface(
-  "library/http/interfaces/swaggerConfig.interface.ts", // Caminho completo obrigatório
+  "library/http/interfaces/SwaggerConfig.ts", // Caminho completo obrigatório
   "SwaggerConfig", // Nome exato da interface
 )
 

@@ -1,9 +1,9 @@
-import { FastifyRequest } from "fastify"
+import type { FastifyRequest } from "fastify"
 
 /**
  * Representa o payload do token retornado pelo Keycloak.
  */
-export interface KeycloakTokenPayload {
+export interface IKeycloakTokenPayload {
   exp: number
   iat: number
   jti: string
@@ -43,7 +43,7 @@ export interface AuthRequest extends FastifyRequest {
   /**
    * Dados do token do Keycloak.
    */
-  auth?: KeycloakTokenPayload
+  auth?: IKeycloakTokenPayload
 
   /**
    * Caso seja necessário, pode-se extrair ou adicionar roles diretamente aqui.

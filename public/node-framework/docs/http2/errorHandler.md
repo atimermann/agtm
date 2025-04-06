@@ -122,15 +122,15 @@ Content-Language: en
 
 neste caso não devemos utilizar o ApiError e definir nosso próprio erro
 
-Deve implementar a interface: RFC7807ErrorInterface
+Deve implementar a interface: RFC7807Error
 
 exemplo:
 
 ```typescript
 import type {FastifyReply} from "fastify"
-import {RFC7807ErrorInterface} from "#/http/interfaces/RFC7807ErrorInterface.js"
+import {RFC7807Error} from "#/http/interfaces/RFC7807Error.js"
 
-export class MyError extends Error implements RFC7807ErrorInterface {
+export class MyError extends Error implements RFC7807Error {
   public title: string
   public status: number
 

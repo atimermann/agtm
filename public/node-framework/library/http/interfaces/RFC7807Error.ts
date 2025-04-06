@@ -15,7 +15,7 @@ import type { FastifyReply } from "fastify"
 /**
  * Interface that represents an API error following RFC 7807.
  */
-export interface RFC7807ErrorInterface {
+export interface RFC7807Error {
   title: string
   status: number
   message: string

@@ -23,7 +23,7 @@ import type { DocsSchemaInterface } from "#/http/interfaces/schemas/autoSchema/d
 import { AutoToOpenApiSchemaMapper } from "#/http/mapper/autoToOpenApiSchemaMapper.js"
 import type { FastifySchema } from "fastify"
 import type { AuthSchemaInterface } from "#/http/interfaces/schemas/autoSchema/authSchema.interface.js"
-import type { ApiRouteOptionInterface, CustomContextConfig } from "#/http/interfaces/apiRouteOption.interface.js"
+import type { IApiRouteOption, ICustomContextConfig } from "#/http/interfaces/IApiRouteOption.js"
 
 const autoSchemaValidator = new ValidatorByInterface(
   "library/http/interfaces/schemas/autoSchema/autoSchema.interface.ts",
@@ -259,7 +259,7 @@ export class AutoSchema {
    *
    * @returns A Partial<RouteOptions> object to be merged into the route configuration.
    */
-  getPostOptions(): Partial<ApiRouteOptionInterface> {
+  getPostOptions(): Partial<IApiRouteOption> {
     return {
       config: {
         auto: true,
@@ -273,7 +273,7 @@ export class AutoSchema {
    *
    * @returns A Partial<RouteOptions> object to be merged into the route configuration.
    */
-  getGetAllOptions(): Partial<ApiRouteOptionInterface> {
+  getGetAllOptions(): Partial<IApiRouteOption> {
     return {
       config: {
         auto: true,
@@ -287,7 +287,7 @@ export class AutoSchema {
    *
    * @returns A Partial<RouteOptions> object to be merged into the route configuration.
    */
-  getOneOptions(): Partial<ApiRouteOptionInterface> {
+  getOneOptions(): Partial<IApiRouteOption> {
     return {
       config: {
         auto: true,
@@ -301,7 +301,7 @@ export class AutoSchema {
    *
    * @returns A Partial<RouteOptions> object to be merged into the route configuration.
    */
-  getPutOptions(): Partial<ApiRouteOptionInterface> {
+  getPutOptions(): Partial<IApiRouteOption> {
     return {
       config: {
         auto: true,
@@ -315,7 +315,7 @@ export class AutoSchema {
    *
    * @returns A Partial<RouteOptions> object to be merged into the route configuration.
    */
-  getDeleteOptions(): Partial<ApiRouteOptionInterface> {
+  getDeleteOptions(): Partial<IApiRouteOption> {
     return {
       config: {
         auto: true,
@@ -329,7 +329,7 @@ export class AutoSchema {
    *
    * @returns A Partial<RouteOptions> object to be merged into the route configuration.
    */
-  getCrudOptions(): Partial<ApiRouteOptionInterface> {
+  getCrudOptions(): Partial<IApiRouteOption> {
     return {
       config: {
         auto: true,
@@ -347,7 +347,7 @@ export class AutoSchema {
    * @returns An object containing the authentication configuration for the specified operation,
    *          or an empty object if no configuration is defined.
    */
-  private getAuthOptionsFor(operation: keyof AuthSchemaInterface): Partial<CustomContextConfig> | undefined {
+  private getAuthOptionsFor(operation: keyof AuthSchemaInterface): Partial<ICustomContextConfig> | undefined {
     const auth = this.schema.auth
 
     if (auth === undefined) return undefined

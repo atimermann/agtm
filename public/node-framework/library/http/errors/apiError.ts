@@ -1,5 +1,5 @@
 import type { FastifyReply } from "fastify"
-import { RFC7807ErrorInterface } from "#/http/interfaces/RFC7807ErrorInterface.js"
+import { RFC7807Error } from "#/http/interfaces/RFC7807Error.js"
 
 /**
  * Created on 15/03/2025
@@ -12,7 +12,7 @@ import { RFC7807ErrorInterface } from "#/http/interfaces/RFC7807ErrorInterface.j
  * RFC 7807 details: https://tools.ietf.org/html/rfc7807
  *
  */
-export class ApiError extends Error implements RFC7807ErrorInterface {
+export class ApiError extends Error implements RFC7807Error {
   constructor(
     readonly message: string,
     readonly title: string = "Internal Server Error",

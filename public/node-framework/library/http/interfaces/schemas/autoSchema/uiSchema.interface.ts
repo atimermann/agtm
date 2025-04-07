@@ -9,6 +9,12 @@
  */
 
 export interface UiSchemaInterface {
+
+  /**
+   * Título amigável para ser exibido ao usuário
+   */
+  title?: string
+
   /**
    * Botão de criação no CRUD
    */

@@ -18,7 +18,7 @@ import type { ConfigService } from "#/services/configService.ts"
 import type { PrismaService } from "#/services/prismaService.js"
 import type { ApiAuto } from "#/http/apiAuto.ts"
 
-interface ParamInterface {
+export interface ParamInterface {
   id: number
 }
 
@@ -52,7 +52,6 @@ export class ApiController {
     if (!this.autoApi) {
       throw new Error("Invalid controller. It should be used only for automatic routes.")
     }
-    // TODO: Validar retorno padrão, usar reply
     return this.autoApi.create(request.body)
   }
 
@@ -64,7 +63,6 @@ export class ApiController {
     if (!this.autoApi) {
       throw new Error("Invalid controller. It should be used only for automatic routes.")
     }
-
     return this.autoApi.getAll()
   }
 
@@ -76,20 +74,8 @@ export class ApiController {
       throw new Error("Invalid controller. It should be used only for automatic routes.")
     }
 
-    // TODO: tipo e entrada por Fastfyschema
     const { id } = request.params as ParamInterface
-
-    const entity = this.autoApi.get(id)
-
-    // TODO: usar erro padronizado estudar no fastify
-    if (!entity) {
-      return reply.status(404).send({
-        error: "Not Found",
-        message: `Route GET:${request.url} not found`,
-      })
-    }
-
-    return entity
+    return this.autoApi.get(id)
   }
 
   /**
@@ -100,19 +86,7 @@ export class ApiController {
       throw new Error("Invalid controller. It should be used only for automatic routes.")
     }
     const { id } = request.params as ParamInterface
-
-    try {
-      return this.autoApi.update(id, request.body)
-    } catch (error: any) {
-      if (error.code === "P2025") {
-        // TODO: usar erro padronizado estudar no fastify
-        return reply.status(404).send({
-          error: "Not Found",
-        })
-      }
-
-      throw error
-    }
+    return this.autoApi.update(id, request.body)
   }
 
   /**
@@ -123,17 +97,7 @@ export class ApiController {
       throw new Error("Invalid controller. It should be used only for automatic routes.")
     }
     const { id } = request.params as ParamInterface
-
-    try {
-      return this.autoApi.delete(id)
-    } catch (error: any) {
-      if (error.code === "P2025") {
-        // TODO: usar erro padronizado estudar no fastify
-        return reply.status(404).send("Not Found")
-      }
-
-      throw error
-    }
+    return this.autoApi.delete(id)
   }
 
   /**
@@ -147,7 +111,7 @@ export class ApiController {
   }
 
   /**
-   * Representa qualquer outro método criado pelo usuário
+   * Representa qualquer outro métod0 criado pelo usuário
    */
   [key: string]: RouteHandler | any
 }

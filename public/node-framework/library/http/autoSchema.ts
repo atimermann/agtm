@@ -18,12 +18,14 @@ import { ValidatorByInterface } from "../utils/validatorByInterface.js"
 import type { LoggerInterface } from "../loggers/logger.interface.js"
 import type { AutoSchemaInterface } from "#/http/interfaces/schemas/autoSchema/autoSchema.interface.ts"
 import type { FieldSchemaInterface } from "#/http/interfaces/schemas/autoSchema/fieldsSchema.interface.ts"
-import { sentenceCase } from "change-case"
+import { sentenceCase, capitalCase } from "change-case"
 import type { DocsSchemaInterface } from "#/http/interfaces/schemas/autoSchema/docsSchema.interface.js"
 import { AutoToOpenApiSchemaMapper } from "#/http/mapper/autoToOpenApiSchemaMapper.js"
 import type { FastifySchema } from "fastify"
 import type { AuthSchemaInterface } from "#/http/interfaces/schemas/autoSchema/authSchema.interface.js"
 import type { IApiRouteOption, ICustomContextConfig } from "#/http/interfaces/IApiRouteOption.js"
+
+type Dict = Record<string, unknown>
 
 const autoSchemaValidator = new ValidatorByInterface(
   "library/http/interfaces/schemas/autoSchema/autoSchema.interface.ts",
@@ -41,6 +43,13 @@ export class AutoSchema {
   ) {
     autoSchemaValidator.validate(schema)
     this.mapper = mapper ?? new AutoToOpenApiSchemaMapper(schema)
+  }
+
+  /**
+   * Retorna Titulo do schema (exibir para usuário)
+   */
+  get title(): string {
+    return this.schema.ui?.title || capitalCase(this.schema.route)
   }
 
   /**
@@ -120,6 +129,52 @@ export class AutoSchema {
       prismaSelectFields[field.dbName || field.name] = true
     }
     return prismaSelectFields
+  }
+
+  /**
+   * Filtra dados para estar de acordo com o schema
+   *
+   * @param isCreate  Define se a operação é de criação
+   * @param inputValue      Corpo da requisição
+   */
+  async filterInputData(isCreate: boolean, inputValue: any) {
+    const data: Record<string, any> = {}
+
+    for (const field of this.schema.fields) {
+      // Ignora chave
+      if (field.name === this.schema.key) continue
+      // Ignora campos create ou update
+      if (isCreate && field.create === false) continue
+      if (!isCreate && field.update === false) continue
+
+      const value = inputValue[field.name]
+
+      if (value === undefined) continue
+
+      data[field.dbName || field.name] = inputValue[field.name]
+    }
+
+    return data
+  }
+
+  /**
+   * Filtra o resultado de uma query para retornar apenas os campos visíveis (view = true).
+   * Usado apenas no DELETE, UPDATE e CREATE, já que o get e getAll é possível definir o select.
+   *
+   * @param queryResult Resultado da query filtrado. Pode ser um objeto ou um array de objetos.
+   *
+   * @returns Objeto filtrado ou array de objetos filtrados.
+   */
+  public filterOutputData(queryResult: Dict | Dict[]): Dict | Dict[] {
+    if (Array.isArray(queryResult)) {
+      return queryResult.map((item) => this.filterOutputData(item) as Dict)
+    }
+
+    return Object.fromEntries(
+      Object.entries(queryResult).filter(([key]) => {
+        return this.getViewFields().includes(key)
+      }),
+    )
   }
 
   /**

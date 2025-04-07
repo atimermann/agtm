@@ -19,7 +19,7 @@
  *   TODO: Adicionar suporte a uuid com string para melhor segurança
  *
  */
-import {UserApiFilesService, validateInstance} from "./userApiFilesService.ts"
+import { UserApiFilesService, validateInstance } from "./userApiFilesService.ts"
 import { AutoSchemaService } from "./autoSchemaService.ts"
 
 import { ApiRouter } from "../apiRouter.ts"

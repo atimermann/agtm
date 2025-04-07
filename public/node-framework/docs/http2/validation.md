@@ -59,10 +59,9 @@ Essa configuração é feia no library/http/mapper/autoToOpenApiSchemaMapper.ts
 
 ## Validação no ApiAuto / Serviço
 
-Algumas validações especiais como unique não é definida pelo framework, sendo necessário configurar pelo usuário. Em seu
-serviços.
+Validações mais complexa como Unique é feito diretamente no ApiAuto, implemente ai validações complexas mas padrões
 
-**Uma dica:** é possível definir validações avançada no **autoApi** customizado.
+Validações customizada pode ser implementado no serviço ou no AutoApi customizado do usuário
 
 ## Scripts e Serviços
 

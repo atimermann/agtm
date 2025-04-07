@@ -14,9 +14,10 @@ import { PrismaService } from "#/services/prismaService.ts"
 import { ConfigService } from "#/services/configService.ts"
 import type { LoggerInterface } from "#/loggers/logger.interface.ts"
 import type { AutoSchema } from "../autoSchema.ts"
-import {
+import type {
   UserClassFileDescription,
-  UserClassFilesGrouped,
+  UserClassFilesGrouped} from "#/http/services/userApiFilesService.ts";
+import {
   validateInstance,
 } from "#/http/services/userApiFilesService.ts"
 import { LoggerService } from "#/services/loggerService.ts"
@@ -52,16 +53,15 @@ export class AutoFactory {
       return
     }
 
-    let userApiAuto: ApiAuto | false = false
-
     if (autoSchema.auto) {
-      userApiAuto = await this.createUserAutoApi(appName, autoSchema.auto, autoSchema, groupedFilesDescriptors)
+      const userApiAuto = await this.createUserAutoApi(appName, autoSchema.auto, autoSchema, groupedFilesDescriptors)
       if (!userApiAuto) {
         throw new Error(`AutoApi "${autoSchema.auto}" defined in Schema not found.`)
       }
+      return userApiAuto
     }
 
-    userApiAuto = await this.createUserAutoApi(appName, descriptorName, autoSchema, groupedFilesDescriptors)
+    const userApiAuto = await this.createUserAutoApi(appName, descriptorName, autoSchema, groupedFilesDescriptors)
     if (userApiAuto) {
       return userApiAuto
     }

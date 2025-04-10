@@ -17,6 +17,7 @@ export interface UiSchemaInterface {
 
   /**
    * Botão de criação no CRUD
+   * @default "Criar novo"
    */
   createButton?: {
     label: string
@@ -27,10 +28,12 @@ export interface UiSchemaInterface {
   form?: {
     /**
      * Título de criação
+     * @default "Criar"
      */
     createTitle: string
     /**
      * Titulo em edição
+     * @default "Editar"
      */
     updateTitle: string
   }

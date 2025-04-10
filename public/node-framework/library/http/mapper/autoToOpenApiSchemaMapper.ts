@@ -7,7 +7,7 @@
  * Mapeia o Api Schema (schema simplificado para configuração de rota criado no nodeFramework e definido por AutoSchemaInterface)
  * Para padrão FastifySchema (baseado no padrão OpenAPI)
  *
- * Ele não faz mapeamento direto, como gera uma configuração de rota completo levantando informações de todo Schema
+ * Ele não faz mapeamento direto, como gera uma configuração de rota completo levantando informações de tod0 Schema
  *
  */
 import type { AutoSchemaInterface } from "#/http/interfaces/schemas/autoSchema/autoSchema.interface.ts"

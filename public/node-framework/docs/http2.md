@@ -109,3 +109,4 @@ REF: [Guia de inicio](http2/guia.md)
 
 * [Auto Api Service](./http2/autoApiService.md)
 * [Keycloak](services/keycloak.md)
+* [Schemas](./schemas.md)

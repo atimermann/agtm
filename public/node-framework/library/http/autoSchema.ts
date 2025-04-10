@@ -18,12 +18,13 @@ import { ValidatorByInterface } from "../utils/validatorByInterface.js"
 import type { LoggerInterface } from "../loggers/logger.interface.js"
 import type { AutoSchemaInterface } from "#/http/interfaces/schemas/autoSchema/autoSchema.interface.ts"
 import type { FieldSchemaInterface } from "#/http/interfaces/schemas/autoSchema/fieldsSchema.interface.ts"
-import { sentenceCase, capitalCase } from "change-case"
+import { capitalCase } from "change-case"
 import type { DocsSchemaInterface } from "#/http/interfaces/schemas/autoSchema/docsSchema.interface.js"
 import { AutoToOpenApiSchemaMapper } from "#/http/mapper/autoToOpenApiSchemaMapper.js"
 import type { FastifySchema } from "fastify"
 import type { AuthSchemaInterface } from "#/http/interfaces/schemas/autoSchema/authSchema.interface.js"
 import type { IApiRouteOption, ICustomContextConfig } from "#/http/interfaces/IApiRouteOption.js"
+import { AutoToCrudSchemaMapper } from "#/http/mapper/autoToCrudSchemaMapper.ts"
 
 type Dict = Record<string, unknown>
 
@@ -33,16 +34,20 @@ const autoSchemaValidator = new ValidatorByInterface(
 )
 
 export class AutoSchema {
-  private mapper: AutoToOpenApiSchemaMapper
+  private autoToOpenApiMapper: AutoToOpenApiSchemaMapper
+  private autoToCrudMapper: AutoToCrudSchemaMapper
+  private readonly schema: AutoSchemaInterface
 
   constructor(
-    private logger: LoggerInterface,
-    private schema: AutoSchemaInterface,
-    private _appName: string,
+    private readonly logger: LoggerInterface,
+    schema: AutoSchemaInterface,
+    private readonly _appName: string,
     mapper?: AutoToOpenApiSchemaMapper,
+    autoToCrudMapper?: AutoToCrudSchemaMapper,
   ) {
-    autoSchemaValidator.validate(schema)
-    this.mapper = mapper ?? new AutoToOpenApiSchemaMapper(schema)
+    this.schema = autoSchemaValidator.validate(schema)
+    this.autoToOpenApiMapper = mapper ?? new AutoToOpenApiSchemaMapper(this.schema)
+    this.autoToCrudMapper = autoToCrudMapper ?? new AutoToCrudSchemaMapper(this.schema)
   }
 
   /**
@@ -165,7 +170,7 @@ export class AutoSchema {
    *
    * @returns Objeto filtrado ou array de objetos filtrados.
    */
-  public filterOutputData(queryResult: Dict | Dict[]): Dict | Dict[] {
+  filterOutputData(queryResult: Dict | Dict[]): Dict | Dict[] {
     if (Array.isArray(queryResult)) {
       return queryResult.map((item) => this.filterOutputData(item) as Dict)
     }
@@ -179,43 +184,9 @@ export class AutoSchema {
 
   /**
    * Mapeia o formato padrão Auto SChema para o formato de schema utilizado pelo Crud do Frontend
-   * TODO: Converter o método em um mapper
    */
-  mapApiSchemaToCrudSchema(): any {
-    const crudSchema: any = {
-      ...this.schema.ui,
-      fields: [],
-    }
-
-    //////////////////////////////////////////////////
-    // Adiciona Chave
-    //////////////////////////////////////////////////
-    crudSchema.fields.push({
-      label: this.schema.key,
-      name: this.schema.key,
-      ignoreForm: true,
-    })
-
-    //////////////////////////////////////////////////
-    // MAP FIELDS
-    //////////////////////////////////////////////////
-    for (const field of this.schema.fields) {
-      if (!field.create && !field.update && !field.view) continue
-
-      const crudField = {
-        name: field.name,
-        label: field.uiProperties?.label || sentenceCase(field.name),
-        ignoreGrid: !field.view,
-        ignoreForm: !field.create && !field.update,
-      }
-
-      crudSchema.fields.push({
-        ...crudField,
-        ...field.uiProperties,
-      })
-    }
-
-    return crudSchema
+  mapToCrudSchema() {
+    return this.autoToCrudMapper.map()
   }
 
   /**
@@ -238,7 +209,7 @@ export class AutoSchema {
   getPostSchema(): FastifySchema {
     return {
       ...this.getBaseSchemaForAllRoutes(),
-      ...this.mapper.mapPostSchema(),
+      ...this.autoToOpenApiMapper.mapPostSchema(),
       summary: `Cria novo registro.`,
     }
   }
@@ -251,7 +222,7 @@ export class AutoSchema {
   getPutSchema(): FastifySchema {
     return {
       ...this.getBaseSchemaForAllRoutes(),
-      ...this.mapper.mapPutSchema(),
+      ...this.autoToOpenApiMapper.mapPutSchema(),
       summary: `Altera registro.`,
     }
   }
@@ -264,7 +235,7 @@ export class AutoSchema {
   getGetAllSchema(): FastifySchema {
     return {
       ...this.getBaseSchemaForAllRoutes(),
-      ...this.mapper.mapGetAllSchema(),
+      ...this.autoToOpenApiMapper.mapGetAllSchema(),
       summary: `Retorna todos os registros ou registros filtrados.`,
     }
   }
@@ -277,7 +248,7 @@ export class AutoSchema {
   getGetOneSchema(): FastifySchema {
     return {
       ...this.getBaseSchemaForAllRoutes(),
-      ...this.mapper.mapGetOneSchema(),
+      ...this.autoToOpenApiMapper.mapGetOneSchema(),
       summary: `Retorna um registro por id.`,
     }
   }
@@ -290,7 +261,7 @@ export class AutoSchema {
   getDeleteSchema(): FastifySchema {
     return {
       ...this.getBaseSchemaForAllRoutes(),
-      ...this.mapper.mapDeleteSchema(),
+      ...this.autoToOpenApiMapper.mapDeleteSchema(),
       summary: `Remove registro.`,
     }
   }
@@ -303,7 +274,7 @@ export class AutoSchema {
   getCrudSchema(): FastifySchema {
     return {
       ...this.getBaseSchemaForAllRoutes(),
-      ...this.mapper.mapCrudSchema(),
+      ...this.autoToOpenApiMapper.mapCrudSchema(),
       summary: `Retorna schema para gerar crud automaticamente no frontend.`,
     }
   }

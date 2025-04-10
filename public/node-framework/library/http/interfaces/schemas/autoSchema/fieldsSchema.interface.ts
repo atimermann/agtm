@@ -41,14 +41,17 @@ export interface FieldSchemaInterface {
   required?: boolean
   /**
    * Se permite ser atribuído na criação
+   * @default true
    */
   create?: boolean
   /**
    * Se permite ser atribuído na Atualização
+   * @default true
    */
   update?: boolean
   /**
    * Se será retornado na api
+   * @default true
    */
   view?: boolean
   /**

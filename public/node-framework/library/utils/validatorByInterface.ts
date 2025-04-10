@@ -4,7 +4,7 @@
  * @author André Timermann <andre@timermann.com.br>
  *
  * @file
- * Valida Objeto à partir de uma interface (interface será carregada como se fosse um arquivo)
+ *  Valida Objeto à partir de uma interface (interface será carregada como se fosse um arquivo)
  *
  * @see https://github.com/vega/ts-json-schema-generator
  *
@@ -28,7 +28,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 /**
- * Caminho relativo à raiz do node-framework, alterar se mover este código (interfaceValidaor)
+ * Caminho relativo à raiz do node-framework, alterar se mover este código (interfaceValidator)
  */
 const ROOT_RELATIVE_PATH = "../../"
 
@@ -64,8 +64,8 @@ export class ValidatorByInterface {
       throw new Error(`Interface file not found: ${interfaceResolvedPath}`)
     }
 
-    // @ts-ignore
-    this.ajv = new Ajv()
+    // @ts-expect-error TS2351: This expression is not constructable. (porem é)
+    this.ajv = new Ajv({ useDefaults: true })
 
     const generatorSchemaConfig: Config = {
       path: resolve(interfaceResolvedPath),
@@ -80,18 +80,23 @@ export class ValidatorByInterface {
   }
 
   /**
-   * Valida um objeto contra o esquema gerado a partir da interface TypeScript.
+   * Validates an object against the JSON Schema generated from the TypeScript interface.
    *
-   * @param objectToValidate Objeto a ser validado.
-   * @param logger  Objeto de log
+   * @template T - The expected type of the validated object.
+   * @param {T} dataToValidateAndParsed - The object to be validated.
+   * @param {LoggerInterface} [logger] - Optional logger instance for logging errors.
    *
-   * @returns `true` se o objeto for válido, caso contrário lança um erro com detalhes.
+   * @returns {T} The validated object.
    *
-   * @throws {TypeError} Se o objeto não for válido de acordo com o JSON Schema gerado.
+   * @throws {TypeError} Throws a TypeError if the object is not valid according to the generated JSON Schema.
    */
-  validate(objectToValidate: any, logger?: LoggerInterface): boolean {
-    if (this.schemaValidator(objectToValidate)) {
-      return true
+  validate<T>(dataToValidateAndParsed: T, logger?: LoggerInterface): T {
+    // It is assumed that schemaValidator performs the validation and returns
+    // the parsed data if valid, or a falsy value otherwise.
+    const valid = this.schemaValidator(dataToValidateAndParsed) as boolean
+
+    if (valid) {
+      return dataToValidateAndParsed as T
     }
 
     this.logErrors(logger)
@@ -127,9 +132,7 @@ export class ValidatorByInterface {
       )
     }
 
-    errorMessages.push(
-      "--------------------------------- END ERRORS ---------------------------------------------",
-    )
+    errorMessages.push("--------------------------------- END ERRORS ---------------------------------------------")
 
     logger.error("\n" + errorMessages.join("\n"))
   }

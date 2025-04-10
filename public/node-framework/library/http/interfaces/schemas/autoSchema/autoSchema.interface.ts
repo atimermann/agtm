@@ -17,8 +17,8 @@ import type { AuthSchemaInterface } from "#/http/interfaces/schemas/autoSchema/a
 export interface AutoSchemaInterface {
 
   /**
-   * Se definido não ignora campos adicinais
-   * Padrão: true
+   * Se definido não ignora campos adicionais
+   * @default false
    */
   strict?: boolean
 

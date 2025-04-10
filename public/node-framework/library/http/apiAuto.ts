@@ -93,7 +93,7 @@ export class ApiAuto {
   }
 
   async getCrudSchema() {
-    return this.autoSchema.mapApiSchemaToCrudSchema()
+    return this.autoSchema.mapToCrudSchema()
   }
 
   /**

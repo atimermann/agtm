@@ -29,7 +29,7 @@ export class SwaggerPlugin {
     swaggerConfig?: SwaggerConfig,
   ) {
     this.swaggerConfig = swaggerConfig ?? config.getYaml("swagger")
-    swaggerConfigValidator.validate(this.swaggerConfig, this.logger)
+    this.swaggerConfig = swaggerConfigValidator.validate(this.swaggerConfig, this.logger)
   }
 
   /**

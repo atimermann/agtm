@@ -195,3 +195,9 @@ return ajv.compile(schema)
   - Se vc definir pode escolher outro modulo exemplo: **auto: "account"** q vai carregar o account.auto.ts
   - Mas se a automação que deseja está em outro app, poderia fazer **auto: "Account:account""** para carregar o
     account.auto.ts do app Account
+
+## 09/04/2025
+
+- TODO: Implementar CACHE de autenticação para agilizar, está lento por bater todas as vezes no keycloak
+
+

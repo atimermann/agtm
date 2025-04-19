@@ -66,6 +66,7 @@ export class RouterService {
    * Está agrupado por rota (groupedFilesDescriptors)
    */
   async createRoutes() {
+
     this.logger.debug("---------------------------------------------")
     this.logger.debug("Inicializando sistema de rotas...")
     this.logger.debug("---------------------------------------------")

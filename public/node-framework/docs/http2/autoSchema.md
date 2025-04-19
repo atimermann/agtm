@@ -9,7 +9,7 @@ Por exemplo, podemos criar um recurso chamado **tenant**, onde definimos seus ca
 tabela correspondente no banco de dados e a rota de acesso para o usuário. Com base nessa configuração, a API para esse
 recurso será gerada automaticamente.
 
-### Como funciona?
+## Como funciona?
 
 O conceito do Auto Schema é semelhante a um esquema de banco de dados, mas, como o modelo exposto ao usuário pode ser
 diferente da estrutura do banco, optamos por criar uma configuração **independente**, sem vínculo direto com o banco de
@@ -25,14 +25,19 @@ dados.
   - Se o campo deve ser aceito apenas em operações de criação/atualização.
 - **Campos sensíveis**, como senhas ou datas de atualização, podem ser configurados para não serem expostos na resposta.
 
-### Extensibilidade e Personalização
+## Extensibilidade, Personalização e Desenvolvimento Incremental
 
 O Auto Schema permite a configuração de rotas personalizadas além das rotas padrões geradas automaticamente.
 
 Por exemplo, podemos definir um recurso padrão e, além das operações básicas (CRUD), adicionar novos endpoints
 customizados para atender a necessidades específicas.
 
-### Integração com OpenAPI (Swagger)
+Importante destacar que podemos realizar um desenvolvimento incremental:
+
+- Primeiro geramos um schema. Podemos por exemplos pedir pra ir gerar o schema a partir da definição do banco
+- Na sequencia podemos incrementalmente ir alterando/adicionando/perdonalizando rotas, estilo no frontend etc...
+
+## Integração com OpenAPI (Swagger)
 
 Além de definir a estrutura dos recursos, o Auto Schema também permite configurar informações para a documentação
 OpenAPI, garantindo que os endpoints gerados sejam corretamente documentados na interface do Swagger.

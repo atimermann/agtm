@@ -1,5 +1,5 @@
 import type { FastifyReply } from "fastify"
-import { RFC7807Error } from "#/http/interfaces/RFC7807Error.js"
+import type { RFC7807Error } from "#/http/interfaces/RFC7807Error.js"
 
 /**
  * Created on 15/03/2025
@@ -15,9 +15,9 @@ import { RFC7807Error } from "#/http/interfaces/RFC7807Error.js"
 export class ApiError extends Error implements RFC7807Error {
   constructor(
     readonly message: string,
-    readonly title: string = "Internal Server Error",
-    readonly status: number = 500,
-    readonly restricted: string = "",
+    readonly title = "Internal Server Error",
+    readonly status = 500,
+    readonly restricted = "",
   ) {
     super(message)
     this.name = "ApiError"

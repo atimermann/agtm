@@ -58,5 +58,6 @@ export { AutoSchema } from "./library/http/autoSchema.ts"
 export type { AuthRequest } from "#/http/interfaces/AuthRequest.ts"
 export { LoggerService } from "./library/services/loggerService.ts"
 export { PrismaService } from "./library/services/prismaService.ts"
+export { AutoFactory } from "./library/http/factories/autoFactory.js"
 //TODO:  export tools, faler import { isDev } from "@agtm/node-framework/tools" (provavelmente é config no package.json)
 //TODO: Documentar isso

@@ -195,6 +195,7 @@ export class KeycloakPlugin {
   private validateAllowedRoles(clientRoles: string[], routeOptions: IApiRouteOption): void {
     if (routeOptions.config?.roles) {
       const allowedRoles: string[] = routeOptions.config.roles
+      if (allowedRoles.length === 0) return
       const hasAllowedRole = allowedRoles.some((allowedRole) => clientRoles.includes(allowedRole))
       if (!hasAllowedRole) {
         throw new ApiError(

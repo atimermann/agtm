@@ -217,6 +217,19 @@ describe("ValidatorByInterface", async () => {
   })
 
   /**
+   * Verifica se o validador aceita corretamente caminhos relacionado a raiz do node-framework #/
+   */
+  await test("deve aceitar caminho relativo ao library do framework: #/", () => {
+    logTestProgress()
+
+    const frameworkPath = "#/http/interfaces/SwaggerConfig.ts"
+
+    // Act & Assert (não deve lançar erro)
+    new ValidatorByInterface(frameworkPath, "SwaggerConfig", TSCONFIG_FILE)
+    assert.ok(true)
+  })
+
+  /**
    * Verifica se o validador aplica valores padrão definidos com annotations na interface
    * e os retorna no objeto validado.
    */
@@ -293,5 +306,6 @@ describe("ValidatorByInterface", async () => {
     assert.ok(mockLogger.logs.length > 0)
     assert.ok(mockLogger.logs[0].includes("INÍCIO DOS ERROS DE VALIDAÇÃO"))
   })
+
 
 })

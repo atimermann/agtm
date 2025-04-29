@@ -18,10 +18,17 @@
 
 import Ajv from "ajv"
 import { existsSync } from "node:fs"
-import { resolve, isAbsolute } from "node:path"
+import { resolve, isAbsolute, dirname, join } from "node:path"
 import * as tsj from "ts-json-schema-generator"
 import type { Config } from "ts-json-schema-generator"
 import type { LoggerInterface } from "#/loggers/logger.interface.js"
+import { fileURLToPath } from "node:url"
+
+// Obtém o diretório atual do arquivo de teste
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+const LIBRARY_DIR = join(__dirname, "..")
 
 /**
  * Interface para abstração do validador de schema
@@ -100,6 +107,13 @@ export class ValidatorByInterface {
    * Resolve o caminho da interface, suportando caminhos absolutos ou relativos ao CWD
    */
   private resolvePath(interfacePath: string): string {
+
+    if (interfacePath.startsWith("#/")) {
+      // Remove o prefixo "#/" e resolve para a pasta library
+      const pathWithoutPrefix = interfacePath.substring(2)
+      return resolve(LIBRARY_DIR, pathWithoutPrefix)
+    }
+
     return isAbsolute(interfacePath) ? interfacePath : resolve(process.cwd(), interfacePath)
   }
 

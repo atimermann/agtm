@@ -9,16 +9,15 @@
     "nf-keycloak": "scripts/keycloak.ts"
   },
   "scripts": {
-    "check": "npm run tsc ; npm run lint ; npm run test",
+    "check": "npm run lint && npm run test",
     "publish-patch": "npm run tsc ; npm version patch && npm publish --access public && git push",
     "publish-minor": "npm run tsc ; npm version minor && npm publish --access public && git push",
     "publish-major": "npm run tsc ; npm version major && npm publish --access public && git push",
-    "test": "npx tsx --test tests/**/*.ts && npm run lint:test ",
+    "test": "npx tsx --test tests/**/*.ts",
     "lint": "npx eslint --fix .",
     "lint:test": "npx eslint .",
     "update": "npm update @agtm/util && npm list @agtm/util",
-    "audit": "npm audit --omit=dev",
-    "tsc": "npx tsc"
+    "audit": "npm audit --omit=dev"
   },
   "author": "André Timermann <andre@timermann.com.br>",
   "license": "ISC",

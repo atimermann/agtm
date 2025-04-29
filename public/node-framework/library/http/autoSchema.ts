@@ -29,7 +29,7 @@ import { AutoToCrudSchemaMapper } from "#/http/mapper/autoToCrudSchemaMapper.ts"
 type Dict = Record<string, unknown>
 
 const autoSchemaValidator = new ValidatorByInterface(
-  "library/http/interfaces/schemas/autoSchema/autoSchema.interface.ts",
+  "#/http/interfaces/schemas/autoSchema/autoSchema.interface.ts",
   "AutoSchemaInterface",
 )
 

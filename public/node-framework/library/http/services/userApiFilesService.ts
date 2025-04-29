@@ -12,9 +12,9 @@ import type { LoggerService } from "#/services/loggerService.js"
 import { promises as fs } from "node:fs"
 import { resolve, join, parse } from "node:path"
 import { groupBy } from "lodash-es"
-import { ApiController } from "#/http/apiController.js"
+import type { ApiController } from "#/http/apiController.js"
 import type { ApiRouter } from "#/http/apiRouter.js"
-import { ApiAuto } from "#/http/apiAuto.js"
+import type { ApiAuto } from "#/http/apiAuto.js"
 
 /**
  * Diretório de configuração de api do usuário

@@ -19,7 +19,7 @@ export class Config {
   }
 
   /** @deprecated Use `ConfigService.get()` instead. */
-  static get(key: string, type?: ValueType, yamlOnly: boolean = false): any {
+  static get(key: string, type?: ValueType, yamlOnly = false): any {
     return this.configService.get(key, type, yamlOnly)
   }
 

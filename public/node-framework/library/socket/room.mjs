@@ -171,7 +171,7 @@ export default class Room {
    * @return {string}        The SHA-1 hash of the input, represented as a hexadecimal string.
    */
   static createHash (input) {
-    // eslint-disable-next-line new-cap
+     
     const shaObj = new jsSHA('SHA-1', 'TEXT')
     shaObj.update(input)
     return shaObj.getHash('HEX')

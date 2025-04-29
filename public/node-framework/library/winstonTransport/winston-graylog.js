@@ -73,7 +73,7 @@ class Log2gelf extends Transport {
    * @param  {string} level  - The log level as a string.
    * @return {number}        The numeric value corresponding to the provided log level.
    */
-  levelToInt(level) { // eslint-disable-line
+  levelToInt(level) {  
     if (level === 'error') return 0
     if (level === 'warn') return 1
     if (level === 'info') return 2

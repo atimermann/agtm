@@ -36,7 +36,6 @@ const ROOT_DIR = join(LIBRARY_DIR, "..")
  */
 interface SchemaValidator {
   validate(data: unknown): boolean
-
   errors?: Array<{
     instancePath: string
     schemaPath: string
@@ -44,6 +43,7 @@ interface SchemaValidator {
     message?: string
     params: Record<string, unknown>
   }>
+  validator: any
 }
 
 /**
@@ -109,7 +109,6 @@ export class ValidatorByInterface {
    * Resolve o caminho da interface, suportando caminhos absolutos ou relativos ao CWD
    */
   private resolvePath(interfacePath: string): string {
-
     if (interfacePath.startsWith("#/")) {
       // Remove o prefixo "#/" e resolve para a pasta library
       const pathWithoutPrefix = interfacePath.substring(2)
@@ -152,7 +151,10 @@ export class ValidatorByInterface {
 
     return {
       validate: (data: unknown): boolean => compiledValidator(data),
-      errors: compiledValidator.errors,
+      get errors() {
+        return compiledValidator.errors
+      },
+      validator: compiledValidator,
     }
   }
 
@@ -160,7 +162,6 @@ export class ValidatorByInterface {
    * Registra erros de validação no logger, se fornecido
    */
   private logValidationErrors(logger: LoggerInterface): void {
-
     const errorMessages: string[] = [
       "----------------------------------- INÍCIO DOS ERROS DE VALIDAÇÃO --------------------------------",
       `Falha na validação para interface "${this.interfaceName}":`,

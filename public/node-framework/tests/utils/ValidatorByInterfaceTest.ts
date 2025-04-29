@@ -57,7 +57,7 @@ class MockLogger implements LoggerInterface {
 // =====================================================================================================================
 // SETUP
 async function setup() {
-  console.log('Setup...')
+  console.log("Setup...")
   // Cria diretório temporário se não existir
   if (!existsSync(TEST_DIR)) {
     await mkdir(TEST_DIR, { recursive: true })
@@ -111,9 +111,8 @@ async function setup() {
 async function teardown() {
   // Remove diretório de teste recursivamente
   await rm(TEST_DIR, { recursive: true, force: true })
-  console.log('\nTeardown!')
+  console.log("\nTeardown!")
 }
-
 
 // =====================================================================================================================
 // Tests
@@ -135,7 +134,6 @@ describe("ValidatorByInterface", async () => {
     // Inicializa o validador padrão uma única vez
     defaultValidator = new ValidatorByInterface(INTERFACE_FILE, "TestUser", TSCONFIG_FILE)
   })
-
 
   after(async () => {
     await teardown()
@@ -307,5 +305,133 @@ describe("ValidatorByInterface", async () => {
     assert.ok(mockLogger.logs[0].includes("INÍCIO DOS ERROS DE VALIDAÇÃO"))
   })
 
+  /**
+   * Verifica se o erro de validação contém a propriedade cause quando falta um campo obrigatório
+   */
+  await test("deve incluir detalhes sobre campos obrigatórios no cause", () => {
+    logTestProgress()
 
+    // Arrange - Objeto sem um campo obrigatório
+    const invalidUserMissingRequired = {
+      id: 1,
+      name: "Carlos Santos",
+      // email está faltando (obrigatório)
+      active: true,
+    }
+
+    // Act & Assert
+    try {
+      defaultValidator.validate(invalidUserMissingRequired)
+      assert.fail("A validação deveria ter falhado, mas passou")
+    } catch (error) {
+      // Verificações básicas
+      assert.ok(error instanceof TypeError)
+      assert.ok("cause" in error)
+      assert.ok(Array.isArray(error.cause))
+
+      // Verifica o tipo específico de erro (campo obrigatório faltando)
+      const requiredError = error.cause.find(
+        (err) => err.keyword === "required" && err.params.missingProperty === "email",
+      )
+
+      assert.ok(requiredError, "Deve conter um erro de 'required' para o campo 'email'")
+      assert.strictEqual(
+        requiredError.params.missingProperty,
+        "email",
+        "Deve identificar 'email' como a propriedade faltante",
+      )
+      assert.ok(
+        requiredError.message.includes("required property 'email'"),
+        "A mensagem deve mencionar a propriedade faltante",
+      )
+    }
+  })
+
+  /**
+   * Verifica se o erro de validação contém a propriedade cause quando há um tipo incorreto
+   */
+  await test("deve incluir detalhes específicos de tipo no cause para erro de tipo", () => {
+    logTestProgress()
+
+    // Arrange - Objeto com um campo de tipo incorreto
+    const invalidUserWithWrongType = {
+      id: "1", // string em vez de número
+      name: "Pedro Costa",
+      email: "pedro@exemplo.com",
+      active: true,
+    }
+
+    // Act & Assert
+    try {
+      defaultValidator.validate(invalidUserWithWrongType)
+      assert.fail("A validação deveria ter falhado, mas passou")
+    } catch (error) {
+      // Verificações básicas
+      assert.ok(error instanceof TypeError)
+      assert.ok("cause" in error)
+      assert.ok(Array.isArray(error.cause))
+
+      // Verifica o tipo específico de erro (tipo incorreto)
+      const typeError = error.cause.find((err) => err.keyword === "type" && err.instancePath === "/id")
+
+      assert.ok(typeError, "Deve conter um erro de 'type' para o campo 'id'")
+      assert.strictEqual(typeError.params.type, "number", "Deve identificar que esperava um 'number'")
+      assert.ok(typeError.message.includes("number"), "A mensagem deve mencionar o tipo esperado")
+    }
+  })
+
+  /**
+   * Verifica se o erro de validação contém a propriedade cause com os detalhes dos erros
+   */
+  await test("deve incluir a propriedade cause com detalhes no erro de validação", () => {
+    logTestProgress()
+
+    // Arrange - Objeto com uma propriedade extra que não existe na interface
+    const invalidUserWithExtraProp = {
+      id: 1,
+      name: "Ana Clara",
+      email: "ana@exemplo.com",
+      active: true,
+      xxx: "propriedade_adicional", // propriedade extra que não existe na interface
+    }
+
+    // Act & Assert
+    try {
+      defaultValidator.validate(invalidUserWithExtraProp)
+      assert.fail("A validação deveria ter falhado, mas passou")
+    } catch (error) {
+      // Verifica se é um TypeError
+      assert.ok(error instanceof TypeError, "O erro deve ser uma instância de TypeError")
+
+      // Verifica se a mensagem de erro contém o nome da interface
+      assert.ok(error.message.includes("TestUser"), "A mensagem de erro deve incluir o nome da interface")
+
+      // Verifica se existe a propriedade cause
+      assert.ok("cause" in error, "O erro deve conter a propriedade 'cause'")
+
+      // Verifica se cause é um array
+      assert.ok(Array.isArray(error.cause), "A propriedade 'cause' deve ser um array")
+
+      // Verifica se pelo menos um erro foi relatado
+      assert.ok(error.cause.length > 0, "O array 'cause' deve conter pelo menos um erro")
+
+      // Verifica o tipo específico de erro (propriedade adicional)
+      const additionalPropError = error.cause.find((err) => err.keyword === "additionalProperties")
+
+      assert.ok(additionalPropError, "Deve conter um erro de 'additionalProperties'")
+      assert.strictEqual(
+        additionalPropError.params.additionalProperty,
+        "xxx",
+        "Deve identificar 'xxx' como a propriedade adicional",
+      )
+
+      // Verifica a estrutura completa do primeiro erro
+      const firstError = error.cause[0]
+      assert.ok("instancePath" in firstError, "O erro deve conter a propriedade 'instancePath'")
+      assert.ok("schemaPath" in firstError, "O erro deve conter a propriedade 'schemaPath'")
+      assert.ok("keyword" in firstError, "O erro deve conter a propriedade 'keyword'")
+      assert.ok("params" in firstError, "O erro deve conter a propriedade 'params'")
+      assert.ok("message" in firstError, "O erro deve conter a propriedade 'message'")
+    }
+  })
 })

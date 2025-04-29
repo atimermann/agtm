@@ -13,7 +13,7 @@
     "publish-patch": "npm run tsc ; npm version patch && npm publish --access public && git push",
     "publish-minor": "npm run tsc ; npm version minor && npm publish --access public && git push",
     "publish-major": "npm run tsc ; npm version major && npm publish --access public && git push",
-    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
+    "test": "npx tsx --test tests/**/*.ts",
     "lint": "npx eslint --ext .mjs,.js --fix .",
     "lint:test": "npx eslint  --ext .mjs,.js .",
     "update": "npm update @agtm/util && npm list @agtm/util",

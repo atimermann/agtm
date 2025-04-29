@@ -14,16 +14,16 @@
  *   - Disponibiliza getters específicos para atributos essenciais (rota, model, chave primária, lista de campos).
  *
  */
-import { ValidatorByInterface } from "../utils/validatorByInterface.js"
-import type { LoggerInterface } from "../loggers/logger.interface.js"
+import { ValidatorByInterface } from "#/utils/ValidatorByInterface.ts"
+import type { LoggerInterface } from "../loggers/logger.interface.ts"
 import type { AutoSchemaInterface } from "#/http/interfaces/schemas/autoSchema/autoSchema.interface.ts"
 import type { FieldSchemaInterface } from "#/http/interfaces/schemas/autoSchema/fieldsSchema.interface.ts"
 import { capitalCase } from "change-case"
-import type { DocsSchemaInterface } from "#/http/interfaces/schemas/autoSchema/docsSchema.interface.js"
-import { AutoToOpenApiSchemaMapper } from "#/http/mapper/autoToOpenApiSchemaMapper.js"
+import type { DocsSchemaInterface } from "#/http/interfaces/schemas/autoSchema/docsSchema.interface.ts"
+import { AutoToOpenApiSchemaMapper } from "#/http/mapper/autoToOpenApiSchemaMapper.ts"
 import type { FastifySchema } from "fastify"
-import type { AuthSchemaInterface } from "#/http/interfaces/schemas/autoSchema/authSchema.interface.js"
-import type { IApiRouteOption, ICustomContextConfig } from "#/http/interfaces/IApiRouteOption.js"
+import type { AuthSchemaInterface } from "#/http/interfaces/schemas/autoSchema/authSchema.interface.ts"
+import type { IApiRouteOption, ICustomContextConfig } from "#/http/interfaces/IApiRouteOption.ts"
 import { AutoToCrudSchemaMapper } from "#/http/mapper/autoToCrudSchemaMapper.ts"
 
 type Dict = Record<string, unknown>

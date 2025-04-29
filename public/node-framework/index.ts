@@ -50,14 +50,17 @@ export {
 // New format
 // Nota: Não utilizar alias aqui (./library). Problema nos projetos que vão utilizar o módulo
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-export { ApiRouter } from "./library/http/apiRouter.js"
+export { ApiRouter } from "./library/http/apiRouter.ts"
 export { ApiController } from "./library/http/apiController.ts"
-export { ApiAuto } from "./library/http/apiAuto.js"
+export { ApiAuto } from "./library/http/apiAuto.ts"
 export { ApiError } from "./library/http/errors/apiError.ts"
 export { AutoSchema } from "./library/http/autoSchema.ts"
 export type { AuthRequest } from "#/http/interfaces/AuthRequest.ts"
 export { LoggerService } from "./library/services/loggerService.ts"
+export type { LoggerInterface } from "#/loggers/logger.interface.ts"
 export { PrismaService } from "./library/services/prismaService.ts"
-export { AutoFactory } from "./library/http/factories/autoFactory.js"
+export { AutoFactory } from "./library/http/factories/autoFactory.ts"
+export { ConfigService } from "./library/services/configService.ts"
+export { ValidatorByInterface } from "#/utils/ValidatorByInterface.ts"
 //TODO:  export tools, faler import { isDev } from "@agtm/node-framework/tools" (provavelmente é config no package.json)
 //TODO: Documentar isso

@@ -83,7 +83,7 @@ export class ConfigService {
    *
    * @returns The configuration value cast to the specified type if provided.
    */
-  get(key: string, type?: ValueType, yamlOnly: boolean = false): any {
+  get(key: string, type?: ValueType, yamlOnly = false): any {
     const parts = yamlOnly ? key.split(".") : key.toLowerCase().split(".")
 
     let current: any = yamlOnly ? this.yamlConfig : this.config

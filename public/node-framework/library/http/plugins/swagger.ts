@@ -15,7 +15,7 @@ import { ValidatorByInterface } from "#/utils/ValidatorByInterface.ts"
 import type { ConfigService } from "#/services/configService.js"
 
 const swaggerConfigValidator = new ValidatorByInterface(
-  "library/http/interfaces/SwaggerConfig.ts",
+  "#/http/interfaces/SwaggerConfig.ts",
   "SwaggerConfig",
 )
 

@@ -12,7 +12,7 @@
 import type { FieldSchemaInterface } from "./fieldsSchema.interface.ts"
 import type { UiSchemaInterface } from "./uiSchema.interface.ts"
 import type { DocsSchemaInterface } from "./docsSchema.interface.ts"
-import type { AuthSchemaInterface } from "#/http/interfaces/schemas/autoSchema/authSchema.interface.js"
+import type { AuthSchemaInterface } from "./authSchema.interface.ts"
 
 export interface AutoSchemaInterface {
 

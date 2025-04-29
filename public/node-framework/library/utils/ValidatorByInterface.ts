@@ -29,6 +29,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 const LIBRARY_DIR = join(__dirname, "..")
+const ROOT_DIR = join(LIBRARY_DIR, "..")
 
 /**
  * Interface para abstração do validador de schema
@@ -63,6 +64,7 @@ export class ValidatorByInterface {
   constructor(interfacePath: string, typeName: string, tsconfigPath?: string) {
     // Normaliza o caminho da interface (absoluto ou relativo ao CWD)
     const resolvedPath = this.resolvePath(interfacePath)
+
     this.interfacePath = resolvedPath
     this.interfaceName = typeName
 
@@ -70,7 +72,7 @@ export class ValidatorByInterface {
     this.validateFileExists(resolvedPath)
 
     // Configura o gerador de schema
-    const tsConfigPath = tsconfigPath || resolve(process.cwd(), "tsconfig.json")
+    const tsConfigPath = tsconfigPath || resolve(ROOT_DIR, "tsconfig.json")
     const schema = this.createAvjSchema(resolvedPath, tsConfigPath, typeName)
 
     // Compila o validador
